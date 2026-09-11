@@ -12,12 +12,13 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "" FORCE)
 endif()
 
-# Flags gcc/g++ - reemplazo de MSVC
+# Flags gcc/g++ - reemplazo de MSVC (graphify: 89 windows.h, 24 __asm, 148 windows_tokens → shims)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   add_compile_options(
     -Wall -Wextra -Wno-multichar -Wno-write-strings -Wno-unused-parameter
     -Wno-narrowing -Wno-invalid-offsetof -fpermissive -fno-strict-aliasing
     -fvisibility=hidden
+    -include ${CMAKE_SOURCE_DIR}/Platform/math_shim.h
   )
   add_compile_definitions(
     _LINUX

@@ -1,0 +1,43 @@
+# Binarios Windows
+*.exe
+*.dll
+*.lib
+*.pdb
+*.obj
+*.exp
+*.ilk
+*.idb
+*.pch
+*.bsc
+*.iobj
+*.ipdb
+# Build dirs
+build/
+out/
+build-*/
+install/
+# VS / MSVC
+.vs/
+ipch/
+*.vcxproj.user
+*.vcxproj.filters
+# Linux build artifacts
+*.o
+*.a
+*.so
+*.so.*
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+# Graphify
+graphify-output/
+*.graphify.json
+# Vulkan
+*.spv
+# Python venv (graphify fallback)
+.venv/
+__pycache__/
+# No ignorar third_party/vulkan vendoreado - necesario sin sudo
+!third_party/vulkan/

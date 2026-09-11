@@ -101,3 +101,4 @@ endif()
 
 message(STATUS "LithTech Jupiter - Arch gcc/g++ | Vulkan=${LITH_VULKAN} | Build=${CMAKE_BUILD_TYPE}")
 add_subdirectory(DemoVulkan)
+add_custom_target(check_case COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/check_case.cmake COMMENT "Checking case-sensitive includes via graphify")

@@ -2,8 +2,8 @@
 // okay to ignore
 #pragma warning(disable: 4786)
 
-#include "Stdafx.h"
-#include "ButeMgr.h"
+#include "stdafx.h"
+#include "butemgr.h"
 #include "Platform/security.h" // vuln fix: safe string + RAII (graphify 662 strcpy)
 
 

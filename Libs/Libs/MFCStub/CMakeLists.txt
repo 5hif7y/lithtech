@@ -1,0 +1,5 @@
+# MFCStub — stub (MFC no existe Linux, 11 files wt0)
+cmake_minimum_required(VERSION 3.27)
+add_library(MFCStub INTERFACE)
+target_include_directories(MFCStub INTERFACE ${CMAKE_SOURCE_DIR}/Platform)
+message(STATUS "MFCStub desacoplado: MFC -> std::string/std::filesystem + SDL2")

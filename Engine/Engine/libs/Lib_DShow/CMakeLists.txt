@@ -1,0 +1,10 @@
+# Lib_DShow — desacoplado (DirectShow no existe Linux) — Fase3 graphify wt13, 63 files
+# Reemplazo moderno: OpenAL + FFmpeg (pacman -Qs openal INSTALLED)
+cmake_minimum_required(VERSION 3.27)
+add_library(Lib_DShow INTERFACE)
+target_include_directories(Lib_DShow INTERFACE ${CMAKE_SOURCE_DIR}/Platform)
+find_package(OpenAL QUIET)
+if(OpenAL_FOUND)
+  target_link_libraries(Lib_DShow INTERFACE OpenAL::OpenAL)
+endif()
+message(STATUS "Lib_DShow desacoplado: DirectShow -> OpenAL/FFmpeg (Linux)")

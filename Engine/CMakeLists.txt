@@ -16,6 +16,9 @@ if(LITH_ENGINE_FULL)
   list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*/Engine/tools/.*")
   list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*/Engine/libs/.*")
   list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*/built/.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*/externalesd.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*MAX70SDK.*")
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX ".*PhotoshopSDK.*")
 else()
   # Stub Linux - permite que toolchain gcc+Vulkan se verifique sin portar 1193 archivos MSVC
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/lith_engine_stub.cpp "// LithTech Jupiter - Linux stub\n// Engine completo requiere port: 89 windows.h, 10 __asm, 49 DirectX (ver graphify-output)\n#include \"Platform/platform.h\"\nint lith_engine_linux_stub(){return 0;}\n// Export simbolos esperados por renderer\n")
@@ -28,8 +31,11 @@ target_include_directories(lith_engine BEFORE PUBLIC
   ${CMAKE_SOURCE_DIR}/Platform
   ${CMAKE_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/Shared
   ${CMAKE_SOURCE_DIR}/Engine
+  ${CMAKE_SOURCE_DIR}/Engine/Engine/runtime/shared/src
+  ${CMAKE_SOURCE_DIR}/Engine/Engine/sdk/inc
+  ${CMAKE_SOURCE_DIR}/Engine/Engine/runtime/client/src
+  ${CMAKE_SOURCE_DIR}/Engine/Engine/runtime/server/src
 )
 target_link_libraries(lith_engine PUBLIC lith_platform SDL2::SDL2)
 target_compile_definitions(lith_engine PUBLIC ENGINE_LINUX)

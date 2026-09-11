@@ -1,0 +1,7 @@
+# zlib — reemplazo moderno (graphify zlib-old 23 files wt8 -> system 1.3.2)
+cmake_minimum_required(VERSION 3.27)
+find_package(ZLIB REQUIRED)
+add_library(zlib_system INTERFACE)
+target_link_libraries(zlib_system INTERFACE ZLIB::ZLIB)
+add_library(zlib ALIAS zlib_system)
+message(STATUS "zlib: vendored 0.95 desacoplado -> system ZLIB 1.3.2 (pacman -Si zlib 1:1.3.2-3)")

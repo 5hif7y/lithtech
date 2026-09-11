@@ -58,6 +58,18 @@ target_include_directories(lith_platform INTERFACE
 )
 target_compile_definitions(lith_platform INTERFACE PLATFORM_LINUX)
 
+# Libs portables (Fase 2, graphify wt 0-1) — se añaden antes de Engine para que Engine pueda linkear si LITH_ENGINE_FULL=ON
+option(LITH_LIBS_PORTABLE "Compilar libs portables via graphify (Fase2)" OFF)
+if(LITH_LIBS_PORTABLE)
+  foreach(_lib ButeMgr CryptMgr stdlith lith ltmem ltamgr rezmgr)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/Libs/Libs/${_lib}/CMakeLists.txt)
+      add_subdirectory(Libs/Libs/${_lib})
+    elseif(EXISTS ${CMAKE_SOURCE_DIR}/Engine/Engine/libs/${_lib}/CMakeLists.txt)
+      add_subdirectory(Engine/Engine/libs/${_lib})
+    endif()
+  endforeach()
+endif()
+
 # Engine - file glob resiliente a estructura exacta
 add_subdirectory(Engine)
 

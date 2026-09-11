@@ -14,8 +14,13 @@ target_include_directories(ltamgr BEFORE PUBLIC
   ${CMAKE_SOURCE_DIR}/Engine/Engine/sdk/inc
   ${CMAKE_CURRENT_SOURCE_DIR}
 )
+# ltamgr no tiene deps externas (graphify wt 0), find_package placeholder para contrato Fase2
+find_package(ZLIB QUIET)
+if(ZLIB_FOUND)
+  target_link_libraries(ltamgr PRIVATE ZLIB::ZLIB)
+endif()
 target_link_libraries(ltamgr PUBLIC lith_platform)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  target_compile_options(ltamgr PRIVATE -fpermissive -Wno-error)
-  target_compile_definitions(ltamgr PRIVATE _LINUX)
+  target_compile_options(ltamgr PRIVATE -fpermissive -Wno-error -Wno-deprecated)
+  target_compile_definitions(ltamgr PRIVATE _LINUX __LINUX NOMINMAX STRICT _MSC_VER=1300)
 endif()

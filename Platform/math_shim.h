@@ -1,7 +1,44 @@
 #pragma once
 // LithTech Jupiter - Math shim para gcc Linux
 // Mapea funciones MSVC/lt* a estándar C++17
+// Este header se inyecta vía -include en todo el build Linux, por lo que debe contener shims críticos antes de que ltbasedefs.h/ltlink.h los necesiten
 #include <cmath>
+#include <cstdint>
+#include <cstdio>
+#include <cwchar>
+#include <wchar.h>
+#include <cstddef>
+#include <cstring>
+#ifndef MAX_PATH
+#define MAX_PATH 260
+#endif
+#ifndef _MAX_PATH
+#define _MAX_PATH MAX_PATH
+#endif
+#ifndef MODULE_EXPORT
+#define MODULE_EXPORT
+#endif
+#ifndef __forceinline
+#define __forceinline inline
+#endif
+#ifndef __inline
+#define __inline inline
+#endif
+#ifndef force_inline
+#define force_inline inline
+#endif
+#ifndef local_force_inline
+#define local_force_inline inline
+#endif
+#ifndef _vsnprintf
+#define _vsnprintf vsnprintf
+#endif
+#ifndef _snprintf
+#define _snprintf snprintf
+#endif
+#ifndef _vsnwprintf
+#define _vsnwprintf vswprintf
+#endif
 
 #ifndef ltsinf
 #define ltsinf(a) sinf(a)

@@ -22,6 +22,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   )
   add_compile_definitions(
     _LINUX
+    __LINUX
     _RETAIL
     NOMINMAX
     STRICT
@@ -61,7 +62,7 @@ target_compile_definitions(lith_platform INTERFACE PLATFORM_LINUX)
 # Libs portables (Fase 2, graphify wt 0-1) — se añaden antes de Engine para que Engine pueda linkear si LITH_ENGINE_FULL=ON
 option(LITH_LIBS_PORTABLE "Compilar libs portables via graphify (Fase2)" OFF)
 if(LITH_LIBS_PORTABLE)
-  foreach(_lib ButeMgr CryptMgr stdlith lith ltmem ltamgr rezmgr)
+  foreach(_lib ButeMgr CryptMgr stdlith lith ltmem ltamgr rezmgr genregmgr dtxmgr RegMgr RegMgr32 MFCStub dibmgr StackTracer zlib)
     if(EXISTS ${CMAKE_SOURCE_DIR}/Libs/Libs/${_lib}/CMakeLists.txt)
       add_subdirectory(Libs/Libs/${_lib})
     elseif(EXISTS ${CMAKE_SOURCE_DIR}/Engine/Engine/libs/${_lib}/CMakeLists.txt)
@@ -87,4 +88,16 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/Server/CMakeLists.txt)
   add_subdirectory(Server)
 endif()
 
+option(LITH_SAMPLES "Compilar demos Samples" ON)
+if(LITH_SAMPLES)
+  # Demos via graphify (18 demos, 740 nodes) — cada demo tiene su CMakeLists.txt
+  file(GLOB SAMPLE_DIRS "${CMAKE_SOURCE_DIR}/Samples/Samples/*/*")
+  foreach(_d ${SAMPLE_DIRS})
+    if(EXISTS ${_d}/CMakeLists.txt)
+      add_subdirectory(${_d})
+    endif()
+  endforeach()
+endif()
+
 message(STATUS "LithTech Jupiter - Arch gcc/g++ | Vulkan=${LITH_VULKAN} | Build=${CMAKE_BUILD_TYPE}")
+add_subdirectory(DemoVulkan)

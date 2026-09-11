@@ -1,14 +1,17 @@
 #include "vk_renderer.h"
 #ifdef RENDERER_VULKAN
+#include "Platform/security.h" // vuln fix: null/bounds checks (graphify DrawPrimitive memcpy 399)
 #include <stdexcept>
 
 VulkanRenderer::VulkanRenderer() {}
 VulkanRenderer::~VulkanRenderer() { Shutdown(); }
 
 HRESULT VulkanRenderer::Init(SDL_Window* window) {
+  if (!lith_validate_ptr(window)) return E_INVALIDARG;
   if (!createInstance()) return E_FAIL;
-  // SDL crea VkSurface
+  // SDL crea VkSurface - validar window y instance
   if (!SDL_Vulkan_CreateSurface(window, m_instance, &m_surface)) return E_FAIL;
+  if (!lith_validate_ptr(m_instance) || !lith_validate_ptr(m_surface)) return E_FAIL;
   if (!pickPhysicalDevice()) return E_FAIL;
   if (!createLogicalDevice()) return E_FAIL;
   if (!createSwapchain(window)) return E_FAIL;
@@ -29,7 +32,12 @@ HRESULT VulkanRenderer::BeginScene() { return S_OK; }
 HRESULT VulkanRenderer::EndScene() { return S_OK; }
 HRESULT VulkanRenderer::Clear(uint32_t) { return S_OK; }
 HRESULT VulkanRenderer::Present() { return S_OK; }
-HRESULT VulkanRenderer::DrawPrimitive(VkPrimitiveTopology, const void*, uint32_t) { return S_OK; }
+HRESULT VulkanRenderer::DrawPrimitive(VkPrimitiveTopology topo, const void* verts, uint32_t vcount) {
+  if (!lith_validate_ptr(verts) || !lith_validate_size(vcount, 1<<20)) return E_INVALIDARG; // 1M verts max
+  if (!lith_validate_ptr(m_device)) return E_FAIL;
+  (void)topo;
+  return S_OK;
+}
 
 bool VulkanRenderer::createInstance() {
   VkApplicationInfo appInfo{};
@@ -52,11 +60,13 @@ bool VulkanRenderer::createInstance() {
 }
 
 bool VulkanRenderer::pickPhysicalDevice() {
+  if (!lith_validate_ptr(m_instance)) return false;
   uint32_t count = 0;
-  vkEnumeratePhysicalDevices(m_instance, &count, nullptr);
-  if (count == 0) return false;
+  if (vkEnumeratePhysicalDevices(m_instance, &count, nullptr) != VK_SUCCESS) return false;
+  if (count == 0 || count > 16) return false; // bounds check
   std::vector<VkPhysicalDevice> devs(count);
-  vkEnumeratePhysicalDevices(m_instance, &count, devs.data());
+  if (vkEnumeratePhysicalDevices(m_instance, &count, devs.data()) != VK_SUCCESS) return false;
+  if (!lith_validate_ptr(devs[0])) return false;
   m_physicalDevice = devs[0];
   return true;
 }

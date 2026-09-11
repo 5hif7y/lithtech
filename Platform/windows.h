@@ -25,6 +25,10 @@ typedef GUID CLSID;
 #endif
 typedef void* CRITICAL_SECTION;
 typedef void* HANDLE;
+typedef void* LPVOID;
+typedef const void* LPCVOID;
+typedef void* LPSTR;
+typedef const void* LPCSTR;
 inline void InitializeCriticalSection(CRITICAL_SECTION*) {}
 inline void DeleteCriticalSection(CRITICAL_SECTION*) {}
 inline void EnterCriticalSection(CRITICAL_SECTION*) {}

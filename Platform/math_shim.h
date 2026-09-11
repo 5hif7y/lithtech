@@ -70,3 +70,10 @@
 #ifndef _finite
 #define _finite std::isfinite
 #endif
+
+#ifndef SCREEN_NEAR_Z
+#define SCREEN_NEAR_Z 0.0f
+#endif
+#ifndef SCREEN_FAR_Z
+#define SCREEN_FAR_Z 1.0f
+#endif

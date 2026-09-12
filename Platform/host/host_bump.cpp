@@ -31,6 +31,10 @@ int main(int argc, char* argv[]) {
     }
 
     static Host::ClientTuned client;
+    std::string rez = Host::ParseRezArgs(argc, argv);
+    Host::ClientTuned::rezDir() =
+        rez.empty() ? "Samples/Samples/graphics/bump/rez" : rez;
+    printf("HOST: rezdir=%s\n", Host::ClientTuned::rezDir().c_str());
     static Host::DrawPrimTuned drawprim;
     static Host::CommonTuned common;
     static Host::PhysicsTuned physics;

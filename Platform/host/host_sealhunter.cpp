@@ -38,6 +38,11 @@ int main(int argc, char* argv[]) {
     }
 
     static Host::ClientTuned client;
+    // run.bat style: lithtech -rez engine.rez -rez ..\rez — usable -rez dir wins
+    std::string rez = Host::ParseRezArgs(argc, argv);
+    if (rez.empty()) rez = "demo-sealhunter/sealhunter/rez";
+    Host::ClientTuned::rezDir() = rez;
+    printf("HOST: rezdir=%s\n", rez.c_str());
     static Host::DrawPrimTuned drawprim;
     static Host::CommonTuned common;
     static Host::PhysicsTuned physics;

@@ -20,6 +20,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <cstring>
+#include <filesystem>
 #include <map>
 #include <string>
 #include <vector>
@@ -69,6 +70,29 @@ inline void emit(const char* fmt, ...) {
     stats().log.push_back(buf);
     stats().cprintLines++;
     printf("[host] %s\n", buf);
+}
+
+// Windows run.bat style: lithtech -rez engine.rez -rez ..\rez
+// Accepts repeatable "-rez <path>" (also -rez=<p> / --rez=<p>).
+// Engine .REZ archives are NOT mounted (no archive parser yet); the last
+// -rez value that is an existing directory becomes the asset root.
+// Returns "" when no usable directory was given.
+inline std::string ParseRezArgs(int argc, char* argv[]) {
+    std::string dir;
+    std::error_code ec;
+    for (int i = 1; i < argc; i++) {
+        std::string a = argv[i] ? argv[i] : "";
+        std::string v;
+        if (a == "-rez" && i + 1 < argc) v = argv[++i];
+        else if (a.rfind("-rez=", 0) == 0) v = a.substr(5);
+        else if (a.rfind("--rez=", 0) == 0) v = a.substr(6);
+        else continue;
+        for (char& c : v) if (c == '\\') c = '/';
+        ec.clear();
+        if (!v.empty() && std::filesystem::is_directory(v, ec)) dir = v;
+        else emit("ignoring -rez '%s' (not a directory; .REZ archives are not mounted)", v.c_str());
+    }
+    return dir;
 }
 
 struct ObjState {
@@ -202,6 +226,18 @@ static LTRESULT T_GetAxisOffsets(LTVector* v) {
 static void T_ClearInput() {}
 
 // ---- tuned subclasses ----
+static MemStream* loadRealFile(const std::string& full) {
+    FILE* f = fopen(full.c_str(), "rb");
+    if (!f) return nullptr;
+    fseek(f, 0, SEEK_END);
+    long len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    MemStream* ms = new MemStream();
+    ms->data.resize(len > 0 ? (size_t)len : 0);
+    if (len > 0) ms->data.resize(fread(ms->data.data(), 1, (size_t)len, f));
+    fclose(f);
+    return ms;
+}
 class ClientTuned : public HostLTClient {
 public:
     void CPrint(const char* m, ...) override {
@@ -232,16 +268,8 @@ public:
             if (n[i] == '\\') n[i] = '/';
         if (n.find(".raw") != std::string::npos) {
             std::string full = rezDir() + "/" + n;
-            FILE* f = fopen(full.c_str(), "rb");
-            if (f) {
-                fseek(f, 0, SEEK_END);
-                long len = ftell(f);
-                fseek(f, 0, SEEK_SET);
-                MemStream* ms = new MemStream();
-                ms->data.resize(len > 0 ? (size_t)len : 0);
-                if (len > 0)
-                    ms->data.resize(fread(ms->data.data(), 1, (size_t)len, f));
-                fclose(f);
+            MemStream* ms = loadRealFile(full);
+            if (ms) {
                 unsigned long long sum = 0;
                 for (size_t i = 0; i < ms->data.size(); i++)
                     sum += ms->data[i];
@@ -255,6 +283,18 @@ public:
             *s = synthTerrain(340, 480);
             emit("synth terrain for %s", n.c_str());
             return LT_OK;
+        }
+        // General VFS fallback: any engine-relative path resolves against
+        // the -rez asset root, so real demo files (Tex/*.dtx, Snd/*.wav,
+        // Interface/*.pcx, ...) load with true byte content.
+        if (!rezDir().empty()) {
+            std::string full = rezDir() + "/" + n;
+            MemStream* ms = loadRealFile(full);
+            if (ms) {
+                *s = ms;
+                emit("real file %s (%d bytes)", full.c_str(), (int)ms->data.size());
+                return LT_OK;
+            }
         }
         return LT_ERROR;
     }

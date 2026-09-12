@@ -1,7 +1,9 @@
-// Real headless bootstrap for the sealhunter demo (networking).
-// Same host backend as drawprim/bump; drives StartNormalGame() (the
-// headless equivalent of typing "normal" at the console). Exit 0 only
-// with frames>0 and no shutdown. Prints HOST_RESULT line.
+// Bootstrap for the sealhunter demo (networking).
+// Same host backend as drawprim/bump. Headless/probe runs drive
+// StartNormalGame() (the headless equivalent of typing "normal" at the
+// console); interactive --window boots to the menu like run.bat so the
+// menu receives input. Exit 0 only with frames>0 and no shutdown.
+// Prints HOST_RESULT line.
 #include "Platform/host/host_engine.h"
 #include "ltclientshell.h"
 #ifdef _LINUX
@@ -112,7 +114,18 @@ int main(int argc, char* argv[]) {
                    ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
                    StructureNotifyMask);
         XMapWindow(xDpy, xWin);
+        // Ask the WM for keyboard focus: without this, key events go to
+        // whatever window was focused and the menu looks dead.
+        XWMHints* wmHints = XAllocWMHints();
+        if (wmHints) {
+            wmHints->flags = InputHint;
+            wmHints->input = True;
+            XSetWMHints(xDpy, xWin, wmHints);
+            XFree(wmHints);
+        }
+        XSetInputFocus(xDpy, xWin, RevertToParent, CurrentTime);
         XFlush(xDpy);
+        printf("WINDOW: id=0x%lx\n", (unsigned long)xWin);
         if (vk.InitNative(xDpy, (unsigned long)xWin, 800, 600) != S_OK) {
             printf("WINDOW_RESULT ok=0 stage=vkinit frames=0\n");
             XDestroyWindow(xDpy, xWin);
@@ -210,15 +223,23 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    r = shell->StartNormalGame();
-    printf("HOST: StartNormalGame -> %d shutdown=%d\n",
-           (int)r, (int)Host::stats().shutdownRequested);
-    if (r != LT_OK || Host::stats().shutdownRequested) {
-        printf("HOST_RESULT ok=0 stage=start frames=0\n");
-        return 1;
+    // Interactive window (unbounded frames) boots to the menu in
+    // LOCAL_GAMEMODE_NONE, exactly like run.bat: OnCommandOn only forwards
+    // keys to the menu in NONE mode, so auto-starting a game here would eat
+    // all menu input. Bounded/probe runs keep the old auto-start path.
+    bool menuBoot = windowMode && !psurface && frames <= 0;
+    if (!menuBoot) {
+        r = shell->StartNormalGame();
+        printf("HOST: StartNormalGame -> %d shutdown=%d\n",
+               (int)r, (int)Host::stats().shutdownRequested);
+        if (r != LT_OK || Host::stats().shutdownRequested) {
+            printf("HOST_RESULT ok=0 stage=start frames=0\n");
+            return 1;
+        }
+        shell->OnEnterWorld();
+    } else {
+        printf("HOST: menu boot (StartNormalGame deferred to menu choice)\n");
     }
-
-    shell->OnEnterWorld();
     if (psurface) {
         int presents = 0;
 #ifdef _LINUX
@@ -271,12 +292,16 @@ int main(int argc, char* argv[]) {
                 if (e.type == ClientMessage &&
                     (Atom)e.xclient.data.l[0] == xWmDelete) {
                     quit = true;
+                } else if (e.type == MapNotify) {
+                    XSetInputFocus(xDpy, xWin, RevertToParent, CurrentTime);
                 } else if (e.type == KeyPress) {
                     int idx = (e.xkey.state & ShiftMask) ? 1 : 0;
                     KeySym k = XLookupKeysym(&e.xkey, idx);
                     if (k == XK_q) { quit = true; continue; }
                     int vk, cmd;
                     Host::mapKeysym((unsigned long)k, vk, cmd);
+                    printf("HOST: key sym=0x%lx vk=%d cmd=%d\n",
+                           (unsigned long)k, vk, cmd);
                     if (vk >= 0) {
                         shell->OnKeyDown(vk, 0);
                         if (Host::noteKey(vk, cmd, true) && cmd >= 0)
@@ -292,6 +317,7 @@ int main(int argc, char* argv[]) {
                     }
                 } else if (e.type == ButtonPress &&
                            e.xbutton.button == Button1) {
+                    XSetInputFocus(xDpy, xWin, RevertToParent, CurrentTime);
                     shell->OnKeyDown(Host::HVK_LBUTTON, 0);
                     if (Host::noteKey(Host::HVK_LBUTTON, 15, true))
                         shell->OnCommandOn(15); // Shoot (autoexec Button0)

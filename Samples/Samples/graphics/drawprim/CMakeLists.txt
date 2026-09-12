@@ -8,7 +8,7 @@ if(DEMO_SOURCES STREQUAL "")
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "int dummy(){return 0;}")
   set(DEMO_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
 endif()
-add_executable(graphics_drawprim EXCLUDE_FROM_ALL ${DEMO_SOURCES} ${CMAKE_SOURCE_DIR}/Platform/winmain_stub.cpp ${CMAKE_SOURCE_DIR}/Platform/demo_link_stubs.cpp)
+add_executable(graphics_drawprim EXCLUDE_FROM_ALL ${DEMO_SOURCES} ${CMAKE_SOURCE_DIR}/Platform/host/host_drawprim.cpp ${CMAKE_SOURCE_DIR}/Platform/demo_link_stubs.cpp)
 target_include_directories(graphics_drawprim BEFORE PRIVATE
   ${CMAKE_SOURCE_DIR}/Platform
   ${CMAKE_SOURCE_DIR}/Engine/Engine/sdk/inc
@@ -22,7 +22,7 @@ target_include_directories(graphics_drawprim BEFORE PRIVATE
 # Fallback: ensure main exists
 target_link_libraries(graphics_drawprim PRIVATE lith_platform lith_engine renderer_vulkan SDL2::SDL2 Vulkan::Vulkan)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  target_compile_options(graphics_drawprim PRIVATE -fpermissive -include ${CMAKE_SOURCE_DIR}/Platform/math_shim.h)
+  target_compile_options(graphics_drawprim PRIVATE -fpermissive -fno-rtti -include ${CMAKE_SOURCE_DIR}/Platform/math_shim.h)
   target_compile_definitions(graphics_drawprim PRIVATE _LINUX PLATFORM_LINUX)
 endif()
 message(STATUS "Demo graphics/drawprim configured (graphify 34 nodes)")

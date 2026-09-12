@@ -50,6 +50,7 @@ struct Stats {
     int drawPrimVerts = 0;
     int objectsCreated = 0;
     int uiRenders = 0;
+    int physMoves = 0;
     int cprintLines = 0;
     bool shutdownRequested = false;
     std::string shutdownMsg;
@@ -70,7 +71,8 @@ inline void emit(const char* fmt, ...) {
 struct ObjState {
     LTVector pos;
     LTRotation rot;
-    ObjState() { pos.Init(0, 0, 0); rot.Init(); }
+    LTVector vel;
+    ObjState() { pos.Init(0, 0, 0); rot.Init(); vel.Init(0, 0, 0); }
 };
 inline std::map<HOBJECT, ObjState>& objects() {
     static std::map<HOBJECT, ObjState> m;
@@ -287,10 +289,29 @@ public:
         m = new HostMessageWrite();
         return LT_OK;
     }
+    LTRESULT GetRotationVectors(LTRotation& r, LTVector& up,
+                                LTVector& right, LTVector& fwd) override {
+        (void)r;
+        up.Init(0, 1, 0); right.Init(1, 0, 0); fwd.Init(0, 0, 1);
+        return LT_OK;
+    }
 };
 
 class PhysicsTuned : public HostPhysics {
 public:
+    LTRESULT SetVelocity(HOBJECT h, const LTVector* v) override {
+        ObjState* o = findObj(h); if (!o || !v) return LT_ERROR;
+        o->vel = *v; return LT_OK;
+    }
+    LTRESULT GetVelocity(HOBJECT h, LTVector* v) override {
+        ObjState* o = findObj(h); if (!o || !v) return LT_ERROR;
+        *v = o->vel; return LT_OK;
+    }
+    LTRESULT MoveObject(HOBJECT h, const LTVector* p, uint32 f) override {
+        (void)f;
+        ObjState* o = findObj(h); if (!o || !p) return LT_ERROR;
+        o->pos = *p; stats().physMoves++; return LT_OK;
+    }
 };
 
 

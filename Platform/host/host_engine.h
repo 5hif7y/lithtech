@@ -51,6 +51,8 @@ struct Stats {
     int objectsCreated = 0;
     int uiRenders = 0;
     int physMoves = 0;
+    int terrainBytes = 0;
+    unsigned long long terrainSum = 0;
     int cprintLines = 0;
     bool shutdownRequested = false;
     std::string shutdownMsg;
@@ -218,10 +220,37 @@ public:
     LTFLOAT GetTime() override {
         static float t = 0; t += 1.0f / 60.0f; return t;
     }
+    static std::string& rezDir() {
+        static std::string r;
+        return r;
+    }
     LTRESULT OpenFile(const char* name, ILTStream** s) override {
         if (!s) return LT_ERROR;
         std::string n = name ? name : "";
+        for (size_t i = 0; i < n.size(); i++)
+            if (n[i] == '\\') n[i] = '/';
         if (n.find(".raw") != std::string::npos) {
+            std::string full = rezDir() + "/" + n;
+            FILE* f = fopen(full.c_str(), "rb");
+            if (f) {
+                fseek(f, 0, SEEK_END);
+                long len = ftell(f);
+                fseek(f, 0, SEEK_SET);
+                MemStream* ms = new MemStream();
+                ms->data.resize(len > 0 ? (size_t)len : 0);
+                if (len > 0)
+                    ms->data.resize(fread(ms->data.data(), 1, (size_t)len, f));
+                fclose(f);
+                unsigned long long sum = 0;
+                for (size_t i = 0; i < ms->data.size(); i++)
+                    sum += ms->data[i];
+                stats().terrainBytes = (int)ms->data.size();
+                stats().terrainSum = sum;
+                *s = ms;
+                emit("real terrain %s (%d bytes sum=%llu)",
+                     full.c_str(), (int)ms->data.size(), sum);
+                return LT_OK;
+            }
             *s = synthTerrain(340, 480);
             emit("synth terrain for %s", n.c_str());
             return LT_OK;

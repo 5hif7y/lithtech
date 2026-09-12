@@ -26,6 +26,7 @@ int main(int argc, char* argv[]) {
     }
 
     static Host::ClientTuned client;
+    Host::ClientTuned::rezDir() = "Samples/Samples/graphics/drawprim/rez";
     static Host::DrawPrimTuned drawprim;
     static Host::CommonTuned common;
     static Host::PhysicsTuned physics;
@@ -74,11 +75,12 @@ int main(int argc, char* argv[]) {
     shell->OnExitWorld();
 
     Host::Stats& s = Host::stats();
-    printf("HOST: frames=%d draws=%d verts=%d objects=%d cprint=%d\n",
+    printf("HOST: frames=%d draws=%d verts=%d objects=%d cprint=%d terrain=%d sum=%llu\n",
            s.frames, s.drawPrimCalls, s.drawPrimVerts,
-           s.objectsCreated, s.cprintLines);
+           s.objectsCreated, s.cprintLines, s.terrainBytes, s.terrainSum);
     bool ok = s.frames > 0 && s.drawPrimCalls > 0 && !s.shutdownRequested;
-    printf("HOST_RESULT ok=%d stage=run frames=%d draws=%d verts=%d\n",
-           ok ? 1 : 0, s.frames, s.drawPrimCalls, s.drawPrimVerts);
+    printf("HOST_RESULT ok=%d stage=run frames=%d draws=%d verts=%d terrain=%d sum=%llu\n",
+           ok ? 1 : 0, s.frames, s.drawPrimCalls, s.drawPrimVerts,
+           s.terrainBytes, s.terrainSum);
     return ok ? 0 : 1;
 }

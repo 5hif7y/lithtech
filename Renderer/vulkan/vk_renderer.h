@@ -6,6 +6,9 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
+// Triángulo 2D para el pipeline headless (pos en píxeles, color 0..1).
+struct VkTriVert { float x, y, r, g, b, a; };
+
 class VulkanRenderer {
 public:
   VulkanRenderer();
@@ -19,6 +22,12 @@ public:
   HRESULT Present();
 
   HRESULT DrawPrimitive(VkPrimitiveTopology topo, const void* verts, uint32_t vcount);
+
+  // Headless offscreen: sin ventana/swapchain, con readback a PPM.
+  bool InitHeadless(uint32_t w, uint32_t h);
+  void PushTri(const VkTriVert v[3]);
+  size_t PendingTris() const;
+  bool SnapshotPPM(const char* path);
 
   VkDevice device() const { return m_device; }
   VkPhysicalDevice physicalDevice() const { return m_physicalDevice; }
@@ -54,6 +63,23 @@ private:
   VkClearValue m_clearValue{};
   uint32_t m_graphicsQueueFamily = 0;
   bool m_hasSwapchain = false;
+
+  // Estado headless offscreen.
+  bool m_headless = false;
+  VkExtent2D m_offExtent{};
+  VkImage m_offImage = VK_NULL_HANDLE;
+  VkDeviceMemory m_offMemory = VK_NULL_HANDLE;
+  VkImageView m_offView = VK_NULL_HANDLE;
+  VkFramebuffer m_offFb = VK_NULL_HANDLE;
+  VkRenderPass m_offPass = VK_NULL_HANDLE;
+  VkPipelineLayout m_pipeLayout = VK_NULL_HANDLE;
+  VkPipeline m_pipeline = VK_NULL_HANDLE;
+  VkBuffer m_vertBuf = VK_NULL_HANDLE;
+  VkDeviceMemory m_vertMem = VK_NULL_HANDLE;
+  VkDeviceSize m_vertCap = 0;
+  VkBuffer m_stageBuf = VK_NULL_HANDLE;
+  VkDeviceMemory m_stageMem = VK_NULL_HANDLE;
+  std::vector<VkTriVert> m_batch;
 };
 
 #endif

@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "Platform/host/HostLTClient.inc"
+#include "vk_renderer.h"
 #include "Platform/host/HostDrawPrim.inc"
 #include "Platform/host/HostCommon.inc"
 #include "Platform/host/HostPhysics.inc"
@@ -297,12 +298,86 @@ public:
     }
 };
 
+// Optional Vulkan raster backend for DrawPrim (unix-likes real pixels).
+// Coordinates arrive in screen pixels; converted to NDC here.
+struct VkBridge {
+    static VulkanRenderer*& renderer() {
+        static VulkanRenderer* r = nullptr;
+        return r;
+    }
+    static int& width() { static int w = 800; return w; }
+    static int& height() { static int h = 600; return h; }
+    static void push(float x, float y, float r, float g, float b) {
+        VkTriVert v;
+        v.x = (x / (float)width()) * 2.0f - 1.0f;
+        v.y = 1.0f - (y / (float)height()) * 2.0f;
+        v.r = r; v.g = g; v.b = b; v.a = 1.0f;
+        if (renderer()) {
+            batchSlot()[batchCount()] = v;
+            if (++batchCount() == 3) {
+                renderer()->PushTri(batchSlot());
+                batchCount() = 0;
+            }
+        }
+    }
+    static VkTriVert* batchSlot() {
+        static VkTriVert b[3];
+        return b;
+    }
+    static int& batchCount() { static int c = 0; return c; }
+    static void rgba(float& r, float& g, float& b, const LT_VERTRGBA& c) {
+        r = c.r / 255.0f; g = c.g / 255.0f; b = c.b / 255.0f;
+    }
+};
+
 class DrawPrimTuned : public HostDrawPrim {
 public:
     LTRESULT DrawPrim(LT_POLYGT3* v, const uint32 n) override {
-        (void)v;
         stats().drawPrimCalls++;
         stats().drawPrimVerts += (int)n;
+        if (v)
+            for (uint32 i = 0; i < n; i++)
+                for (int k = 0; k < 3; k++) {
+                    float r, g, b;
+                    VkBridge::rgba(r, g, b, v[i].verts[k].rgba);
+                    VkBridge::push(v[i].verts[k].x, v[i].verts[k].y, r, g, b);
+                }
+        return LT_OK;
+    }
+    LTRESULT DrawPrim(LT_POLYFT3* v, const uint32 n) override {
+        stats().drawPrimCalls++;
+        stats().drawPrimVerts += (int)n;
+        if (v)
+            for (uint32 i = 0; i < n; i++) {
+                float r, g, b;
+                VkBridge::rgba(r, g, b, v[i].rgba);
+                for (int k = 0; k < 3; k++)
+                    VkBridge::push(v[i].verts[k].x, v[i].verts[k].y, r, g, b);
+            }
+        return LT_OK;
+    }
+    LTRESULT DrawPrim(LT_POLYG3* v, const uint32 n) override {
+        stats().drawPrimCalls++;
+        stats().drawPrimVerts += (int)n;
+        if (v)
+            for (uint32 i = 0; i < n; i++)
+                for (int k = 0; k < 3; k++) {
+                    float r, g, b;
+                    VkBridge::rgba(r, g, b, v[i].verts[k].rgba);
+                    VkBridge::push(v[i].verts[k].x, v[i].verts[k].y, r, g, b);
+                }
+        return LT_OK;
+    }
+    LTRESULT DrawPrim(LT_POLYF3* v, const uint32 n) override {
+        stats().drawPrimCalls++;
+        stats().drawPrimVerts += (int)n;
+        if (v)
+            for (uint32 i = 0; i < n; i++) {
+                float r, g, b;
+                VkBridge::rgba(r, g, b, v[i].rgba);
+                for (int k = 0; k < 3; k++)
+                    VkBridge::push(v[i].verts[k].x, v[i].verts[k].y, r, g, b);
+            }
         return LT_OK;
     }
 };

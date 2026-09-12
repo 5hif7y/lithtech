@@ -20,9 +20,21 @@ extern ILTWidgetManager* g_pLTCWidgetManager;
 
 int main(int argc, char* argv[]) {
     int frames = 60;
+    bool vulkan = false;
+    std::string ppm = "/tmp/drawprim_vk.ppm";
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
         if (a.rfind("--frames=", 0) == 0) frames = atoi(a.c_str() + 9);
+        if (a == "--vulkan") vulkan = true;
+        if (a.rfind("--ppm=", 0) == 0) ppm = a.substr(6);
+    }
+    VulkanRenderer vk;
+    if (vulkan) {
+        if (!vk.InitHeadless(800, 600)) {
+            printf("HOST_RESULT ok=0 stage=vkinit frames=0\n");
+            return 1;
+        }
+        Host::VkBridge::renderer() = &vk;
     }
 
     static Host::ClientTuned client;
@@ -75,12 +87,21 @@ int main(int argc, char* argv[]) {
     shell->OnExitWorld();
 
     Host::Stats& s = Host::stats();
+    size_t vkTris = 0;
+    bool vkOk = true;
+    if (vulkan) {
+        vkTris = vk.PendingTris();
+        vkOk = vk.SnapshotPPM(ppm.c_str());
+        printf("HOST: vulkan tris=%d snapshot=%s\n",
+               (int)vkTris, vkOk ? ppm.c_str() : "FAILED");
+    }
     printf("HOST: frames=%d draws=%d verts=%d objects=%d cprint=%d terrain=%d sum=%llu\n",
            s.frames, s.drawPrimCalls, s.drawPrimVerts,
            s.objectsCreated, s.cprintLines, s.terrainBytes, s.terrainSum);
     bool ok = s.frames > 0 && s.drawPrimCalls > 0 && !s.shutdownRequested;
-    printf("HOST_RESULT ok=%d stage=run frames=%d draws=%d verts=%d terrain=%d sum=%llu\n",
+    if (vulkan) ok = ok && vkTris > 0 && vkOk;
+    printf("HOST_RESULT ok=%d stage=run frames=%d draws=%d verts=%d terrain=%d sum=%llu vktris=%d\n",
            ok ? 1 : 0, s.frames, s.drawPrimCalls, s.drawPrimVerts,
-           s.terrainBytes, s.terrainSum);
+           s.terrainBytes, s.terrainSum, (int)vkTris);
     return ok ? 0 : 1;
 }

@@ -26,6 +26,20 @@ HRESULT VulkanRenderer::Init(SDL_Window* window) {
 
 void VulkanRenderer::Shutdown() {
   if (m_device) vkDeviceWaitIdle(m_device);
+  if (m_vertBuf) { vkDestroyBuffer(m_device, m_vertBuf, nullptr); m_vertBuf = VK_NULL_HANDLE; }
+  if (m_vertMem) { vkFreeMemory(m_device, m_vertMem, nullptr); m_vertMem = VK_NULL_HANDLE; }
+  m_vertCap = 0;
+  if (m_stageBuf) { vkDestroyBuffer(m_device, m_stageBuf, nullptr); m_stageBuf = VK_NULL_HANDLE; }
+  if (m_stageMem) { vkFreeMemory(m_device, m_stageMem, nullptr); m_stageMem = VK_NULL_HANDLE; }
+  if (m_pipeline) { vkDestroyPipeline(m_device, m_pipeline, nullptr); m_pipeline = VK_NULL_HANDLE; }
+  if (m_pipeLayout) { vkDestroyPipelineLayout(m_device, m_pipeLayout, nullptr); m_pipeLayout = VK_NULL_HANDLE; }
+  if (m_offFb) { vkDestroyFramebuffer(m_device, m_offFb, nullptr); m_offFb = VK_NULL_HANDLE; }
+  if (m_offPass) { vkDestroyRenderPass(m_device, m_offPass, nullptr); m_offPass = VK_NULL_HANDLE; }
+  if (m_offView) { vkDestroyImageView(m_device, m_offView, nullptr); m_offView = VK_NULL_HANDLE; }
+  if (m_offImage) { vkDestroyImage(m_device, m_offImage, nullptr); m_offImage = VK_NULL_HANDLE; }
+  if (m_offMemory) { vkFreeMemory(m_device, m_offMemory, nullptr); m_offMemory = VK_NULL_HANDLE; }
+  m_headless = false;
+  m_batch.clear();
   if (m_inFlight) { vkDestroyFence(m_device, m_inFlight, nullptr); m_inFlight = VK_NULL_HANDLE; }
   if (m_imageAvailable) { vkDestroySemaphore(m_device, m_imageAvailable, nullptr); m_imageAvailable = VK_NULL_HANDLE; }
   if (m_renderFinished) { vkDestroySemaphore(m_device, m_renderFinished, nullptr); m_renderFinished = VK_NULL_HANDLE; }

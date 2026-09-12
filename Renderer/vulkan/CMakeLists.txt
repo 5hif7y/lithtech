@@ -35,9 +35,10 @@ target_link_libraries(renderer_vulkan PUBLIC
 
 target_compile_definitions(renderer_vulkan PUBLIC RENDERER_VULKAN VK_USE_PLATFORM_XLIB_KHR)
 
-# Shaders GLSL -> SPIR-V (si existen shaders/)
+# Shaders GLSL -> SPIR-V embebido (tri pipeline headless + ventana)
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
   find_program(GLSLANG_VALIDATOR glslangValidator)
+  find_package(Python3 QUIET COMPONENTS Interpreter)
   if(GLSLANG_VALIDATOR)
     file(GLOB SHADERS ${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.vert ${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.frag)
     foreach(SHADER ${SHADERS})
@@ -51,5 +52,18 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
     endforeach()
     add_custom_target(vk_shaders ALL DEPENDS ${SPV_SHADERS})
     add_dependencies(renderer_vulkan vk_shaders)
+    # Embebe tri.vert/tri.frag como header para el pipeline headless
+    if(Python3_FOUND)
+      add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tri_spv.h
+        COMMAND ${GLSLANG_VALIDATOR} -V ${CMAKE_CURRENT_SOURCE_DIR}/shaders/tri.vert -o ${CMAKE_CURRENT_BINARY_DIR}/tri.vert.spv
+        COMMAND ${GLSLANG_VALIDATOR} -V ${CMAKE_CURRENT_SOURCE_DIR}/shaders/tri.frag -o ${CMAKE_CURRENT_BINARY_DIR}/tri.frag.spv
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/embed_spv.py ${CMAKE_CURRENT_BINARY_DIR}/tri.vert.spv ${CMAKE_CURRENT_BINARY_DIR}/tri.frag.spv ${CMAKE_CURRENT_BINARY_DIR}/tri_spv.h
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/shaders/tri.vert ${CMAKE_CURRENT_SOURCE_DIR}/shaders/tri.frag
+      )
+      add_custom_target(vk_tri_spv DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tri_spv.h)
+      add_dependencies(renderer_vulkan vk_tri_spv)
+      target_include_directories(renderer_vulkan PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+    endif()
   endif()
 endif()

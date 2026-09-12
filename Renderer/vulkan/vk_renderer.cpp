@@ -1,9 +1,29 @@
 #include "vk_renderer.h"
 #ifdef RENDERER_VULKAN
 #include "Platform/security.h"
+#include "tri_spv.h"
 #include <algorithm>
+#include <cstdio>
+#include <cstring>
 #include <limits>
 #include <stdexcept>
+
+namespace {
+uint32_t findMemType(const VkPhysicalDeviceMemoryProperties& mp,
+                     uint32_t bits, VkMemoryPropertyFlags want) {
+    for (uint32_t i = 0; i < mp.memoryTypeCount; i++)
+        if ((bits & (1u << i)) &&
+            (mp.memoryTypes[i].propertyFlags & want) == want)
+            return i;
+    return UINT32_MAX;
+}
+void logDevice(VkPhysicalDevice dev) {
+    VkPhysicalDeviceProperties pp{};
+    vkGetPhysicalDeviceProperties(dev, &pp);
+    printf("HOST: vulkan device=%s vendor=0x%04x device=0x%04x\n",
+           pp.deviceName, pp.vendorID, pp.deviceID);
+}
+} // namespace
 
 VulkanRenderer::VulkanRenderer() {
   m_clearValue.color.float32[0] = 0.1f;
@@ -159,6 +179,45 @@ bool VulkanRenderer::createInstance() {
   return vkCreateInstance(&ci, nullptr, &m_instance) == VK_SUCCESS;
 }
 
+#ifdef _LINUX
+#include <X11/Xlib.h>
+#include <vulkan/vulkan_xlib.h>
+
+bool VulkanRenderer::createInstanceX11() {
+  VkApplicationInfo appInfo{};
+  appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+  appInfo.pApplicationName = "NOLF2 LithTech Jupiter";
+  appInfo.apiVersion = VK_API_VERSION_1_2;
+  const char* exts[] = {
+    VK_KHR_SURFACE_EXTENSION_NAME,
+    VK_KHR_XLIB_SURFACE_EXTENSION_NAME
+  };
+  VkInstanceCreateInfo ci{};
+  ci.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+  ci.pApplicationInfo = &appInfo;
+  ci.enabledExtensionCount = 2;
+  ci.ppEnabledExtensionNames = exts;
+  return vkCreateInstance(&ci, nullptr, &m_instance) == VK_SUCCESS;
+}
+
+HRESULT VulkanRenderer::InitNative(void* display, unsigned long window,
+                                   uint32_t w, uint32_t h) {
+  if (!display || !window) return E_INVALIDARG;
+  if (!createInstanceX11()) return E_FAIL;
+  VkXlibSurfaceCreateInfoKHR sci{};
+  sci.sType = VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
+  sci.dpy = (Display*)display;
+  sci.window = (Window)window;
+  if (vkCreateXlibSurfaceKHR(m_instance, &sci, nullptr, &m_surface) != VK_SUCCESS)
+    return E_FAIL;
+  if (!lith_validate_ptr(m_instance) || !lith_validate_ptr(m_surface)) return E_FAIL;
+  if (!pickPhysicalDevice()) return E_FAIL;
+  if (!createLogicalDevice()) return E_FAIL;
+  if (!createSwapchainWithExtent(w ? w : 800, h ? h : 600)) return E_FAIL;
+  return S_OK;
+}
+#endif
+
 bool VulkanRenderer::pickPhysicalDevice() {
   if (!lith_validate_ptr(m_instance) || !lith_validate_ptr(m_surface)) return false;
   uint32_t count = 0;
@@ -180,6 +239,7 @@ bool VulkanRenderer::pickPhysicalDevice() {
       if (graphics && present) {
         m_physicalDevice = dev;
         m_graphicsQueueFamily = i;
+        logDevice(dev);
         return true;
       }
     }
@@ -188,6 +248,7 @@ bool VulkanRenderer::pickPhysicalDevice() {
   if (!lith_validate_ptr(devs[0])) return false;
   m_physicalDevice = devs[0];
   m_graphicsQueueFamily = 0;
+  logDevice(devs[0]);
   return true;
 }
 
@@ -214,6 +275,17 @@ bool VulkanRenderer::createLogicalDevice() {
 
 bool VulkanRenderer::createSwapchain(SDL_Window* window) {
   if (!lith_validate_ptr(window) || !lith_validate_ptr(m_physicalDevice) || !lith_validate_ptr(m_device) || !lith_validate_ptr(m_surface))
+    return false;
+  int w = 800, h = 600;
+  SDL_Vulkan_GetDrawableSize(window, &w, &h);
+  if (w == 0 || h == 0) SDL_GetWindowSize(window, &w, &h);
+  if (w == 0) w = 800;
+  if (h == 0) h = 600;
+  return createSwapchainWithExtent((uint32_t)w, (uint32_t)h);
+}
+
+bool VulkanRenderer::createSwapchainWithExtent(uint32_t ew, uint32_t eh) {
+  if (!lith_validate_ptr(m_physicalDevice) || !lith_validate_ptr(m_device) || !lith_validate_ptr(m_surface))
     return false;
 
   // --- surface format ---
@@ -247,13 +319,8 @@ bool VulkanRenderer::createSwapchain(SDL_Window* window) {
 
   VkExtent2D extent = caps.currentExtent;
   if (extent.width == std::numeric_limits<uint32_t>::max()) {
-    int w = 0, h = 0;
-    SDL_Vulkan_GetDrawableSize(window, &w, &h);
-    if (w==0 || h==0) SDL_GetWindowSize(window, &w, &h);
-    if (w==0) w = 800;
-    if (h==0) h = 600;
-    extent.width  = std::clamp<uint32_t>((uint32_t)w, caps.minImageExtent.width, caps.maxImageExtent.width);
-    extent.height = std::clamp<uint32_t>((uint32_t)h, caps.minImageExtent.height, caps.maxImageExtent.height);
+    extent.width  = std::clamp<uint32_t>(ew, caps.minImageExtent.width, caps.maxImageExtent.width);
+    extent.height = std::clamp<uint32_t>(eh, caps.minImageExtent.height, caps.maxImageExtent.height);
   }
   m_swapExtent = extent;
 
@@ -396,6 +463,240 @@ bool VulkanRenderer::createSyncObjects() {
   if (vkCreateSemaphore(m_device, &si, nullptr, &m_renderFinished)!=VK_SUCCESS) return false;
   if (vkCreateFence(m_device, &fi, nullptr, &m_inFlight)!=VK_SUCCESS) return false;
   return true;
+}
+
+bool VulkanRenderer::createWindowPipeline() {
+  if (!m_device || !m_renderPass) return false;
+  uint32_t w = m_swapExtent.width, h = m_swapExtent.height;
+  if (!w || !h) return false;
+  VkShaderModule vsm = VK_NULL_HANDLE, fsm = VK_NULL_HANDLE;
+  VkShaderModuleCreateInfo sci{};
+  sci.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+  sci.codeSize = sizeof(kTriVertSpv);
+  sci.pCode = kTriVertSpv;
+  if (vkCreateShaderModule(m_device, &sci, nullptr, &vsm) != VK_SUCCESS)
+    return false;
+  sci.codeSize = sizeof(kTriFragSpv);
+  sci.pCode = kTriFragSpv;
+  if (vkCreateShaderModule(m_device, &sci, nullptr, &fsm) != VK_SUCCESS) {
+    vkDestroyShaderModule(m_device, vsm, nullptr);
+    return false;
+  }
+  VkPipelineShaderStageCreateInfo stages[2]{};
+  stages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+  stages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+  stages[0].module = vsm;
+  stages[0].pName = "main";
+  stages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+  stages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+  stages[1].module = fsm;
+  stages[1].pName = "main";
+  VkVertexInputBindingDescription bind{};
+  bind.stride = sizeof(VkTriVert);
+  bind.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+  VkVertexInputAttributeDescription attrs[2]{};
+  attrs[0].location = 0;
+  attrs[0].format = VK_FORMAT_R32G32_SFLOAT;
+  attrs[0].offset = 0;
+  attrs[1].location = 1;
+  attrs[1].format = VK_FORMAT_R32G32B32A32_SFLOAT;
+  attrs[1].offset = 8;
+  VkPipelineVertexInputStateCreateInfo vii{};
+  vii.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+  vii.vertexBindingDescriptionCount = 1;
+  vii.pVertexBindingDescriptions = &bind;
+  vii.vertexAttributeDescriptionCount = 2;
+  vii.pVertexAttributeDescriptions = attrs;
+  VkPipelineInputAssemblyStateCreateInfo iai{};
+  iai.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+  iai.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+  VkViewport vp{0, 0, (float)w, (float)h, 0.0f, 1.0f};
+  VkRect2D sc{{0, 0}, {w, h}};
+  VkPipelineViewportStateCreateInfo vpi{};
+  vpi.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+  vpi.viewportCount = 1;
+  vpi.pViewports = &vp;
+  vpi.scissorCount = 1;
+  vpi.pScissors = &sc;
+  VkPipelineRasterizationStateCreateInfo rsi{};
+  rsi.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+  rsi.polygonMode = VK_POLYGON_MODE_FILL;
+  rsi.cullMode = VK_CULL_MODE_NONE;
+  rsi.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+  rsi.lineWidth = 1.0f;
+  VkPipelineMultisampleStateCreateInfo msi{};
+  msi.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+  msi.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+  VkPipelineColorBlendAttachmentState ba{};
+  ba.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                      VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+  VkPipelineColorBlendStateCreateInfo bci{};
+  bci.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+  bci.attachmentCount = 1;
+  bci.pAttachments = &ba;
+  VkPipelineLayoutCreateInfo pli{};
+  pli.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+  if (vkCreatePipelineLayout(m_device, &pli, nullptr, &m_pipeLayout) != VK_SUCCESS) {
+    vkDestroyShaderModule(m_device, vsm, nullptr);
+    vkDestroyShaderModule(m_device, fsm, nullptr);
+    return false;
+  }
+  VkGraphicsPipelineCreateInfo gpi{};
+  gpi.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+  gpi.stageCount = 2;
+  gpi.pStages = stages;
+  gpi.pVertexInputState = &vii;
+  gpi.pInputAssemblyState = &iai;
+  gpi.pViewportState = &vpi;
+  gpi.pRasterizationState = &rsi;
+  gpi.pMultisampleState = &msi;
+  gpi.pColorBlendState = &bci;
+  gpi.layout = m_pipeLayout;
+  gpi.renderPass = m_renderPass;
+  bool ok = vkCreateGraphicsPipelines(m_device, VK_NULL_HANDLE, 1, &gpi,
+                                      nullptr, &m_pipeline) == VK_SUCCESS;
+  vkDestroyShaderModule(m_device, vsm, nullptr);
+  vkDestroyShaderModule(m_device, fsm, nullptr);
+  return ok;
+}
+
+bool VulkanRenderer::uploadBatch() {
+  VkDeviceSize need = (VkDeviceSize)m_batch.size() * sizeof(VkTriVert);
+  if (need > m_vertCap) {
+    if (m_vertBuf) vkDestroyBuffer(m_device, m_vertBuf, nullptr);
+    if (m_vertMem) vkFreeMemory(m_device, m_vertMem, nullptr);
+    m_vertBuf = VK_NULL_HANDLE;
+    m_vertMem = VK_NULL_HANDLE;
+    m_vertCap = 0;
+    if (need) {
+      VkPhysicalDeviceMemoryProperties mp{};
+      vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &mp);
+      VkBufferCreateInfo bci{};
+      bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+      bci.size = need;
+      bci.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+      if (vkCreateBuffer(m_device, &bci, nullptr, &m_vertBuf) != VK_SUCCESS)
+        return false;
+      VkMemoryRequirements mr{};
+      vkGetBufferMemoryRequirements(m_device, m_vertBuf, &mr);
+      uint32_t mi = findMemType(mp, mr.memoryTypeBits,
+                                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                                VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+      if (mi == UINT32_MAX) return false;
+      VkMemoryAllocateInfo mai{};
+      mai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+      mai.allocationSize = mr.size;
+      mai.memoryTypeIndex = mi;
+      if (vkAllocateMemory(m_device, &mai, nullptr, &m_vertMem) != VK_SUCCESS)
+        return false;
+      vkBindBufferMemory(m_device, m_vertBuf, m_vertMem, 0);
+      m_vertCap = need;
+    }
+  }
+  if (need) {
+    void* dst = nullptr;
+    if (vkMapMemory(m_device, m_vertMem, 0, need, 0, &dst) != VK_SUCCESS)
+      return false;
+    memcpy(dst, m_batch.data(), (size_t)need);
+    vkUnmapMemory(m_device, m_vertMem);
+  }
+  return true;
+}
+
+HRESULT VulkanRenderer::InitHeadlessPresent(uint32_t w, uint32_t h) {
+  Shutdown();
+  VkApplicationInfo appInfo{};
+  appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+  appInfo.pApplicationName = "NOLF2 LithTech Jupiter";
+  appInfo.apiVersion = VK_API_VERSION_1_2;
+  const char* exts[] = {
+    VK_KHR_SURFACE_EXTENSION_NAME,
+    VK_EXT_HEADLESS_SURFACE_EXTENSION_NAME
+  };
+  VkInstanceCreateInfo ci{};
+  ci.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+  ci.pApplicationInfo = &appInfo;
+  ci.enabledExtensionCount = 2;
+  ci.ppEnabledExtensionNames = exts;
+  if (vkCreateInstance(&ci, nullptr, &m_instance) != VK_SUCCESS) return E_FAIL;
+  PFN_vkCreateHeadlessSurfaceEXT fp =
+      (PFN_vkCreateHeadlessSurfaceEXT)vkGetInstanceProcAddr(
+          m_instance, "vkCreateHeadlessSurfaceEXT");
+  if (!fp) return E_FAIL;
+  VkHeadlessSurfaceCreateInfoEXT sci{};
+  sci.sType = VK_STRUCTURE_TYPE_HEADLESS_SURFACE_CREATE_INFO_EXT;
+  if (fp(m_instance, &sci, nullptr, &m_surface) != VK_SUCCESS) return E_FAIL;
+  if (!pickPhysicalDevice()) return E_FAIL;
+  if (!createLogicalDevice()) return E_FAIL;
+  if (!createSwapchainWithExtent(w ? w : 800, h ? h : 600)) return E_FAIL;
+  return S_OK;
+}
+
+HRESULT VulkanRenderer::RenderWindowFrame() {
+  if (!m_hasSwapchain || !m_swapchain || !m_device || !m_graphicsQueue)
+    return E_FAIL;
+  if (!m_renderPass || m_framebuffers.empty() || !m_cmdBuffer) return E_FAIL;
+  if (!m_pipeline && !createWindowPipeline()) return E_FAIL;
+  if (!uploadBatch()) return E_FAIL;
+
+  uint32_t idx = 0;
+  VkResult acq = vkAcquireNextImageKHR(m_device, m_swapchain, UINT64_MAX,
+                                       m_imageAvailable, VK_NULL_HANDLE, &idx);
+  if (acq == VK_ERROR_OUT_OF_DATE_KHR || acq == VK_SUBOPTIMAL_KHR) return S_OK;
+  if (acq != VK_SUCCESS) return E_FAIL;
+  if (idx >= m_framebuffers.size()) return E_FAIL;
+
+  vkWaitForFences(m_device, 1, &m_inFlight, VK_TRUE, UINT64_MAX);
+  vkResetFences(m_device, 1, &m_inFlight);
+
+  VkCommandBufferBeginInfo bi{};
+  bi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+  bi.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+  vkResetCommandBuffer(m_cmdBuffer, 0);
+  if (vkBeginCommandBuffer(m_cmdBuffer, &bi) != VK_SUCCESS) return E_FAIL;
+  VkRenderPassBeginInfo rp{};
+  rp.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+  rp.renderPass = m_renderPass;
+  rp.framebuffer = m_framebuffers[idx];
+  rp.renderArea.offset = {0, 0};
+  rp.renderArea.extent = m_swapExtent;
+  rp.clearValueCount = 1;
+  rp.pClearValues = &m_clearValue;
+  vkCmdBeginRenderPass(m_cmdBuffer, &rp, VK_SUBPASS_CONTENTS_INLINE);
+  if (!m_batch.empty()) {
+    VkDeviceSize off = 0;
+    vkCmdBindPipeline(m_cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
+    vkCmdBindVertexBuffers(m_cmdBuffer, 0, 1, &m_vertBuf, &off);
+    vkCmdDraw(m_cmdBuffer, (uint32_t)m_batch.size(), 1, 0, 0);
+  }
+  vkCmdEndRenderPass(m_cmdBuffer);
+  if (vkEndCommandBuffer(m_cmdBuffer) != VK_SUCCESS) return E_FAIL;
+
+  VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+  VkSubmitInfo si{};
+  si.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+  si.waitSemaphoreCount = 1;
+  si.pWaitSemaphores = &m_imageAvailable;
+  si.pWaitDstStageMask = &waitStage;
+  si.commandBufferCount = 1;
+  si.pCommandBuffers = &m_cmdBuffer;
+  si.signalSemaphoreCount = 1;
+  si.pSignalSemaphores = &m_renderFinished;
+  if (vkQueueSubmit(m_graphicsQueue, 1, &si, m_inFlight) != VK_SUCCESS)
+    return E_FAIL;
+
+  VkPresentInfoKHR pi{};
+  pi.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+  pi.waitSemaphoreCount = 1;
+  pi.pWaitSemaphores = &m_renderFinished;
+  pi.swapchainCount = 1;
+  pi.pSwapchains = &m_swapchain;
+  pi.pImageIndices = &idx;
+  VkResult pr = vkQueuePresentKHR(m_graphicsQueue, &pi);
+  if (pr == VK_ERROR_OUT_OF_DATE_KHR || pr == VK_SUBOPTIMAL_KHR) return S_OK;
+  vkWaitForFences(m_device, 1, &m_inFlight, VK_TRUE, UINT64_MAX);
+  m_batch.clear();
+  return S_OK;
 }
 
 #endif

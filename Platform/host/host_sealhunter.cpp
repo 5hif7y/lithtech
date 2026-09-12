@@ -4,6 +4,16 @@
 // with frames>0 and no shutdown. Prints HOST_RESULT line.
 #include "Platform/host/host_engine.h"
 #include "ltclientshell.h"
+#ifdef _LINUX
+// Ventana nativa X11: este SDL (sdl2-compat) no trae backends x11/wayland.
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+#include <cstdlib>
+#include <ctime>
+#else
+#include <SDL2/SDL.h>
+#endif
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -20,16 +30,103 @@ extern ILTWidgetManager* g_pLTCWidgetManager;
 
 int main(int argc, char* argv[]) {
     int frames = 60;
+    bool framesSet = false;
     bool vulkan = false;
+    bool windowMode = false;
+    bool psurface = false;
     std::string ppm = "/tmp/sealhunter_vk.ppm";
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
-        if (a.rfind("--frames=", 0) == 0) frames = atoi(a.c_str() + 9);
+        if (a.rfind("--frames=", 0) == 0) {
+            frames = atoi(a.c_str() + 9);
+            framesSet = true;
+        }
         if (a == "--vulkan") vulkan = true;
+        if (a == "--window") windowMode = true;
+        if (a == "--psurface") psurface = true;
         if (a.rfind("--ppm=", 0) == 0) ppm = a.substr(6);
     }
+    // Window mode without --frames runs until the window is closed.
+    if (windowMode && !framesSet) frames = 0;
     VulkanRenderer vk;
-    if (vulkan) {
+#ifdef _LINUX
+    Display* xDpy = nullptr;
+    Window xWin = 0;
+    Atom xWmDelete = None;
+    if (psurface) {
+        if (vk.InitHeadlessPresent(800, 600) != S_OK) {
+            printf("PSURFACE_RESULT ok=0 stage=vkinit frames=0\n");
+            return 1;
+        }
+        Host::VkBridge::renderer() = &vk;
+        Host::VkBridge::width() = 800;
+        Host::VkBridge::height() = 600;
+    } else if (windowMode) {
+        xDpy = XOpenDisplay(nullptr);
+        if (!xDpy) {
+            const char* dd = getenv("DISPLAY");
+            printf("WINDOW_RESULT ok=0 stage=xdisplay frames=0 display=%s\n",
+                   dd ? dd : "(unset)");
+            return 1;
+        }
+        int scr = DefaultScreen(xDpy);
+        xWin = XCreateSimpleWindow(xDpy, RootWindow(xDpy, scr), 0, 0, 800, 600,
+                                  0, BlackPixel(xDpy, scr), BlackPixel(xDpy, scr));
+        if (!xWin) {
+            printf("WINDOW_RESULT ok=0 stage=xwindow frames=0\n");
+            XCloseDisplay(xDpy);
+            return 1;
+        }
+        XStoreName(xDpy, xWin, "Sealhunter - LithTech Jupiter (Vulkan)");
+        xWmDelete = XInternAtom(xDpy, "WM_DELETE_WINDOW", False);
+        XSetWMProtocols(xDpy, xWin, &xWmDelete, 1);
+        XSelectInput(xDpy, xWin, ExposureMask | KeyPressMask | StructureNotifyMask);
+        XMapWindow(xDpy, xWin);
+        XFlush(xDpy);
+        if (vk.InitNative(xDpy, (unsigned long)xWin, 800, 600) != S_OK) {
+            printf("WINDOW_RESULT ok=0 stage=vkinit frames=0\n");
+            XDestroyWindow(xDpy, xWin);
+            XCloseDisplay(xDpy);
+            return 1;
+        }
+        Host::VkBridge::renderer() = &vk;
+        Host::VkBridge::width() = 800;
+        Host::VkBridge::height() = 600;
+    } else if (vulkan) {
+#else
+    SDL_Window* sdlWin = nullptr;
+    if (psurface) {
+        if (vk.InitHeadlessPresent(800, 600) != S_OK) {
+            printf("PSURFACE_RESULT ok=0 stage=vkinit frames=0\n");
+            return 1;
+        }
+        Host::VkBridge::renderer() = &vk;
+        Host::VkBridge::width() = 800;
+        Host::VkBridge::height() = 600;
+    } else if (windowMode) {
+        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+            printf("WINDOW_RESULT ok=0 stage=sdl frames=0 err=%s\n", SDL_GetError());
+            return 1;
+        }
+        sdlWin = SDL_CreateWindow("Sealhunter - LithTech Jupiter (Vulkan)",
+                                  SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                                  800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_VULKAN);
+        if (!sdlWin) {
+            printf("WINDOW_RESULT ok=0 stage=swindow frames=0 err=%s\n", SDL_GetError());
+            SDL_Quit();
+            return 1;
+        }
+        if (vk.Init(sdlWin) != S_OK) {
+            printf("WINDOW_RESULT ok=0 stage=vkinit frames=0\n");
+            SDL_DestroyWindow(sdlWin);
+            SDL_Quit();
+            return 1;
+        }
+        Host::VkBridge::renderer() = &vk;
+        Host::VkBridge::width() = 800;
+        Host::VkBridge::height() = 600;
+    } else if (vulkan) {
+#endif
         if (!vk.InitHeadless(800, 600)) {
             printf("HOST_RESULT ok=0 stage=vkinit frames=0\n");
             return 1;
@@ -92,6 +189,125 @@ int main(int argc, char* argv[]) {
     }
 
     shell->OnEnterWorld();
+    if (psurface) {
+        int presents = 0;
+#ifdef _LINUX
+        struct timespec pt0, pt1;
+        clock_gettime(CLOCK_MONOTONIC, &pt0);
+#else
+        Uint64 pfreq = SDL_GetPerformanceFrequency();
+        Uint64 pt0 = SDL_GetPerformanceCounter();
+#endif
+        for (int i = 0; i < frames; i++) {
+            shell->Update();
+            if (Host::stats().shutdownRequested) break;
+            if (vk.RenderWindowFrame() != S_OK) {
+                printf("PSURFACE_RESULT ok=0 stage=present frames=%d\n", presents);
+                shell->OnExitWorld();
+                return 1;
+            }
+            presents++;
+        }
+#ifdef _LINUX
+        clock_gettime(CLOCK_MONOTONIC, &pt1);
+        double pel = (double)(pt1.tv_sec - pt0.tv_sec) +
+                     (double)(pt1.tv_nsec - pt0.tv_nsec) / 1e9;
+#else
+        Uint64 pt1 = SDL_GetPerformanceCounter();
+        double pel = (double)(pt1 - pt0) / (double)pfreq;
+#endif
+        if (pel <= 0) pel = 1e-9;
+        Host::Stats& ps = Host::stats();
+        bool pok = presents > 0 && !ps.shutdownRequested;
+        printf("PSURFACE: frames=%d draws=%d presents=%d fps=%.1f\n",
+               presents, ps.drawPrimCalls, presents, presents / pel);
+        printf("PSURFACE_RESULT ok=%d frames=%d draws=%d presents=%d\n",
+               pok ? 1 : 0, presents, ps.drawPrimCalls, presents);
+        shell->OnExitWorld();
+        return pok ? 0 : 1;
+    }
+#ifdef _LINUX
+    if (windowMode) {
+        XEvent e;
+        bool quit = false;
+        int presents = 0;
+        struct timespec t0, t1;
+        clock_gettime(CLOCK_MONOTONIC, &t0);
+        while (!quit && (frames <= 0 || presents < frames)) {
+            while (XPending(xDpy)) {
+                XNextEvent(xDpy, &e);
+                if (e.type == ClientMessage &&
+                    (Atom)e.xclient.data.l[0] == xWmDelete) {
+                    quit = true;
+                } else if (e.type == KeyPress) {
+                    KeySym k = XLookupKeysym(&e.xkey, 0);
+                    if (k == XK_Escape || k == XK_q) quit = true;
+                }
+            }
+            shell->Update();
+            if (Host::stats().shutdownRequested) break;
+            if (vk.RenderWindowFrame() != S_OK) {
+                printf("WINDOW_RESULT ok=0 stage=present frames=%d\n", presents);
+                shell->OnExitWorld();
+                XDestroyWindow(xDpy, xWin);
+                XCloseDisplay(xDpy);
+                return 1;
+            }
+            presents++;
+            if (presents % 60 == 0) printf("WINDOW: frame %d\n", presents);
+        }
+        clock_gettime(CLOCK_MONOTONIC, &t1);
+        double el = (double)(t1.tv_sec - t0.tv_sec) +
+                    (double)(t1.tv_nsec - t0.tv_nsec) / 1e9;
+        if (el <= 0) el = 1e-9;
+        double fps = presents / el;
+        Host::Stats& ws = Host::stats();
+        bool wok = presents > 0 && !ws.shutdownRequested;
+        printf("WINDOW: frames=%d draws=%d uirenders=%d objects=%d fps=%.1f\n",
+               presents, ws.drawPrimCalls, ws.uiRenders, ws.objectsCreated, fps);
+        printf("WINDOW_RESULT ok=%d frames=%d draws=%d presents=%d fps=%.1f\n",
+               wok ? 1 : 0, presents, ws.drawPrimCalls, presents, fps);
+        shell->OnExitWorld();
+        XDestroyWindow(xDpy, xWin);
+        XCloseDisplay(xDpy);
+        return wok ? 0 : 1;
+    }
+#else
+    if (windowMode) {
+        SDL_Event e;
+        bool quit = false;
+        int presents = 0;
+        Uint64 freq = SDL_GetPerformanceFrequency();
+        Uint64 t0 = SDL_GetPerformanceCounter();
+        while (!quit && (frames <= 0 || presents < frames)) {
+            while (SDL_PollEvent(&e))
+                if (e.type == SDL_QUIT) quit = true;
+            shell->Update();
+            if (Host::stats().shutdownRequested) break;
+            if (vk.RenderWindowFrame() != S_OK) {
+                printf("WINDOW_RESULT ok=0 stage=present frames=%d\n", presents);
+                shell->OnExitWorld();
+                SDL_DestroyWindow(sdlWin);
+                SDL_Quit();
+                return 1;
+            }
+            presents++;
+            if (presents % 60 == 0) printf("WINDOW: frame %d\n", presents);
+        }
+        Uint64 t1 = SDL_GetPerformanceCounter();
+        double fps = presents / ((double)(t1 - t0) / (double)freq);
+        Host::Stats& ws = Host::stats();
+        bool wok = presents > 0 && !ws.shutdownRequested;
+        printf("WINDOW: frames=%d draws=%d uirenders=%d objects=%d fps=%.1f\n",
+               presents, ws.drawPrimCalls, ws.uiRenders, ws.objectsCreated, fps);
+        printf("WINDOW_RESULT ok=%d frames=%d draws=%d presents=%d fps=%.1f\n",
+               wok ? 1 : 0, presents, ws.drawPrimCalls, presents, fps);
+        shell->OnExitWorld();
+        SDL_DestroyWindow(sdlWin);
+        SDL_Quit();
+        return wok ? 0 : 1;
+    }
+#endif
     for (int i = 0; i < frames; i++) {
         shell->Update();
         if (Host::stats().shutdownRequested) break;

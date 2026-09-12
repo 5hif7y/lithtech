@@ -15,6 +15,11 @@ public:
   ~VulkanRenderer();
 
   HRESULT Init(SDL_Window* window);
+  // Ventana nativa X11 (Linux): display/ventana ya creados por el caller.
+  HRESULT InitNative(void* display, unsigned long window, uint32_t w, uint32_t h);
+  // Swapchain presentable sin ventana (VK_EXT_headless_surface): ejercita
+  // el mismo codigo acquire/record/submit/present que la ventana real.
+  HRESULT InitHeadlessPresent(uint32_t w, uint32_t h);
   void Shutdown();
   HRESULT BeginScene();
   HRESULT EndScene();
@@ -22,6 +27,10 @@ public:
   HRESULT Present();
 
   HRESULT DrawPrimitive(VkPrimitiveTopology topo, const void* verts, uint32_t vcount);
+
+  // Frame con ventana: dibuja el batch acumulado (PushTri) sobre el
+  // swapchain y presenta. Limpia el batch tras presentar.
+  HRESULT RenderWindowFrame();
 
   // Headless offscreen: sin ventana/swapchain, con readback a PPM.
   bool InitHeadless(uint32_t w, uint32_t h);
@@ -34,14 +43,18 @@ public:
 
 private:
   bool createInstance();
+  bool createInstanceX11();
   bool pickPhysicalDevice();
   bool createLogicalDevice();
   bool createSwapchain(SDL_Window* window);
+  bool createSwapchainWithExtent(uint32_t w, uint32_t h);
   bool createImageViews();
   bool createRenderPass();
   bool createFramebuffers();
   bool createCommandPool();
   bool createSyncObjects();
+  bool createWindowPipeline();
+  bool uploadBatch();
 
   VkInstance m_instance = VK_NULL_HANDLE;
   VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;

@@ -22,6 +22,9 @@ target_include_directories(networking_sealhunter BEFORE PRIVATE
 )
 # Fallback: ensure main exists
 target_link_libraries(networking_sealhunter PRIVATE lith_platform lith_engine renderer_vulkan SDL2::SDL2 Vulkan::Vulkan)
+if(UNIX)
+  target_link_libraries(networking_sealhunter PRIVATE X11)
+endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(networking_sealhunter PRIVATE -fpermissive -fno-rtti -include ${CMAKE_SOURCE_DIR}/Platform/math_shim.h)
   target_compile_definitions(networking_sealhunter PRIVATE _LINUX PLATFORM_LINUX)

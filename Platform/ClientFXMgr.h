@@ -1,4 +1,11 @@
 #pragma once
-// Stub ClientFXMgr.h for Linux demos (graphify 18 demos, many include it)
 #include "Platform/platform.h"
-class CClientFXMgr {};
+class CClientFXMgr {
+public:
+    bool Init(void* p) { (void)p; return true; }
+    void Term() {}
+    void SetCamera(void* p) { (void)p; }
+    void Update(float) {}
+    void Render() {}
+    bool LoadFX(const char*) { return true; }
+};

@@ -318,7 +318,7 @@ int main(int argc, char* argv[]) {
     size_t vkTris = 0;
     bool vkOk = true;
     if (vulkan) {
-        vkTris = vk.PendingTris();
+        vkTris = vk.PendingTris() + vk.PendingTexQuads() * 2;
         vkOk = vk.SnapshotPPM(ppm.c_str());
         printf("HOST: vulkan tris=%d uirenders=%d snapshot=%s\n",
                (int)vkTris, s.uiRenders, vkOk ? ppm.c_str() : "FAILED");

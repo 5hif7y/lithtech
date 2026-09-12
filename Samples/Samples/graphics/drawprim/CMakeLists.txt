@@ -22,6 +22,11 @@ target_include_directories(graphics_drawprim BEFORE PRIVATE
 )
 # Fallback: ensure main exists
 target_link_libraries(graphics_drawprim PRIVATE lith_platform lith_engine renderer_vulkan SDL2::SDL2 Vulkan::Vulkan)
+find_package(Freetype QUIET)
+if(Freetype_FOUND)
+  target_link_libraries(graphics_drawprim PRIVATE Freetype::Freetype)
+  target_compile_definitions(graphics_drawprim PRIVATE HAS_FREETYPE)
+endif()
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(graphics_drawprim PRIVATE -fpermissive -fno-rtti -include ${CMAKE_SOURCE_DIR}/Platform/math_shim.h)
   target_compile_definitions(graphics_drawprim PRIVATE _LINUX PLATFORM_LINUX)

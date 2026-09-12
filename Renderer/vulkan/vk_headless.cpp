@@ -340,6 +340,7 @@ bool VulkanRenderer::SnapshotPPM(const char* path) {
         vkCmdBindVertexBuffers(m_cmdBuffer, 0, 1, &m_vertBuf, &off);
         vkCmdDraw(m_cmdBuffer, (uint32_t)m_batch.size(), 1, 0, 0);
     }
+    if (!drawTexBatch(m_cmdBuffer, m_offPass)) return false;
     vkCmdEndRenderPass(m_cmdBuffer);
     // Offscreen -> staging copy.
     VkBufferImageCopy cp{};

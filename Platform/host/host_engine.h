@@ -18,9 +18,24 @@
 #include <iltstream.h>
 #include <cmath>
 #include <cstdarg>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
+#ifndef _WIN32
+#include <strings.h>
+#include <glob.h>
+#include <cctype>
+#endif
+// NOTE: system headers must stay at global scope in this file. Also, do
+// NOT scan directories with opendir/readdir here: GCC 16 -O2 miscompiles
+// that loop into a call-once halt (treats readdir as pure, drops the body
+// and the back-edge; proven via core + GIMPLE dump). std::filesystem is
+// precompiled and opaque to that analysis, so it is used instead.
+#ifdef HAS_FREETYPE
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#endif
 #include <map>
 #include <string>
 #include <vector>
@@ -238,6 +253,124 @@ static MemStream* loadRealFile(const std::string& full) {
     fclose(f);
     return ms;
 }
+// ---- real texture data (TGA) + registry shared by Tex/DrawPrim/Font ----
+struct TgaImage { uint32_t w = 0, h = 0; std::vector<uint8_t> rgba; };
+// Minimal TGA reader: uncompressed true-color (type 2), 24/32 bpp.
+// Rows are stored top-first to match Vulkan UV (v=0 at top).
+static bool loadTGA(const std::string& path, TgaImage& out) {
+    FILE* f = fopen(path.c_str(), "rb");
+    if (!f) return false;
+    uint8_t h[18];
+    bool ok = fread(h, 1, 18, f) == 18;
+    uint16_t w = (uint16_t)(h[12] | (h[13] << 8));
+    uint16_t hh = (uint16_t)(h[14] | (h[15] << 8));
+    ok = ok && h[2] == 2 && (h[16] == 24 || h[16] == 32) && w && hh &&
+         w <= 4096 && hh <= 4096;
+    long skip = h[0]; // ID field
+    if (ok && h[1]) { // colormap present: skip it
+        uint16_t n = (uint16_t)(h[5] | (h[6] << 8));
+        skip += (long)n * ((h[7] + 7) / 8);
+    }
+    if (ok) ok = fseek(f, skip, SEEK_CUR) == 0;
+    int bpp = h[16] / 8;
+    size_t n = (size_t)w * hh;
+    std::vector<uint8_t> src;
+    if (ok) {
+        src.resize(n * (size_t)bpp);
+        ok = fread(src.data(), 1, n * (size_t)bpp, f) == n * (size_t)bpp;
+    }
+    fclose(f);
+    if (!ok) return false;
+    bool topLeft = (h[17] & 0x20) != 0;
+    out.w = w; out.h = hh;
+    out.rgba.resize(n * 4);
+    for (uint16_t y = 0; y < hh; y++) {
+        uint16_t sy = topLeft ? y : (uint16_t)(hh - 1 - y);
+        for (uint16_t x = 0; x < w; x++) {
+            const uint8_t* s = &src[((size_t)sy * w + x) * (size_t)bpp];
+            uint8_t* d = &out.rgba[((size_t)y * w + x) * 4];
+            d[0] = s[2]; d[1] = s[1]; d[2] = s[0];
+            d[3] = (bpp == 4) ? s[3] : 255;
+        }
+    }
+    return true;
+}
+// Windows .rez semantics are case-insensitive; emulate that on unix-likes.
+static bool resolveAsset(const std::string& p, std::string& out) {
+    FILE* f = fopen(p.c_str(), "rb");
+    if (f) { fclose(f); out = p; return true; }
+#ifdef _WIN32
+    return false;
+#else
+    std::vector<std::string> parts;
+    std::string cur2;
+    for (char ch : p) {
+        if (ch == '/') { parts.push_back(cur2); cur2.clear(); }
+        else cur2 += ch;
+    }
+    parts.push_back(cur2);
+    std::string cur;
+    if (!p.empty() && p[0] == '/') cur = "/";
+    for (size_t i = 0; i < parts.size(); i++) {
+        if (parts[i].empty()) continue;
+        // Case-insensitive glob for one path component (iteration lives
+        // inside precompiled libc, opaque to the optimizer).
+        std::string pat;
+        for (char ch : parts[i]) {
+            unsigned char u = (unsigned char)ch;
+            if (isalpha(u)) {
+                pat += '[';
+                pat += (char)toupper(u);
+                pat += (char)tolower(u);
+                pat += ']';
+            } else if (ch == '*' || ch == '?' || ch == '[' || ch == '\\') {
+                pat += '\\';
+                pat += ch;
+            } else {
+                pat += ch;
+            }
+        }
+        std::string full = cur.empty() ? pat : (cur == "/" ? cur + pat : cur + "/" + pat);
+        glob_t g;
+        memset(&g, 0, sizeof(g));
+        int r = glob(full.c_str(), GLOB_NOSORT, nullptr, &g);
+        bool ok = (r == 0 && g.gl_pathc > 0 && g.gl_pathv && g.gl_pathv[0]);
+        if (ok) cur = g.gl_pathv[0];
+        globfree(&g);
+        if (!ok) return false;
+    }
+    f = fopen(cur.c_str(), "rb");
+    if (!f) return false;
+    fclose(f);
+    out = cur;
+    return true;
+#endif
+}
+struct TexEntry { uint32_t w = 0, h = 0, vkId = 0; std::string name; };
+struct TexRegistry {
+    std::map<uintptr_t, TexEntry> byHandle;
+    uintptr_t next = 0x100;
+};
+inline TexRegistry& texRegistry() { static TexRegistry r; return r; }
+inline HTEXTURE texRegister(const std::string& name, uint32_t w, uint32_t h,
+                            uint32_t vkId) {
+    TexRegistry& r = texRegistry();
+    for (auto& kv : r.byHandle)
+        if (kv.second.name == name) {
+            kv.second.w = w; kv.second.h = h; kv.second.vkId = vkId;
+            return reinterpret_cast<HTEXTURE>(kv.first);
+        }
+    uintptr_t k = r.next++;
+    TexEntry e; e.w = w; e.h = h; e.vkId = vkId; e.name = name;
+    r.byHandle[k] = e;
+    return reinterpret_cast<HTEXTURE>(k);
+}
+inline const TexEntry* texEntry(HTEXTURE t) {
+    auto& m = texRegistry().byHandle;
+    auto it = m.find(reinterpret_cast<uintptr_t>(t));
+    return it == m.end() ? nullptr : &it->second;
+}
+inline HTEXTURE& boundTexture() { static HTEXTURE t = nullptr; return t; }
 class ClientTuned : public HostLTClient {
 public:
     void CPrint(const char* m, ...) override {
@@ -368,13 +501,68 @@ struct VkBridge {
     static void rgba(float& r, float& g, float& b, const LT_VERTRGBA& c) {
         r = c.r / 255.0f; g = c.g / 255.0f; b = c.b / 255.0f;
     }
+    static void quadTex(float x0, float y0, float x1, float y1,
+                        float u0, float v0, float u1, float v1,
+                        float r, float g, float b, float a, uint32_t tex) {
+        if (!renderer() || !tex) return;
+        float w = (float)width(), h = (float)height();
+        VkTexVert v[4];
+        v[0].x = (x0 / w) * 2.0f - 1.0f; v[0].y = 1.0f - (y0 / h) * 2.0f;
+        v[0].u = u0; v[0].v = v0; v[0].r = r; v[0].g = g; v[0].b = b; v[0].a = a;
+        v[1].x = (x1 / w) * 2.0f - 1.0f; v[1].y = 1.0f - (y0 / h) * 2.0f;
+        v[1].u = u1; v[1].v = v0; v[1].r = r; v[1].g = g; v[1].b = b; v[1].a = a;
+        v[2].x = (x1 / w) * 2.0f - 1.0f; v[2].y = 1.0f - (y1 / h) * 2.0f;
+        v[2].u = u1; v[2].v = v1; v[2].r = r; v[2].g = g; v[2].b = b; v[2].a = a;
+        v[3].x = (x0 / w) * 2.0f - 1.0f; v[3].y = 1.0f - (y1 / h) * 2.0f;
+        v[3].u = u0; v[3].v = v1; v[3].r = r; v[3].g = g; v[3].b = b; v[3].a = a;
+        renderer()->PushTexQuad(tex, v);
+    }
+    // Textured triangle via a degenerate quad (last vert repeated).
+    static void triTex(float x0, float y0, float u0, float v0,
+                       float x1, float y1, float u1, float v1,
+                       float x2, float y2, float u2, float v2,
+                       float r, float g, float b, float a, uint32_t tex) {
+        if (!renderer() || !tex) return;
+        float w = (float)width(), h = (float)height();
+        VkTexVert v[4];
+        v[0].x = (x0 / w) * 2.0f - 1.0f; v[0].y = 1.0f - (y0 / h) * 2.0f;
+        v[0].u = u0; v[0].v = v0; v[0].r = r; v[0].g = g; v[0].b = b; v[0].a = a;
+        v[1].x = (x1 / w) * 2.0f - 1.0f; v[1].y = 1.0f - (y1 / h) * 2.0f;
+        v[1].u = u1; v[1].v = v1; v[1].r = r; v[1].g = g; v[1].b = b; v[1].a = a;
+        v[2].x = (x2 / w) * 2.0f - 1.0f; v[2].y = 1.0f - (y2 / h) * 2.0f;
+        v[2].u = u2; v[2].v = v2; v[2].r = r; v[2].g = g; v[2].b = b; v[2].a = a;
+        v[3] = v[2];
+        renderer()->PushTexQuad(tex, v);
+    }
 };
 
 class DrawPrimTuned : public HostDrawPrim {
 public:
+    LTRESULT SetTexture(const HTEXTURE t) override {
+        boundTexture() = t; return LT_OK;
+    }
     LTRESULT DrawPrim(LT_POLYGT3* v, const uint32 n) override {
         stats().drawPrimCalls++;
         stats().drawPrimVerts += (int)n;
+        const TexEntry* e = texEntry(boundTexture());
+        if (v && e && e->vkId && VkBridge::renderer()) {
+            for (uint32 i = 0; i < n; i++) {
+                float r = 0, g = 0, b = 0;
+                for (int k = 0; k < 3; k++) {
+                    float cr, cg, cb;
+                    VkBridge::rgba(cr, cg, cb, v[i].verts[k].rgba);
+                    r += cr; g += cg; b += cb;
+                }
+                VkBridge::triTex(v[i].verts[0].x, v[i].verts[0].y,
+                                 v[i].verts[0].u, v[i].verts[0].v,
+                                 v[i].verts[1].x, v[i].verts[1].y,
+                                 v[i].verts[1].u, v[i].verts[1].v,
+                                 v[i].verts[2].x, v[i].verts[2].y,
+                                 v[i].verts[2].u, v[i].verts[2].v,
+                                 r / 3.0f, g / 3.0f, b / 3.0f, 1.0f, e->vkId);
+            }
+            return LT_OK;
+        }
         if (v)
             for (uint32 i = 0; i < n; i++)
                 for (int k = 0; k < 3; k++) {
@@ -387,6 +575,22 @@ public:
     LTRESULT DrawPrim(LT_POLYFT3* v, const uint32 n) override {
         stats().drawPrimCalls++;
         stats().drawPrimVerts += (int)n;
+        const TexEntry* e = texEntry(boundTexture());
+        if (v && e && e->vkId && VkBridge::renderer()) {
+            for (uint32 i = 0; i < n; i++) {
+                float r, g, b;
+                VkBridge::rgba(r, g, b, v[i].rgba);
+                float a = v[i].rgba.a / 255.0f;
+                VkBridge::triTex(v[i].verts[0].x, v[i].verts[0].y,
+                                 v[i].verts[0].u, v[i].verts[0].v,
+                                 v[i].verts[1].x, v[i].verts[1].y,
+                                 v[i].verts[1].u, v[i].verts[1].v,
+                                 v[i].verts[2].x, v[i].verts[2].y,
+                                 v[i].verts[2].u, v[i].verts[2].v,
+                                 r, g, b, a, e->vkId);
+            }
+            return LT_OK;
+        }
         if (v)
             for (uint32 i = 0; i < n; i++) {
                 float r, g, b;
@@ -418,6 +622,43 @@ public:
                 for (int k = 0; k < 3; k++)
                     VkBridge::push(v[i].verts[k].x, v[i].verts[k].y, r, g, b);
             }
+        return LT_OK;
+    }
+    LTRESULT DrawPrim(LT_POLYFT4* v, const uint32 n) override {
+        stats().drawPrimCalls += (int)n;
+        stats().drawPrimVerts += (int)n * 4;
+        const TexEntry* e = texEntry(boundTexture());
+        if (!v || !e || !e->vkId || !VkBridge::renderer()) return LT_OK;
+        for (uint32 i = 0; i < n; i++) {
+            float r, g, b;
+            VkBridge::rgba(r, g, b, v[i].rgba);
+            float a = v[i].rgba.a / 255.0f;
+            VkBridge::quadTex(v[i].verts[0].x, v[i].verts[0].y,
+                              v[i].verts[2].x, v[i].verts[2].y,
+                              v[i].verts[0].u, v[i].verts[0].v,
+                              v[i].verts[2].u, v[i].verts[2].v,
+                              r, g, b, a, e->vkId);
+        }
+        return LT_OK;
+    }
+    LTRESULT DrawPrim(LT_POLYGT4* v, const uint32 n) override {
+        stats().drawPrimCalls += (int)n;
+        stats().drawPrimVerts += (int)n * 4;
+        const TexEntry* e = texEntry(boundTexture());
+        if (!v || !e || !e->vkId || !VkBridge::renderer()) return LT_OK;
+        for (uint32 i = 0; i < n; i++) {
+            float r = 0, g = 0, b = 0;
+            for (int k = 0; k < 4; k++) {
+                float cr, cg, cb;
+                VkBridge::rgba(cr, cg, cb, v[i].verts[k].rgba);
+                r += cr; g += cg; b += cb;
+            }
+            VkBridge::quadTex(v[i].verts[0].x, v[i].verts[0].y,
+                              v[i].verts[2].x, v[i].verts[2].y,
+                              v[i].verts[0].u, v[i].verts[0].v,
+                              v[i].verts[2].u, v[i].verts[2].v,
+                              r / 4.0f, g / 4.0f, b / 4.0f, 1.0f, e->vkId);
+        }
         return LT_OK;
     }
 };
@@ -472,36 +713,156 @@ class UIFontTuned : public HostUIFont {
 public:
     HTEXTURE tex = reinterpret_cast<HTEXTURE>((intptr_t)0x20);
     HTEXTURE GetTexture() override { return tex; }
+    uint32 defColor = 0xFFFFFFFF;
+    void SetDefColor(uint32 argb) override { defColor = argb; }
+    struct Glyph {
+        float u0 = 0, v0 = 0, u1 = 0, v1 = 0;
+        float w = 0, h = 0, adv = 8, bx = 0, by = 12;
+    };
+    Glyph glyphs[256];
+    bool hasAtlas = false;
+    uint32 lineH = 16;
 };
 
 
 class FontTuned : public HostFontManager {
 public:
+    CUIFont* makeFont(char const* f) {
+        UIFontTuned* fnt = new UIFontTuned();
+#ifdef HAS_FREETYPE
+        std::string name = f ? f : "";
+        for (char& c : name) if (c == '\\') c = '/';
+        std::string base = ClientTuned::rezDir();
+        std::string path = base.empty() ? name : base + "/" + name;
+        MemStream* ms = nullptr;
+        // Reuse the tuned file search: try rez root then cwd.
+        {
+            std::string rp;
+            if (!resolveAsset(path, rp) && !base.empty())
+                resolveAsset(name, rp);
+            FILE* tf = rp.empty() ? nullptr : fopen(rp.c_str(), "rb");
+            if (tf) {
+                fseek(tf, 0, SEEK_END);
+                long len = ftell(tf);
+                fseek(tf, 0, SEEK_SET);
+                if (len > 0) {
+                    std::vector<uint8_t> buf((size_t)len);
+                    if (fread(buf.data(), 1, (size_t)len, tf) == (size_t)len) {
+                        ms = new MemStream();
+                        ms->data = std::move(buf);
+                    }
+                }
+                fclose(tf);
+            }
+        }
+        if (ms && !ms->data.empty() && VkBridge::renderer()) {
+            FT_Library lib = nullptr;
+            if (FT_Init_FreeType(&lib) == 0) {
+                FT_Face face = nullptr;
+                if (FT_New_Memory_Face(lib, ms->data.data(),
+                                       (FT_Long)ms->data.size(), 0,
+                                       &face) == 0) {
+                    uint32_t px = 16;
+                    if (FT_Set_Pixel_Sizes(face, 0, px) == 0)
+                        bakeAtlas(face, px, path, fnt);
+                    FT_Done_Face(face);
+                }
+                FT_Done_FreeType(lib);
+            }
+            delete ms;
+        } else {
+            delete ms;
+        }
+#else
+        (void)f;
+#endif
+        return fnt;
+    }
+#ifdef HAS_FREETYPE
+    void bakeAtlas(FT_Face face, uint32_t px, const std::string& path,
+                   UIFontTuned* fnt) {
+        const int COLS = 16, ROWS = 16;
+        int cell = (int)px + 4;
+        uint32_t aw = (uint32_t)(COLS * cell), ah = (uint32_t)(ROWS * cell);
+        std::vector<uint8_t> atlas((size_t)aw * ah * 4, 0);
+        for (int c = 0; c < 256; c++)
+            fnt->glyphs[c].adv = (float)px / 2.0f;
+        for (int c = 0; c < 256; c++) {
+            if (FT_Load_Char(face, (FT_ULong)c, FT_LOAD_RENDER)) continue;
+            FT_Bitmap& bm = face->glyph->bitmap;
+            if (!bm.buffer || bm.pitch <= 0) continue;
+            int gx = (c % COLS) * cell, gy = (c / COLS) * cell;
+            for (unsigned r = 0; r < bm.rows && r < (unsigned)cell; r++)
+                for (unsigned q = 0; q < bm.width && q < (unsigned)cell; q++) {
+                    uint8_t cov = bm.buffer[r * bm.pitch + q];
+                    uint8_t* d = &atlas[((size_t)(gy + r) * aw + gx + q) * 4];
+                    d[0] = d[1] = d[2] = 255;
+                    d[3] = cov;
+                }
+            UIFontTuned::Glyph& g = fnt->glyphs[c];
+            g.u0 = (float)gx / aw; g.v0 = (float)gy / ah;
+            g.u1 = (float)(gx + bm.width) / aw;
+            g.v1 = (float)(gy + bm.rows) / ah;
+            g.w = (float)bm.width; g.h = (float)bm.rows;
+            float adv = (float)(face->glyph->advance.x >> 6);
+            g.adv = adv > 0 ? adv : (float)px / 2.0f;
+            g.bx = (float)face->glyph->bitmap_left;
+            g.by = (float)face->glyph->bitmap_top;
+        }
+        uint32_t id = VkBridge::renderer()->RegisterTexture(aw, ah,
+                                                            atlas.data());
+        if (id) {
+            fnt->tex = texRegister("font/atlas", aw, ah, id);
+            fnt->hasAtlas = true;
+            fnt->lineH = px;
+            emit("real font atlas %s (%ux%u)", path.c_str(), aw, ah);
+        }
+    }
+#endif
     CUIFont* CreateFont(char const* f, char const* fc, uint32 s,
                         uint8 a, uint8 b, LTFontParams* p) override {
-        (void)f; (void)fc; (void)s; (void)a; (void)b; (void)p;
-        return new UIFontTuned();
+        (void)fc; (void)s; (void)a; (void)b; (void)p;
+        return makeFont(f);
     }
     CUIFont* CreateFont(char const* f, char const* fc, uint32 s,
                         char* c, LTFontParams* p) override {
-        (void)f; (void)fc; (void)s; (void)c; (void)p;
-        return new UIFontTuned();
+        (void)fc; (void)s; (void)c; (void)p;
+        return makeFont(f);
     }
     CUIFormattedPolyString* CreateFormattedPolyString(CUIFont* f, char* b,
             float x, float y, CUI_ALIGNMENTTYPE a) override {
-        (void)f; (void)b; (void)x; (void)y; (void)a;
-        return new PolyTunedAsFormatted();
+        (void)b; (void)x; (void)y; (void)a;
+        PolyTunedAsFormatted* p = new PolyTunedAsFormatted();
+        p->font = static_cast<UIFontTuned*>(f);
+        return p;
     }
     // Formatted string with real layout state (base ctors/dtors defined below)
     struct PolyTunedAsFormatted : public CUIFormattedPolyString {
         PolyTunedAsFormatted() : CUIFormattedPolyString(nullptr) {}
         std::string text;
         float px = 0, py = 0;
+        UIFontTuned* font = nullptr;
         CUI_RESULTTYPE SetText(const char* b) override {
             text = b ? b : ""; return CUIR_OK;
         }
-        float GetWidth() override { return (float)text.size() * 8.0f; }
-        float GetHeight() override { return 16.0f; }
+        float lineAdvance() const {
+            return font && font->hasAtlas ? (float)font->lineH : 16.0f;
+        }
+        float textWidth() const {
+            float w = 0, best = 0;
+            for (char ch : text) {
+                if (ch == '\n') { if (w > best) best = w; w = 0; continue; }
+                unsigned char c = (unsigned char)ch;
+                w += (font && font->hasAtlas) ? font->glyphs[c].adv : 8.0f;
+            }
+            return w > best ? w : best;
+        }
+        float GetWidth() override { return textWidth(); }
+        float GetHeight() override {
+            float lines = 1;
+            for (char ch : text) if (ch == '\n') lines++;
+            return lines * lineAdvance();
+        }
         CUI_RESULTTYPE SetPosition(float x, float y) override {
             px = x; py = y; return CUIR_OK;
         }
@@ -510,10 +871,39 @@ public:
         }
         CUI_RESULTTYPE Render(int32 s, int32 e) override {
             (void)s; (void)e; stats().uiRenders++;
-            // Rasterize the laid-out string bounds so UI appears in snapshots.
-            // (Glyph shapes need font rasterization; bounds prove real layout.)
+            if (text.empty() || !VkBridge::renderer()) return CUIR_OK;
+            const TexEntry* en =
+                (font && font->hasAtlas) ? texEntry(font->tex) : nullptr;
+            if (en && en->vkId) {
+                // Real glyph quads from the baked atlas.
+                uint32_t c = font->defColor;
+                float a = ((c >> 24) & 255) / 255.0f;
+                float r = ((c >> 16) & 255) / 255.0f;
+                float g = ((c >> 8) & 255) / 255.0f;
+                float b = (c & 255) / 255.0f;
+                if (a <= 0) a = 1.0f;
+                float lh = lineAdvance();
+                float pen = px, yy = py;
+                int quads = 0;
+                for (char ch : text) {
+                    if (ch == '\n') { pen = px; yy += lh; continue; }
+                    const UIFontTuned::Glyph& gl =
+                        font->glyphs[(unsigned char)ch];
+                    if (gl.w > 0 && gl.h > 0) {
+                        float x0 = pen + gl.bx, y0 = yy + (lh - gl.by);
+                        VkBridge::quadTex(x0, y0, x0 + gl.w, y0 + gl.h,
+                                          gl.u0, gl.v0, gl.u1, gl.v1,
+                                          r, g, b, a, en->vkId);
+                        quads++;
+                    }
+                    pen += gl.adv;
+                }
+                stats().drawPrimCalls += quads * 2;
+                return CUIR_OK;
+            }
+            // Legacy fallback: bounds quad when no atlas is available.
             float w = GetWidth(), h = GetHeight();
-            if (!text.empty() && w > 0 && h > 0 && VkBridge::renderer()) {
+            if (w > 0 && h > 0) {
                 float x0 = px, y0 = py, x1 = px + w, y1 = py + h;
                 float r = 0.75f, g = 0.78f, b = 0.85f;
                 VkBridge::push(x0, y0, r, g, b);
@@ -531,14 +921,62 @@ public:
 
 class TexTuned : public HostTexInterface {
 public:
+    LTRESULT loadName(const char* n, HTEXTURE& t) {
+        std::string name = n ? n : "";
+        for (char& c : name) if (c == '\\') c = '/';
+        for (auto& kv : texRegistry().byHandle)
+            if (kv.second.name == name) {
+                t = reinterpret_cast<HTEXTURE>(kv.first);
+                return LT_OK;
+            }
+        std::string base = ClientTuned::rezDir();
+        std::string path;
+        auto probe = [&](const std::string& rel) {
+            if (!path.empty()) return;
+            std::string c;
+            if (!base.empty() && resolveAsset(base + "/" + rel, c)) path = c;
+            else if (resolveAsset(rel, c)) path = c;
+        };
+        probe(name);
+        TgaImage img;
+        bool loaded = !path.empty() && loadTGA(path, img);
+        if (!loaded && name.size() > 4 &&
+            name.compare(name.size() - 4, 4, ".dtx") == 0) {
+            // DTX is proprietary; use the shipped .tga twin when present.
+            path.clear();
+            probe(name.substr(0, name.size() - 4) + ".tga");
+            loaded = !path.empty() && loadTGA(path, img);
+        }
+        if (!loaded) {
+            emit("texture %s not found or unreadable, placeholder",
+                 name.c_str());
+            t = reinterpret_cast<HTEXTURE>((intptr_t)0x30);
+            return LT_OK;
+        }
+        uint32_t id = 0;
+        if (VkBridge::renderer())
+            id = VkBridge::renderer()->RegisterTexture(img.w, img.h,
+                                                       img.rgba.data());
+        if (!id) {
+            emit("texture %s upload failed, placeholder", path.c_str());
+            t = reinterpret_cast<HTEXTURE>((intptr_t)0x30);
+            return LT_OK;
+        }
+        t = texRegister(name, img.w, img.h, id);
+        emit("real texture %s (%ux%u)", path.c_str(), img.w, img.h);
+        return LT_OK;
+    }
     LTRESULT GetTextureDims(const HTEXTURE t, uint32& w, uint32& h) override {
-        (void)t; w = 64; h = 64; return LT_OK;
+        const TexEntry* e = texEntry(t);
+        if (!e) { w = 64; h = 64; return LT_OK; } // legacy placeholder dims
+        w = e->w; h = e->h;
+        return LT_OK;
     }
     LTRESULT FindTextureFromName(HTEXTURE& t, const char* n) override {
-        (void)n; t = reinterpret_cast<HTEXTURE>((intptr_t)0x30); return LT_OK;
+        return loadName(n, t);
     }
     LTRESULT CreateTextureFromName(HTEXTURE& t, const char* n) override {
-        (void)n; t = reinterpret_cast<HTEXTURE>((intptr_t)0x31); return LT_OK;
+        return loadName(n, t);
     }
 };
 

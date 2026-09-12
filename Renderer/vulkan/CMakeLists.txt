@@ -63,6 +63,15 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
       )
       add_custom_target(vk_tri_spv DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tri_spv.h)
       add_dependencies(renderer_vulkan vk_tri_spv)
+      add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tri_tex_spv.h
+        COMMAND ${GLSLANG_VALIDATOR} -V ${CMAKE_CURRENT_SOURCE_DIR}/shaders/tri_tex.vert -o ${CMAKE_CURRENT_BINARY_DIR}/tri_tex.vert.spv
+        COMMAND ${GLSLANG_VALIDATOR} -V ${CMAKE_CURRENT_SOURCE_DIR}/shaders/tri_tex.frag -o ${CMAKE_CURRENT_BINARY_DIR}/tri_tex.frag.spv
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/embed_spv.py ${CMAKE_CURRENT_BINARY_DIR}/tri_tex.vert.spv ${CMAKE_CURRENT_BINARY_DIR}/tri_tex.frag.spv ${CMAKE_CURRENT_BINARY_DIR}/tri_tex_spv.h kTriTexVertSpv kTriTexFragSpv
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/shaders/tri_tex.vert ${CMAKE_CURRENT_SOURCE_DIR}/shaders/tri_tex.frag
+      )
+      add_custom_target(vk_tri_tex_spv DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tri_tex_spv.h)
+      add_dependencies(renderer_vulkan vk_tri_tex_spv)
       target_include_directories(renderer_vulkan PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
     endif()
   endif()

@@ -12,7 +12,9 @@ def emit(path, name):
     return 'static const uint32_t %s[]={%s};\n' % (name, ','.join(words))
 
 
+name1 = sys.argv[4] if len(sys.argv) > 4 else 'kTriVertSpv'
+name2 = sys.argv[5] if len(sys.argv) > 5 else 'kTriFragSpv'
 with open(sys.argv[3], 'w') as h:
     h.write('#pragma once\n#include <stdint.h>\n')
-    h.write(emit(sys.argv[1], 'kTriVertSpv'))
-    h.write(emit(sys.argv[2], 'kTriFragSpv'))
+    h.write(emit(sys.argv[1], name1))
+    h.write(emit(sys.argv[2], name2))

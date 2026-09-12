@@ -67,6 +67,7 @@ void VulkanRenderer::Shutdown() {
   if (m_texPool) { vkDestroyDescriptorPool(m_device, m_texPool, nullptr); m_texPool = VK_NULL_HANDLE; }
   m_texLayout = VK_NULL_HANDLE;
   m_texBatch.clear();
+  m_order.clear();
   if (m_texBuf) { vkDestroyBuffer(m_device, m_texBuf, nullptr); m_texBuf = VK_NULL_HANDLE; }
   if (m_texMem) { vkFreeMemory(m_device, m_texMem, nullptr); m_texMem = VK_NULL_HANDLE; }
   m_texCap = 0;
@@ -682,13 +683,7 @@ HRESULT VulkanRenderer::RenderWindowFrame() {
   rp.clearValueCount = 1;
   rp.pClearValues = &m_clearValue;
   vkCmdBeginRenderPass(m_cmdBuffer, &rp, VK_SUBPASS_CONTENTS_INLINE);
-  if (!m_batch.empty()) {
-    VkDeviceSize off = 0;
-    vkCmdBindPipeline(m_cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
-    vkCmdBindVertexBuffers(m_cmdBuffer, 0, 1, &m_vertBuf, &off);
-    vkCmdDraw(m_cmdBuffer, (uint32_t)m_batch.size(), 1, 0, 0);
-  }
-  if (!drawTexBatch(m_cmdBuffer, m_renderPass)) return E_FAIL;
+  if (!drawOrdered(m_cmdBuffer, m_renderPass)) return E_FAIL;
   vkCmdEndRenderPass(m_cmdBuffer);
   if (vkEndCommandBuffer(m_cmdBuffer) != VK_SUCCESS) return E_FAIL;
 
@@ -716,6 +711,8 @@ HRESULT VulkanRenderer::RenderWindowFrame() {
   if (pr == VK_ERROR_OUT_OF_DATE_KHR || pr == VK_SUBOPTIMAL_KHR) return S_OK;
   vkWaitForFences(m_device, 1, &m_inFlight, VK_TRUE, UINT64_MAX);
   m_batch.clear();
+  m_texBatch.clear();
+  m_order.clear();
   return S_OK;
 }
 
@@ -726,6 +723,10 @@ void VulkanRenderer::PushTexQuad(uint32_t tex, const VkTexVert v[4]) {
   q.v[0] = v[0]; q.v[1] = v[1]; q.v[2] = v[2];
   q.v[3] = v[0]; q.v[4] = v[2]; q.v[5] = v[3];
   m_texBatch.push_back(q);
+  DrawItem it;
+  it.tex = true;
+  it.idx = (uint32_t)(m_texBatch.size() - 1);
+  m_order.push_back(it);
 }
 
 size_t VulkanRenderer::PendingTexQuads() const { return m_texBatch.size(); }
@@ -1126,29 +1127,68 @@ bool VulkanRenderer::uploadTexBatch() {
   return true;
 }
 
-bool VulkanRenderer::drawTexBatch(VkCommandBuffer cmd, VkRenderPass pass) {
-  if (m_texBatch.empty()) return true;
+// Replays flat and textured items in submission order, switching pipelines
+// as needed. Vulkan executes draws in command order with no implicit
+// cross-pipeline ordering, unlike the GL/DX immediate paths this mirrors.
+bool VulkanRenderer::drawOrdered(VkCommandBuffer cmd, VkRenderPass pass) {
+  if (m_order.empty()) {
+    m_batch.clear();
+    m_texBatch.clear();
+    return true;
+  }
+  if (!m_pipeline) {
+    if (pass == m_renderPass && m_renderPass) {
+      if (!createWindowPipeline()) return false;
+    } else {
+      return false; // headless always builds m_pipeline in InitHeadless
+    }
+  }
   VkPipeline* slot = (pass == m_renderPass && m_renderPass) ? &m_texPipeWin
                                                             : &m_texPipeOff;
   uint32_t ew, eh;
   if (slot == &m_texPipeWin) { ew = m_swapExtent.width; eh = m_swapExtent.height; }
   else { ew = m_offExtent.width; eh = m_offExtent.height; }
-  if (!*slot && !createTexPipeline(pass, ew, eh, *slot)) return false;
-  if (!uploadTexBatch()) return false;
-  VkDeviceSize off = 0;
-  vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, *slot);
-  vkCmdBindVertexBuffers(cmd, 0, 1, &m_texBuf, &off);
-  uint32_t first = 0;
-  for (size_t i = 0; i < m_texBatch.size(); i++) {
-    uint32_t id = m_texBatch[i].tex;
-    if (!id || id > m_textures.size()) { first += 6; continue; }
-    vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                            m_texPipeLayout, 0, 1,
-                            &m_textures[id - 1].set, 0, nullptr);
-    vkCmdDraw(cmd, 6, 1, first, 0);
-    first += 6;
+  bool needTex = false;
+  for (size_t i = 0; i < m_order.size(); i++)
+    if (m_order[i].tex) { needTex = true; break; }
+  if (needTex) {
+    if (!*slot && !createTexPipeline(pass, ew, eh, *slot)) return false;
+    if (!uploadTexBatch()) return false;
   }
+  if (!uploadBatch()) return false;
+  VkPipeline cur = VK_NULL_HANDLE;
+  VkDeviceSize off = 0;
+  uint32_t ff = 0, tf = 0;
+  for (size_t i = 0; i < m_order.size(); i++) {
+    if (!m_order[i].tex) {
+      if (cur != m_pipeline) {
+        cur = m_pipeline;
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, cur);
+        vkCmdBindVertexBuffers(cmd, 0, 1, &m_vertBuf, &off);
+      }
+      vkCmdDraw(cmd, 3, 1, ff, 0);
+      ff += 3;
+    } else {
+      if (cur != *slot) {
+        cur = *slot;
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, cur);
+        vkCmdBindVertexBuffers(cmd, 0, 1, &m_texBuf, &off);
+      }
+      uint32_t id = (m_order[i].idx < m_texBatch.size())
+                        ? m_texBatch[m_order[i].idx].tex
+                        : 0;
+      if (id && id <= m_textures.size()) {
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                m_texPipeLayout, 0, 1,
+                                &m_textures[id - 1].set, 0, nullptr);
+        vkCmdDraw(cmd, 6, 1, tf, 0);
+      }
+      tf += 6;
+    }
+  }
+  m_batch.clear();
   m_texBatch.clear();
+  m_order.clear();
   return true;
 }
 

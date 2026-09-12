@@ -68,7 +68,7 @@ private:
   bool createTexPipeline(VkRenderPass pass, uint32_t w, uint32_t h,
                          VkPipeline& out);
   bool uploadTexBatch();
-  bool drawTexBatch(VkCommandBuffer cmd, VkRenderPass pass);
+  bool drawOrdered(VkCommandBuffer cmd, VkRenderPass pass);
 
   VkInstance m_instance = VK_NULL_HANDLE;
   VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
@@ -118,6 +118,10 @@ private:
   struct TexQuad { uint32_t tex = 0; VkTexVert v[6]; };
   std::vector<WinTex> m_textures;
   std::vector<TexQuad> m_texBatch;
+  // Submission order across flat/textured items (Vulkan has no implicit
+  // order between pipelines: replay submission order explicitly).
+  struct DrawItem { bool tex = false; uint32_t idx = 0; };
+  std::vector<DrawItem> m_order;
   VkDescriptorSetLayout m_texLayout = VK_NULL_HANDLE;
   VkDescriptorPool m_texPool = VK_NULL_HANDLE;
   VkSampler m_texSampler = VK_NULL_HANDLE;

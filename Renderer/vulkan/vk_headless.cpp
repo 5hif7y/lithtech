@@ -272,6 +272,10 @@ void VulkanRenderer::PushTri(const VkTriVert v[3]) {
     m_batch.push_back(v[0]);
     m_batch.push_back(v[1]);
     m_batch.push_back(v[2]);
+    DrawItem it;
+    it.tex = false;
+    it.idx = (uint32_t)(m_batch.size() / 3 - 1);
+    m_order.push_back(it);
 }
 
 size_t VulkanRenderer::PendingTris() const { return m_batch.size() / 3; }
@@ -279,46 +283,6 @@ size_t VulkanRenderer::PendingTris() const { return m_batch.size() / 3; }
 bool VulkanRenderer::SnapshotPPM(const char* path) {
     if (!m_headless || !m_device) return false;
     uint32_t w = m_offExtent.width, h = m_offExtent.height;
-
-    // Upload vertex batch (grow buffer as needed).
-    VkDeviceSize need = m_batch.size() * sizeof(VkTriVert);
-    if (need > m_vertCap) {
-        if (m_vertBuf) vkDestroyBuffer(m_device, m_vertBuf, nullptr);
-        if (m_vertMem) vkFreeMemory(m_device, m_vertMem, nullptr);
-        m_vertBuf = VK_NULL_HANDLE;
-        m_vertMem = VK_NULL_HANDLE;
-        m_vertCap = 0;
-        if (need) {
-            VkPhysicalDeviceMemoryProperties mp{};
-            vkGetPhysicalDeviceMemoryProperties(m_physicalDevice, &mp);
-            VkBufferCreateInfo bci{};
-            bci.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-            bci.size = need;
-            bci.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-            if (vkCreateBuffer(m_device, &bci, nullptr, &m_vertBuf) != VK_SUCCESS)
-                return false;
-            VkMemoryRequirements mr{};
-            vkGetBufferMemoryRequirements(m_device, m_vertBuf, &mr);
-            uint32_t mi = findMem(mp, mr.memoryTypeBits,
-                                  VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                                  VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-            if (mi == UINT32_MAX) return false;
-            VkMemoryAllocateInfo mai{};
-            mai.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-            mai.allocationSize = mr.size;
-            mai.memoryTypeIndex = mi;
-            if (vkAllocateMemory(m_device, &mai, nullptr, &m_vertMem) != VK_SUCCESS)
-                return false;
-            vkBindBufferMemory(m_device, m_vertBuf, m_vertMem, 0);
-            m_vertCap = need;
-        }
-    }
-    if (need) {
-        void* dst = nullptr;
-        vkMapMemory(m_device, m_vertMem, 0, need, 0, &dst);
-        memcpy(dst, m_batch.data(), (size_t)need);
-        vkUnmapMemory(m_device, m_vertMem);
-    }
 
     VkCommandBufferBeginInfo bi{};
     bi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -334,13 +298,7 @@ bool VulkanRenderer::SnapshotPPM(const char* path) {
     rp.clearValueCount = 1;
     rp.pClearValues = &clear;
     vkCmdBeginRenderPass(m_cmdBuffer, &rp, VK_SUBPASS_CONTENTS_INLINE);
-    if (!m_batch.empty()) {
-        VkDeviceSize off = 0;
-        vkCmdBindPipeline(m_cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
-        vkCmdBindVertexBuffers(m_cmdBuffer, 0, 1, &m_vertBuf, &off);
-        vkCmdDraw(m_cmdBuffer, (uint32_t)m_batch.size(), 1, 0, 0);
-    }
-    if (!drawTexBatch(m_cmdBuffer, m_offPass)) return false;
+    if (!drawOrdered(m_cmdBuffer, m_offPass)) return false;
     vkCmdEndRenderPass(m_cmdBuffer);
     // Offscreen -> staging copy.
     VkBufferImageCopy cp{};
@@ -376,9 +334,9 @@ bool VulkanRenderer::SnapshotPPM(const char* path) {
     }
     fprintf(f, "P6\n%u %u\n255\n", w, h);
     const uint8_t* row = (const uint8_t*)px;
-    // Vulkan rows are bottom-up relative to PPM; flip for viewing.
+    // NDC mapping puts screen-top at framebuffer row 0: no flip needed.
     for (uint32_t y = 0; y < h; y++) {
-        const uint8_t* src = row + (size_t)(h - 1 - y) * w * 4;
+        const uint8_t* src = row + (size_t)y * w * 4;
         for (uint32_t x = 0; x < w; x++)
             fwrite(src + x * 4, 1, 3, f);
     }

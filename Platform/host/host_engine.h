@@ -25,7 +25,11 @@
 #ifndef _WIN32
 #include <strings.h>
 #include <glob.h>
+#endif
 #include <cctype>
+#include <set>
+#ifdef _LINUX
+#include <X11/keysym.h>
 #endif
 // NOTE: system headers must stay at global scope in this file. Also, do
 // NOT scan directories with opendir/readdir here: GCC 16 -O2 miscompiles
@@ -76,6 +80,76 @@ struct Stats {
     std::vector<std::string> log;
 };
 inline Stats& stats() { static Stats s; return s; }
+
+// ---- input state: keys/commands held + accumulated mouse axes ----
+// Windows VK codes (own enum to avoid clashing with <windows.h>).
+enum HostVK {
+    HVK_LBUTTON = 0x01, HVK_TAB = 0x09, HVK_RETURN = 0x0D, HVK_ESCAPE = 0x1B,
+    HVK_SPACE = 0x20, HVK_LEFT = 0x25, HVK_UP = 0x26, HVK_RIGHT = 0x27,
+    HVK_DOWN = 0x28, HVK_F12 = 0x7B
+};
+struct InputState {
+    std::set<int> cmds; // engine command ids currently held
+    std::set<int> keys; // VK codes currently held
+    float ax[3] = {0, 0, 0};
+};
+inline InputState& inputState() { static InputState s; return s; }
+// Returns true on the FIRST press of a command (edge for OnCommandOn).
+inline bool noteKey(int vk, int cmd, bool down) {
+    InputState& s = inputState();
+    if (down) {
+        s.keys.insert(vk);
+        if (cmd < 0) return false;
+        if (s.cmds.count(cmd)) return false;
+        s.cmds.insert(cmd);
+        return true;
+    }
+    s.keys.erase(vk);
+    if (cmd >= 0) s.cmds.erase(cmd);
+    return false;
+}
+inline bool cmdOn(int cmd) { return inputState().cmds.count(cmd) != 0; }
+inline void addAxes(float x, float y, float z) {
+    float* a = inputState().ax;
+    a[0] += x; a[1] += y; a[2] += z;
+}
+inline void takeAxes(float out[3]) {
+    float* a = inputState().ax;
+    out[0] = a[0]; out[1] = a[1]; out[2] = a[2];
+    a[0] = a[1] = a[2] = 0;
+}
+#ifdef _LINUX
+// X11 KeySym -> (Windows VK, engine command). Commands mirror the demo's
+// autoexec.cfg bindings (WASD/arrows move, Enter Start, Space Jump,
+// T Chat, Tab ShowStats, Esc Quit, mouse Button0 Shoot).
+inline void mapKeysym(unsigned long ks, int& vk, int& cmd) {
+    vk = -1; cmd = -1;
+    switch (ks) {
+    case XK_Up: vk = HVK_UP; cmd = 1; break;
+    case XK_Down: vk = HVK_DOWN; cmd = 2; break;
+    case XK_Left: vk = HVK_LEFT; cmd = 3; break;
+    case XK_Right: vk = HVK_RIGHT; cmd = 4; break;
+    case XK_Return: case XK_KP_Enter: vk = HVK_RETURN; cmd = 18; break;
+    case XK_space: vk = HVK_SPACE; cmd = 16; break;
+    case XK_Tab: vk = HVK_TAB; cmd = 17; break;
+    case XK_Escape: vk = HVK_ESCAPE; cmd = 250; break;
+    case XK_F12: vk = HVK_F12; cmd = -1; break;
+    default:
+        if ((ks >= 'a' && ks <= 'z') || (ks >= 'A' && ks <= 'Z')) {
+            int u = toupper((int)ks);
+            vk = u;
+            if (u == 'W') cmd = 1;
+            else if (u == 'S') cmd = 2;
+            else if (u == 'A') cmd = 3;
+            else if (u == 'D') cmd = 4;
+            else if (u == 'T') cmd = 19;
+        } else if (ks >= '0' && ks <= '9') {
+            vk = (int)ks;
+        }
+        break;
+    }
+}
+#endif
 inline void emit(const char* fmt, ...) {
     char buf[1024];
     va_list ap;
@@ -233,10 +307,12 @@ static LTRESULT T_SetCameraRect(HOBJECT h, bool b, int x, int y, int w, int ht) 
 static LTRESULT T_SetCameraFOV(HOBJECT h, float f) {
     (void)h; (void)f; return LT_OK;
 }
-static bool T_IsCommandOn(int c) { (void)c; return false; }
+static bool T_IsCommandOn(int c) { return cmdOn(c); }
 static LTRESULT T_RunConsoleString(char* s) { (void)s; return LT_OK; }
 static LTRESULT T_GetAxisOffsets(LTVector* v) {
-    if (v) v->Init(0, 0, 0); return LT_OK;
+    float a[3] = {0, 0, 0};
+    takeAxes(a);
+    if (v) v->Init(a[0], a[1], a[2]); return LT_OK;
 }
 static void T_ClearInput() {}
 
@@ -483,7 +559,8 @@ struct VkBridge {
     static void push(float x, float y, float r, float g, float b) {
         VkTriVert v;
         v.x = (x / (float)width()) * 2.0f - 1.0f;
-        v.y = 1.0f - (y / (float)height()) * 2.0f;
+        // Vulkan NDC: y=-1 is the TOP of the viewport (unlike GL/DX).
+        v.y = (y / (float)height()) * 2.0f - 1.0f;
         v.r = r; v.g = g; v.b = b; v.a = 1.0f;
         if (renderer()) {
             batchSlot()[batchCount()] = v;
@@ -507,13 +584,13 @@ struct VkBridge {
         if (!renderer() || !tex) return;
         float w = (float)width(), h = (float)height();
         VkTexVert v[4];
-        v[0].x = (x0 / w) * 2.0f - 1.0f; v[0].y = 1.0f - (y0 / h) * 2.0f;
+        v[0].x = (x0 / w) * 2.0f - 1.0f; v[0].y = (y0 / h) * 2.0f - 1.0f;
         v[0].u = u0; v[0].v = v0; v[0].r = r; v[0].g = g; v[0].b = b; v[0].a = a;
-        v[1].x = (x1 / w) * 2.0f - 1.0f; v[1].y = 1.0f - (y0 / h) * 2.0f;
+        v[1].x = (x1 / w) * 2.0f - 1.0f; v[1].y = (y0 / h) * 2.0f - 1.0f;
         v[1].u = u1; v[1].v = v0; v[1].r = r; v[1].g = g; v[1].b = b; v[1].a = a;
-        v[2].x = (x1 / w) * 2.0f - 1.0f; v[2].y = 1.0f - (y1 / h) * 2.0f;
+        v[2].x = (x1 / w) * 2.0f - 1.0f; v[2].y = (y1 / h) * 2.0f - 1.0f;
         v[2].u = u1; v[2].v = v1; v[2].r = r; v[2].g = g; v[2].b = b; v[2].a = a;
-        v[3].x = (x0 / w) * 2.0f - 1.0f; v[3].y = 1.0f - (y1 / h) * 2.0f;
+        v[3].x = (x0 / w) * 2.0f - 1.0f; v[3].y = (y1 / h) * 2.0f - 1.0f;
         v[3].u = u0; v[3].v = v1; v[3].r = r; v[3].g = g; v[3].b = b; v[3].a = a;
         renderer()->PushTexQuad(tex, v);
     }
@@ -525,11 +602,11 @@ struct VkBridge {
         if (!renderer() || !tex) return;
         float w = (float)width(), h = (float)height();
         VkTexVert v[4];
-        v[0].x = (x0 / w) * 2.0f - 1.0f; v[0].y = 1.0f - (y0 / h) * 2.0f;
+        v[0].x = (x0 / w) * 2.0f - 1.0f; v[0].y = (y0 / h) * 2.0f - 1.0f;
         v[0].u = u0; v[0].v = v0; v[0].r = r; v[0].g = g; v[0].b = b; v[0].a = a;
-        v[1].x = (x1 / w) * 2.0f - 1.0f; v[1].y = 1.0f - (y1 / h) * 2.0f;
+        v[1].x = (x1 / w) * 2.0f - 1.0f; v[1].y = (y1 / h) * 2.0f - 1.0f;
         v[1].u = u1; v[1].v = v1; v[1].r = r; v[1].g = g; v[1].b = b; v[1].a = a;
-        v[2].x = (x2 / w) * 2.0f - 1.0f; v[2].y = 1.0f - (y2 / h) * 2.0f;
+        v[2].x = (x2 / w) * 2.0f - 1.0f; v[2].y = (y2 / h) * 2.0f - 1.0f;
         v[2].u = u2; v[2].v = v2; v[2].r = r; v[2].g = g; v[2].b = b; v[2].a = a;
         v[3] = v[2];
         renderer()->PushTexQuad(tex, v);

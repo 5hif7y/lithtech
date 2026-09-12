@@ -13,6 +13,34 @@
 #include <ctime>
 #else
 #include <SDL2/SDL.h>
+// SDL keycode -> (Windows VK, engine command); mirrors Host::mapKeysym.
+static void mapSDLKey(int sym, int& vk, int& cmd) {
+    vk = -1; cmd = -1;
+    switch (sym) {
+    case SDLK_UP: vk = Host::HVK_UP; cmd = 1; break;
+    case SDLK_DOWN: vk = Host::HVK_DOWN; cmd = 2; break;
+    case SDLK_LEFT: vk = Host::HVK_LEFT; cmd = 3; break;
+    case SDLK_RIGHT: vk = Host::HVK_RIGHT; cmd = 4; break;
+    case SDLK_RETURN: case SDLK_KP_ENTER: vk = Host::HVK_RETURN; cmd = 18; break;
+    case SDLK_SPACE: vk = Host::HVK_SPACE; cmd = 16; break;
+    case SDLK_TAB: vk = Host::HVK_TAB; cmd = 17; break;
+    case SDLK_ESCAPE: vk = Host::HVK_ESCAPE; cmd = 250; break;
+    case SDLK_F12: vk = Host::HVK_F12; cmd = -1; break;
+    default:
+        if ((sym >= 'a' && sym <= 'z') || (sym >= 'A' && sym <= 'Z')) {
+            int u = toupper(sym);
+            vk = u;
+            if (u == 'W') cmd = 1;
+            else if (u == 'S') cmd = 2;
+            else if (u == 'A') cmd = 3;
+            else if (u == 'D') cmd = 4;
+            else if (u == 'T') cmd = 19;
+        } else if (sym >= '0' && sym <= '9') {
+            vk = sym;
+        }
+        break;
+    }
+}
 #endif
 #include <cstdio>
 #include <cstring>
@@ -80,7 +108,9 @@ int main(int argc, char* argv[]) {
         XStoreName(xDpy, xWin, "Sealhunter - LithTech Jupiter (Vulkan)");
         xWmDelete = XInternAtom(xDpy, "WM_DELETE_WINDOW", False);
         XSetWMProtocols(xDpy, xWin, &xWmDelete, 1);
-        XSelectInput(xDpy, xWin, ExposureMask | KeyPressMask | StructureNotifyMask);
+        XSelectInput(xDpy, xWin, ExposureMask | KeyPressMask | KeyReleaseMask |
+                   ButtonPressMask | ButtonReleaseMask | PointerMotionMask |
+                   StructureNotifyMask);
         XMapWindow(xDpy, xWin);
         XFlush(xDpy);
         if (vk.InitNative(xDpy, (unsigned long)xWin, 800, 600) != S_OK) {
@@ -231,6 +261,8 @@ int main(int argc, char* argv[]) {
         XEvent e;
         bool quit = false;
         int presents = 0;
+        int lastMx = 0, lastMy = 0;
+        bool haveMouse = false;
         struct timespec t0, t1;
         clock_gettime(CLOCK_MONOTONIC, &t0);
         while (!quit && (frames <= 0 || presents < frames)) {
@@ -240,8 +272,39 @@ int main(int argc, char* argv[]) {
                     (Atom)e.xclient.data.l[0] == xWmDelete) {
                     quit = true;
                 } else if (e.type == KeyPress) {
+                    int idx = (e.xkey.state & ShiftMask) ? 1 : 0;
+                    KeySym k = XLookupKeysym(&e.xkey, idx);
+                    if (k == XK_q) { quit = true; continue; }
+                    int vk, cmd;
+                    Host::mapKeysym((unsigned long)k, vk, cmd);
+                    if (vk >= 0) {
+                        shell->OnKeyDown(vk, 0);
+                        if (Host::noteKey(vk, cmd, true) && cmd >= 0)
+                            shell->OnCommandOn(cmd);
+                    }
+                } else if (e.type == KeyRelease) {
                     KeySym k = XLookupKeysym(&e.xkey, 0);
-                    if (k == XK_Escape || k == XK_q) quit = true;
+                    int vk, cmd;
+                    Host::mapKeysym((unsigned long)k, vk, cmd);
+                    if (vk >= 0) {
+                        shell->OnKeyUp(vk);
+                        Host::noteKey(vk, cmd, false);
+                    }
+                } else if (e.type == ButtonPress &&
+                           e.xbutton.button == Button1) {
+                    shell->OnKeyDown(Host::HVK_LBUTTON, 0);
+                    if (Host::noteKey(Host::HVK_LBUTTON, 15, true))
+                        shell->OnCommandOn(15); // Shoot (autoexec Button0)
+                } else if (e.type == ButtonRelease &&
+                           e.xbutton.button == Button1) {
+                    shell->OnKeyUp(Host::HVK_LBUTTON);
+                    Host::noteKey(Host::HVK_LBUTTON, 15, false);
+                } else if (e.type == MotionNotify) {
+                    int mx = e.xmotion.x, my = e.xmotion.y;
+                    if (haveMouse)
+                        Host::addAxes((float)(mx - lastMx) * 0.01f,
+                                      (float)(my - lastMy) * 0.01f, 0);
+                    lastMx = mx; lastMy = my; haveMouse = true;
                 }
             }
             shell->Update();
@@ -280,8 +343,37 @@ int main(int argc, char* argv[]) {
         Uint64 freq = SDL_GetPerformanceFrequency();
         Uint64 t0 = SDL_GetPerformanceCounter();
         while (!quit && (frames <= 0 || presents < frames)) {
-            while (SDL_PollEvent(&e))
-                if (e.type == SDL_QUIT) quit = true;
+            while (SDL_PollEvent(&e)) {
+                if (e.type == SDL_QUIT) { quit = true; continue; }
+                if (e.type == SDL_KEYDOWN && !e.key.repeat) {
+                    int vk, cmd;
+                    mapSDLKey((int)e.key.keysym.sym, vk, cmd);
+                    if (vk >= 0) {
+                        shell->OnKeyDown(vk, 0);
+                        if (Host::noteKey(vk, cmd, true) && cmd >= 0)
+                            shell->OnCommandOn(cmd);
+                    }
+                } else if (e.type == SDL_KEYUP) {
+                    int vk, cmd;
+                    mapSDLKey((int)e.key.keysym.sym, vk, cmd);
+                    if (vk >= 0) {
+                        shell->OnKeyUp(vk);
+                        Host::noteKey(vk, cmd, false);
+                    }
+                } else if (e.type == SDL_MOUSEBUTTONDOWN &&
+                           e.button.button == SDL_BUTTON_LEFT) {
+                    shell->OnKeyDown(Host::HVK_LBUTTON, 0);
+                    if (Host::noteKey(Host::HVK_LBUTTON, 15, true))
+                        shell->OnCommandOn(15);
+                } else if (e.type == SDL_MOUSEBUTTONUP &&
+                           e.button.button == SDL_BUTTON_LEFT) {
+                    shell->OnKeyUp(Host::HVK_LBUTTON);
+                    Host::noteKey(Host::HVK_LBUTTON, 15, false);
+                } else if (e.type == SDL_MOUSEMOTION) {
+                    Host::addAxes((float)e.motion.xrel * 0.01f,
+                                  (float)e.motion.yrel * 0.01f, 0);
+                }
+            }
             shell->Update();
             if (Host::stats().shutdownRequested) break;
             if (vk.RenderWindowFrame() != S_OK) {

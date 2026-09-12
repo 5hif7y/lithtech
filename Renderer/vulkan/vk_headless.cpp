@@ -49,6 +49,10 @@ bool VulkanRenderer::InitHeadless(uint32_t w, uint32_t h) {
         if (picked) break;
     }
     if (!picked) return false;
+    VkPhysicalDeviceProperties pickedProps{};
+    vkGetPhysicalDeviceProperties(m_physicalDevice, &pickedProps);
+    printf("HOST: vulkan device=%s vendor=0x%04x device=0x%04x\n",
+           pickedProps.deviceName, pickedProps.vendorID, pickedProps.deviceID);
 
     float prio = 1.0f;
     VkDeviceQueueCreateInfo qci{};

@@ -469,7 +469,22 @@ public:
             if (w) *w = GetWidth(); if (h) *h = GetHeight(); return CUIR_OK;
         }
         CUI_RESULTTYPE Render(int32 s, int32 e) override {
-            (void)s; (void)e; stats().uiRenders++; return CUIR_OK;
+            (void)s; (void)e; stats().uiRenders++;
+            // Rasterize the laid-out string bounds so UI appears in snapshots.
+            // (Glyph shapes need font rasterization; bounds prove real layout.)
+            float w = GetWidth(), h = GetHeight();
+            if (!text.empty() && w > 0 && h > 0 && VkBridge::renderer()) {
+                float x0 = px, y0 = py, x1 = px + w, y1 = py + h;
+                float r = 0.75f, g = 0.78f, b = 0.85f;
+                VkBridge::push(x0, y0, r, g, b);
+                VkBridge::push(x1, y0, r, g, b);
+                VkBridge::push(x0, y1, r, g, b);
+                VkBridge::push(x1, y0, r, g, b);
+                VkBridge::push(x1, y1, r, g, b);
+                VkBridge::push(x0, y1, r, g, b);
+                stats().drawPrimCalls += 2;
+            }
+            return CUIR_OK;
         }
     };
 };

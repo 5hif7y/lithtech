@@ -18,6 +18,7 @@ target_include_directories(networking_sealhunter BEFORE PRIVATE
   ${CMAKE_SOURCE_DIR}/Engine/Engine/clientfx/Shared
   ${CMAKE_CURRENT_SOURCE_DIR}/shared/src
   ${CMAKE_CURRENT_SOURCE_DIR}/cshell/src
+  ${CMAKE_SOURCE_DIR}/Renderer/vulkan
 )
 # Fallback: ensure main exists
 target_link_libraries(networking_sealhunter PRIVATE lith_platform lith_engine renderer_vulkan SDL2::SDL2 Vulkan::Vulkan)

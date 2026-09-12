@@ -8,7 +8,7 @@ if(DEMO_SOURCES STREQUAL "")
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp "int dummy(){return 0;}")
   set(DEMO_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/dummy.cpp)
 endif()
-add_executable(networking_sealhunter EXCLUDE_FROM_ALL ${DEMO_SOURCES} ${CMAKE_SOURCE_DIR}/Platform/winmain_stub.cpp ${CMAKE_SOURCE_DIR}/Platform/demo_link_stubs.cpp)
+add_executable(networking_sealhunter EXCLUDE_FROM_ALL ${DEMO_SOURCES} ${CMAKE_SOURCE_DIR}/Platform/host/host_sealhunter.cpp ${CMAKE_SOURCE_DIR}/Platform/demo_link_stubs.cpp)
 target_include_directories(networking_sealhunter BEFORE PRIVATE
   ${CMAKE_SOURCE_DIR}/Platform
   ${CMAKE_SOURCE_DIR}/Engine/Engine/sdk/inc
@@ -22,7 +22,7 @@ target_include_directories(networking_sealhunter BEFORE PRIVATE
 # Fallback: ensure main exists
 target_link_libraries(networking_sealhunter PRIVATE lith_platform lith_engine renderer_vulkan SDL2::SDL2 Vulkan::Vulkan)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  target_compile_options(networking_sealhunter PRIVATE -fpermissive -include ${CMAKE_SOURCE_DIR}/Platform/math_shim.h)
+  target_compile_options(networking_sealhunter PRIVATE -fpermissive -fno-rtti -include ${CMAKE_SOURCE_DIR}/Platform/math_shim.h)
   target_compile_definitions(networking_sealhunter PRIVATE _LINUX PLATFORM_LINUX)
 endif()
 message(STATUS "Demo networking/sealhunter configured (graphify 93 nodes)")

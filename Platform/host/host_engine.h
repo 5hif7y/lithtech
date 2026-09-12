@@ -341,6 +341,14 @@ public:
         ObjState* o = findObj(h); if (!o || !p) return LT_ERROR;
         o->pos = *p; stats().physMoves++; return LT_OK;
     }
+    LTRESULT UpdateMovement(MoveInfo* i) override {
+        if (!i) return LT_ERROR;
+        ObjState* o = findObj(i->m_hObject);
+        if (!o) return LT_ERROR;
+        i->m_Offset = o->vel;
+        i->m_Offset.x *= i->m_dt; i->m_Offset.y *= i->m_dt; i->m_Offset.z *= i->m_dt;
+        return LT_OK;
+    }
 };
 
 

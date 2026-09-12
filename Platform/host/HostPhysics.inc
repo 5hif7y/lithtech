@@ -2,7 +2,7 @@
 #include "Platform/platform.h"
 #include <type_traits>
 #include <iltphysics.h>
-class HostPhysics : public ILTPhysics {
+class HostPhysics : public ILTClientPhysics {
 public:
 LTRESULT IsWorldObject(HOBJECT hObj) override { return LT_OK; }
 LTRESULT GetStairHeight(float &fHeight) override { return LT_OK; }
@@ -24,4 +24,7 @@ LTRESULT GetStandingOn(HOBJECT hObj, CollisionInfo *info) override { return LT_O
 LTRESULT GetGlobalForce(LTVector &a) override { return LT_OK; }
 LTRESULT SetGlobalForce(const LTVector &a) override { return LT_OK; }
 const char* _InterfaceImplementation() override { return ""; }
+LTRESULT UpdateMovement(MoveInfo* pInfo) override { return LT_OK; }
+LTRESULT MovePushObjects(HOBJECT hToMove, const LTVector& p, HOBJECT* hPushObjects, uint32 nPushObjects) override { (void)hToMove; (void)p; (void)hPushObjects; (void)nPushObjects; return LT_OK; }
+LTRESULT RotatePushObjects(HOBJECT hToMove, const LTRotation& q, HOBJECT* hPushObjects, uint32 nPushObjects) override { (void)hToMove; (void)q; (void)hPushObjects; (void)nPushObjects; return LT_OK; }
 };

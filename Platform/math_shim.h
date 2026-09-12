@@ -77,3 +77,18 @@
 #ifndef SCREEN_FAR_Z
 #define SCREEN_FAR_Z 1.0f
 #endif
+
+// Portable new-array fallback (graphify effects demo, Windows+Unix)
+#include <string>
+#ifndef debug_newa
+#define debug_newa(t,c) new t[c]
+#endif
+#ifndef debug_new
+#define debug_new(t) new t
+#endif
+#ifndef debug_deletea
+#define debug_deletea(p) delete [] (p)
+#endif
+#ifndef debug_delete
+#define debug_delete(p) delete (p)
+#endif

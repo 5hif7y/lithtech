@@ -1,6 +1,6 @@
 # graphics/GuiMgr — demo Linux (graphify Fase4, 84 nodes, auto-generated)
 cmake_minimum_required(VERSION 3.27)
-file(GLOB DEMO_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/cshell/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/shared/src/*.cpp") # sshell excluded on Linux (requires server BaseClass, graphify 18 demos)
+file(GLOB DEMO_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/cshell/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/shared/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/libs/LTGuiMgr/*.cpp") # sshell excluded on Linux (requires server BaseClass, graphify 18 demos)
 if(DEMO_SOURCES STREQUAL "")
   file(GLOB_RECURSE DEMO_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 endif()
@@ -18,6 +18,8 @@ target_include_directories(graphics_GuiMgr BEFORE PRIVATE
   ${CMAKE_SOURCE_DIR}/Engine/Engine/clientfx/Shared
   ${CMAKE_CURRENT_SOURCE_DIR}/shared/src
   ${CMAKE_CURRENT_SOURCE_DIR}/cshell/src
+  ${CMAKE_CURRENT_SOURCE_DIR}/libs/LTGuiMgr
+  ${CMAKE_CURRENT_SOURCE_DIR}/cres/src
 )
 # Fallback: ensure main exists
 target_link_libraries(graphics_GuiMgr PRIVATE lith_platform lith_engine renderer_vulkan SDL2::SDL2 Vulkan::Vulkan)

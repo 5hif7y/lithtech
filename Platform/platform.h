@@ -101,6 +101,12 @@
   #ifndef _stricmp
   #define _stricmp strcasecmp
   #endif
+  #ifndef strcmpi
+  #define strcmpi strcasecmp
+  #endif
+  #ifndef strncmpi
+  #define strncmpi strncasecmp
+  #endif
   #ifndef _strnicmp
   #define _strnicmp strncasecmp
   #endif

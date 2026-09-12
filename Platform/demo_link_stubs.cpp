@@ -13,3 +13,8 @@ void CInterfaceDatabase::DatabaseItemCountInc() {}
 void CInterfaceDatabase::DatabaseItemCountDec() {}
 // Math stubs
 EulerAngles Eul_FromQuat(LTRotation& q, int order) { (void)q; (void)order; EulerAngles e; e.Init(0,0,0,0); return e; }
+// Real quaternion math from Engine (resolves quat_* undefined refs, all demos)
+#include "ltquatbase.cpp"
+// ClientFX manager singleton (graphify sealhunter)
+#include "ClientFXMgr.h"
+CClientFXMgr* g_pClientFXMgr = nullptr;

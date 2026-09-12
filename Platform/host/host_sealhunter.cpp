@@ -7,7 +7,43 @@
 #include "Platform/host/host_engine.h"
 #include "ltclientshell.h"
 #ifdef _LINUX
-// Ventana nativa X11: este SDL (sdl2-compat) no trae backends x11/wayland.
+#ifdef HAS_SDL3
+// Via principal SDL3 (ver host_sdl3.h; ese TU es el unico que incluye
+// headers SDL3: SDL2 y SDL3 no pueden mezclarse en un mismo .cpp).
+// Los keycodes SDL2/SDL3 coinciden en valor para las teclas mapeadas
+// (diseno estable de SDL), asi que SDLK_* via SDL2 sirve para ambos.
+#include <SDL2/SDL.h>
+#include "Platform/host/host_sdl3.h"
+// SDL keycode -> (Windows VK, engine command); mirrors Host::mapKeysym.
+static void mapSDLKey(int sym, int& vk, int& cmd) {
+    vk = -1; cmd = -1;
+    switch (sym) {
+    case SDLK_UP: vk = Host::HVK_UP; cmd = 1; break;
+    case SDLK_DOWN: vk = Host::HVK_DOWN; cmd = 2; break;
+    case SDLK_LEFT: vk = Host::HVK_LEFT; cmd = 3; break;
+    case SDLK_RIGHT: vk = Host::HVK_RIGHT; cmd = 4; break;
+    case SDLK_RETURN: case SDLK_KP_ENTER: vk = Host::HVK_RETURN; cmd = 18; break;
+    case SDLK_SPACE: vk = Host::HVK_SPACE; cmd = 16; break;
+    case SDLK_TAB: vk = Host::HVK_TAB; cmd = 17; break;
+    case SDLK_ESCAPE: vk = Host::HVK_ESCAPE; cmd = 250; break;
+    case SDLK_F12: vk = Host::HVK_F12; cmd = -1; break;
+    default:
+        if ((sym >= 'a' && sym <= 'z') || (sym >= 'A' && sym <= 'Z')) {
+            int u = toupper(sym);
+            vk = u;
+            if (u == 'W') cmd = 1;
+            else if (u == 'S') cmd = 2;
+            else if (u == 'A') cmd = 3;
+            else if (u == 'D') cmd = 4;
+            else if (u == 'T') cmd = 19;
+        } else if (sym >= '0' && sym <= '9') {
+            vk = sym;
+        }
+        break;
+    }
+}
+#endif
+// Fallback (y --x11): ventana nativa X11.
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
@@ -64,6 +100,7 @@ int main(int argc, char* argv[]) {
     bool vulkan = false;
     bool windowMode = false;
     bool psurface = false;
+    bool forceX11 = false;
     std::string ppm = "/tmp/sealhunter_vk.ppm";
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
@@ -74,6 +111,7 @@ int main(int argc, char* argv[]) {
         if (a == "--vulkan") vulkan = true;
         if (a == "--window") windowMode = true;
         if (a == "--psurface") psurface = true;
+        if (a == "--x11") forceX11 = true;
         if (a.rfind("--ppm=", 0) == 0) ppm = a.substr(6);
     }
     // Window mode without --frames runs until the window is closed.
@@ -83,6 +121,9 @@ int main(int argc, char* argv[]) {
     Display* xDpy = nullptr;
     Window xWin = 0;
     Atom xWmDelete = None;
+#ifdef HAS_SDL3
+    Sdl3Win* sdlWin = nullptr;
+#endif
     if (psurface) {
         if (vk.InitHeadlessPresent(800, 600) != S_OK) {
             printf("PSURFACE_RESULT ok=0 stage=vkinit frames=0\n");
@@ -92,6 +133,21 @@ int main(int argc, char* argv[]) {
         Host::VkBridge::width() = 800;
         Host::VkBridge::height() = 600;
     } else if (windowMode) {
+#ifdef HAS_SDL3
+        if (!forceX11) {
+            // Prefer SDL3 (real x11/wayland backends); native handles feed
+            // the existing xlib-surface Vulkan init below.
+            void* sdlDpy = nullptr;
+            unsigned long sdlXWin = 0;
+            sdlWin = Sdl3_Create("Sealhunter - LithTech Jupiter (Vulkan)",
+                                 800, 600, &sdlDpy, &sdlXWin);
+            if (sdlWin) {
+                xDpy = (Display*)sdlDpy;
+                xWin = (Window)sdlXWin;
+            }
+        }
+        if (!sdlWin) {
+#endif
         xDpy = XOpenDisplay(nullptr);
         if (!xDpy) {
             const char* dd = getenv("DISPLAY");
@@ -123,13 +179,21 @@ int main(int argc, char* argv[]) {
             XSetWMHints(xDpy, xWin, wmHints);
             XFree(wmHints);
         }
-        XSetInputFocus(xDpy, xWin, RevertToParent, CurrentTime);
+        // NOTE: no XSetInputFocus here: the window is not viewable yet and
+        // the server kills us with BadMatch. Focus is taken on MapNotify
+        // and on ButtonPress below.
         XFlush(xDpy);
         printf("WINDOW: id=0x%lx\n", (unsigned long)xWin);
+#ifdef HAS_SDL3
+        } // if (!sdlWin): native X11 creation
+#endif
         if (vk.InitNative(xDpy, (unsigned long)xWin, 800, 600) != S_OK) {
             printf("WINDOW_RESULT ok=0 stage=vkinit frames=0\n");
-            XDestroyWindow(xDpy, xWin);
-            XCloseDisplay(xDpy);
+#ifdef HAS_SDL3
+            if (sdlWin) { Sdl3_Destroy(sdlWin); }
+            else
+#endif
+            { XDestroyWindow(xDpy, xWin); XCloseDisplay(xDpy); }
             return 1;
         }
         Host::VkBridge::renderer() = &vk;
@@ -278,6 +342,75 @@ int main(int argc, char* argv[]) {
         return pok ? 0 : 1;
     }
 #ifdef _LINUX
+#ifdef HAS_SDL3
+    if (sdlWin) {
+        // SDL3 event loop (runs after shell creation; mirrors X11 loop).
+        bool quit = false;
+        int presents = 0;
+        struct timespec t0, t1;
+        clock_gettime(CLOCK_MONOTONIC, &t0);
+        while (!quit && (frames <= 0 || presents < frames)) {
+            int a = 0, b = 0, ev = S3_NONE;
+            while (!quit && (ev = Sdl3_Poll(sdlWin, &a, &b)) != S3_NONE) {
+                if (ev == S3_QUIT) { quit = true; continue; }
+                if (ev == S3_KEYDOWN && !b) {
+                    if (a == SDLK_q) { quit = true; continue; }
+                    int vkc, cmd;
+                    mapSDLKey(a, vkc, cmd);
+                    printf("HOST: key sym=0x%x vk=%d cmd=%d\n",
+                           (unsigned)a, vkc, cmd);
+                    if (vkc >= 0) {
+                        shell->OnKeyDown(vkc, 0);
+                        if (Host::noteKey(vkc, cmd, true) && cmd >= 0)
+                            shell->OnCommandOn(cmd);
+                    }
+                } else if (ev == S3_KEYUP) {
+                    int vkc, cmd;
+                    mapSDLKey(a, vkc, cmd);
+                    if (vkc >= 0) {
+                        shell->OnKeyUp(vkc);
+                        Host::noteKey(vkc, cmd, false);
+                    }
+                } else if (ev == S3_MOUSEDOWN) {
+                    shell->OnKeyDown(Host::HVK_LBUTTON, 0);
+                    if (Host::noteKey(Host::HVK_LBUTTON, 15, true))
+                        shell->OnCommandOn(15);
+                } else if (ev == S3_MOUSEUP) {
+                    shell->OnKeyUp(Host::HVK_LBUTTON);
+                    Host::noteKey(Host::HVK_LBUTTON, 15, false);
+                } else if (ev == S3_MOTION) {
+                    Host::addAxes((float)a * 0.01f, (float)b * 0.01f, 0);
+                }
+            }
+            shell->Update();
+            if (Host::stats().shutdownRequested) break;
+            if (vk.RenderWindowFrame() != S_OK) {
+                printf("WINDOW_RESULT ok=0 stage=present frames=%d\n",
+                       presents);
+                shell->OnExitWorld();
+                Sdl3_Destroy(sdlWin);
+                return 1;
+            }
+            presents++;
+            if (presents % 60 == 0) printf("WINDOW: frame %d\n", presents);
+        }
+        clock_gettime(CLOCK_MONOTONIC, &t1);
+        double el = (double)(t1.tv_sec - t0.tv_sec) +
+                    (double)(t1.tv_nsec - t0.tv_nsec) / 1e9;
+        if (el <= 0) el = 1e-9;
+        double fps = presents / el;
+        Host::Stats& ws = Host::stats();
+        bool wok = presents > 0 && !ws.shutdownRequested;
+        printf("WINDOW: frames=%d draws=%d uirenders=%d objects=%d fps=%.1f\n",
+               presents, ws.drawPrimCalls, ws.uiRenders, ws.objectsCreated,
+               fps);
+        printf("WINDOW_RESULT ok=%d frames=%d draws=%d presents=%d fps=%.1f\n",
+               wok ? 1 : 0, presents, ws.drawPrimCalls, presents, fps);
+        shell->OnExitWorld();
+        Sdl3_Destroy(sdlWin);
+        return wok ? 0 : 1;
+    }
+#endif
     if (windowMode) {
         XEvent e;
         bool quit = false;

@@ -22,6 +22,14 @@ target_include_directories(networking_sealhunter BEFORE PRIVATE
 )
 # Fallback: ensure main exists
 target_link_libraries(networking_sealhunter PRIVATE lith_platform lith_engine renderer_vulkan SDL2::SDL2 Vulkan::Vulkan)
+find_package(SDL3 QUIET)
+if(SDL3_FOUND)
+  target_link_libraries(networking_sealhunter PRIVATE SDL3::SDL3)
+  target_compile_definitions(networking_sealhunter PRIVATE HAS_SDL3)
+  target_sources(networking_sealhunter PRIVATE
+    ${CMAKE_SOURCE_DIR}/Platform/host/host_sdl3.cpp)
+  message(STATUS "networking/sealhunter: SDL3 windowing enabled")
+endif()
 if(UNIX)
   target_link_libraries(networking_sealhunter PRIVATE X11)
 endif()

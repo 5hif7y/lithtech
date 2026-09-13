@@ -6,7 +6,7 @@ Merges with new ids; backs up the original index first.
 """
 import json, os, re, sys
 
-ROOT = 'demo-sealhunter/sealhunter'
+ROOTS = sys.argv[1:] or ['demo-sealhunter/sealhunter']
 INDEX = 'graphify-output/nolf2-index.json'
 SRC_EXTS = {'.h', '.hpp', '.c', '.cpp', '.cxx', '.rc', '.lta', '.sln',
             '.vcproj', '.cfg', '.bat', '.txt', '.ico'}
@@ -42,31 +42,67 @@ def main():
     nid = max(n['id'] for n in nodes) + 1
 
     files = []
-    for dp, dns, fns in os.walk(ROOT):
-        dns[:] = [x for x in dns if x not in SKIP_DIRS]
-        for fn in sorted(fns):
-            p = os.path.join(dp, fn)
-            _, ext = os.path.splitext(fn)
-            if ext.lower() in SKIP_FILES:
-                continue
-            if ext.lower() not in SRC_EXTS:
-                continue
-            files.append(p)
+    for ROOT in ROOTS:
+        for dp, dns, fns in os.walk(ROOT):
+            dns[:] = [x for x in dns if x not in SKIP_DIRS]
+            for fn in sorted(fns):
+                p = os.path.join(dp, fn)
+                _, ext = os.path.splitext(fn)
+                if ext.lower() in SKIP_FILES:
+                    continue
+                if ext.lower() not in SRC_EXTS:
+                    continue
+                files.append(p)
 
-    new_nodes = []
-    for p in files:
-        if p in have:
-            continue
+    def read_text(p):
         try:
             with open(p, 'rb') as f:
                 raw = f.read()
-            text = raw.decode('latin1')
+            return raw, raw.decode('latin1')
         except OSError:
+            return None, None
+
+    by_path = {n['path']: n for n in nodes}
+    new_nodes = []
+    refreshed = 0
+    for p in files:
+        if p in have:
+            n = by_path.get(p)
+            if n is None:
+                continue
+            try:
+                sz = os.path.getsize(p)
+            except OSError:
+                continue
+            if sz == n.get('size') and 'mtime' in n:
+                continue  # unchanged since last index
+            raw, text = read_text(p)
+            if raw is None:
+                continue
+            try:
+                mt = os.path.getmtime(p)
+            except OSError:
+                mt = 0
+            n['size'] = len(raw)
+            n['lines'] = text.count('\n') + 1
+            n['windows_tokens'] = len(WIN_PAT.findall(text))
+            n['mtime'] = mt
+            edges[:] = [e for e in edges if e.get('from') != n['id']]
+            new_nodes.append((n['id'], text))
+            refreshed += 1
             continue
+        raw, text = read_text(p)
+        if raw is None:
+            continue
+        try:
+            mt = os.path.getmtime(p)
+        except OSError:
+            mt = 0
         lines = text.count('\n') + 1
         wt = len(WIN_PAT.findall(text))
         node = {'id': nid, 'path': p, 'ext': os.path.splitext(p)[1].lower(),
-                'size': len(raw), 'lines': lines, 'windows_tokens': wt}
+                'size': len(raw), 'lines': lines, 'windows_tokens': wt,
+                'mtime': mt}
         nodes.append(node)
         all_files.append(p)
         by_base.setdefault(os.path.basename(p).lower(), []).append(nid)
@@ -90,9 +126,11 @@ def main():
     shutil.copy(INDEX, INDEX + '.bak')
     with open(INDEX, 'w', encoding='utf-8') as f:
         json.dump(idx, f)
-    top = sorted([n for n in nodes if n['path'].startswith(ROOT)],
+    top = sorted([n for n in nodes
+                  if any(n['path'].startswith(r) for r in ROOTS)],
                  key=lambda n: -n['windows_tokens'])[:10]
-    print('indexed files: %d  edges: %d' % (len(new_nodes), new_edges))
+    print('new files: %d  refreshed: %d  edges: %d'
+          % (len(new_nodes) - refreshed, refreshed, new_edges))
     print('top windows_tokens:')
     for n in top:
         print('  %d %s' % (n['windows_tokens'], n['path']))

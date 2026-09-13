@@ -116,6 +116,9 @@ int main(int argc, char* argv[]) {
     }
     // Window mode without --frames runs until the window is closed.
     if (windowMode && !framesSet) frames = 0;
+#ifndef HAS_SDL3
+    (void)forceX11; // only meaningful with the SDL3 backend compiled in
+#endif
     VulkanRenderer vk;
 #ifdef _LINUX
     Display* xDpy = nullptr;

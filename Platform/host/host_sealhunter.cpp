@@ -301,6 +301,7 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         shell->OnEnterWorld();
+        Host::consumeWorldStart();
     } else {
         printf("HOST: menu boot (StartNormalGame deferred to menu choice)\n");
     }
@@ -314,6 +315,10 @@ int main(int argc, char* argv[]) {
         Uint64 pt0 = SDL_GetPerformanceCounter();
 #endif
         for (int i = 0; i < frames; i++) {
+            if (Host::consumeWorldStart()) {
+                shell->OnEnterWorld();
+                printf("HOST: entered world\n");
+            }
             shell->Update();
             if (Host::stats().shutdownRequested) break;
             if (vk.RenderWindowFrame() != S_OK) {
@@ -381,6 +386,10 @@ int main(int argc, char* argv[]) {
                 } else if (ev == S3_MOTION) {
                     Host::addAxes((float)a * 0.01f, (float)b * 0.01f, 0);
                 }
+            }
+            if (Host::consumeWorldStart()) {
+                shell->OnEnterWorld();
+                printf("HOST: entered world\n");
             }
             shell->Update();
             if (Host::stats().shutdownRequested) break;
@@ -466,6 +475,10 @@ int main(int argc, char* argv[]) {
                     lastMx = mx; lastMy = my; haveMouse = true;
                 }
             }
+            if (Host::consumeWorldStart()) {
+                shell->OnEnterWorld();
+                printf("HOST: entered world\n");
+            }
             shell->Update();
             if (Host::stats().shutdownRequested) break;
             if (vk.RenderWindowFrame() != S_OK) {
@@ -533,6 +546,10 @@ int main(int argc, char* argv[]) {
                                   (float)e.motion.yrel * 0.01f, 0);
                 }
             }
+            if (Host::consumeWorldStart()) {
+                shell->OnEnterWorld();
+                printf("HOST: entered world\n");
+            }
             shell->Update();
             if (Host::stats().shutdownRequested) break;
             if (vk.RenderWindowFrame() != S_OK) {
@@ -560,6 +577,10 @@ int main(int argc, char* argv[]) {
     }
 #endif
     for (int i = 0; i < frames; i++) {
+        if (Host::consumeWorldStart()) {
+            shell->OnEnterWorld();
+            printf("HOST: entered world\n");
+        }
         shell->Update();
         if (Host::stats().shutdownRequested) break;
     }

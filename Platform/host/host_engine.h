@@ -76,6 +76,7 @@ struct Stats {
     unsigned long long terrainSum = 0;
     int cprintLines = 0;
     bool shutdownRequested = false;
+    bool worldStartRequested = false;
     std::string shutdownMsg;
     std::vector<std::string> log;
 };
@@ -262,7 +263,18 @@ static void T_ShutdownWithMessage(const char* m, ...) {
     stats().shutdownRequested = true; stats().shutdownMsg = buf;
 }
 static LTRESULT T_StartGame(StartGameRequest* r) {
-    (void)r; emit("StartGame accepted (headless world)"); return LT_OK;
+    (void)r; emit("StartGame accepted (headless world)");
+    stats().worldStartRequested = true;
+    return LT_OK;
+}
+// Consumes a pending world start (set by T_StartGame). The main loop calls
+// shell->OnEnterWorld() when this returns true, so menu-initiated games
+// (StartNormalGame/Host/Join from the GUI) enter the world like the
+// auto-start path does. Returns false when already consumed.
+inline bool consumeWorldStart() {
+    bool r = stats().worldStartRequested;
+    stats().worldStartRequested = false;
+    return r;
 }
 static HLOCALOBJ T_CreateObject(ObjectCreateStruct* s) {
     (void)s; return makeObject();

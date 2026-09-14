@@ -23,7 +23,7 @@ Demos ejecutables (19): `audio_music`, `audio_sounds`,
 `graphics_fonts`, `graphics_renderdemo`, `graphics_shaders`,
 `graphics_specialeffects1`, `graphics_video`, `networking_nettest`,
 `networking_sealhunter`, `objects_doors`, `objects_pickups`,
-`objects_projectiles` y `vulkan_demo`.
+`objects_projectiles` y `vulkan_demo` (excepción: vive en `build/DemoVulkan/vulkan_demo`, corre 300 frames headless, exit 0).
 
 ## 4. Correr
 

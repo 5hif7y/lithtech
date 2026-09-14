@@ -1,0 +1,27 @@
+import pathlib
+p = pathlib.Path("Engine/CMakeLists.txt")
+text = p.read_text()
+# Fase5: Add missing include dirs for FULL mode (bdefs.h, ltmodule.h)
+old = """target_include_directories(lith_engine BEFORE PUBLIC
+  ${CMAKE_SOURCE_DIR}/Platform
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/Shared
+  ${CMAKE_SOURCE_DIR}/Engine
+)"""
+new = """target_include_directories(lith_engine BEFORE PUBLIC
+  ${CMAKE_SOURCE_DIR}/Platform
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/Engine
+  ${CMAKE_SOURCE_DIR}/Engine/Engine/runtime/shared/src
+  ${CMAKE_SOURCE_DIR}/Engine/Engine/sdk/inc
+  ${CMAKE_SOURCE_DIR}/Engine/Engine/runtime/client/src
+  ${CMAKE_SOURCE_DIR}/Engine/Engine/runtime/server/src
+)"""
+if old in text:
+    text=text.replace(old,new)
+    p.write_text(text)
+    print("patched Engine includes for FULL")
+else:
+    print("not found")

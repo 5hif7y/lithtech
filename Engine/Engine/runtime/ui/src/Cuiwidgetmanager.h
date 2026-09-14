@@ -1,0 +1,1 @@
+cuiwidgetmanager.h

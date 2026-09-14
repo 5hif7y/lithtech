@@ -1,0 +1,1 @@
+MFnNurbsCurveData.h

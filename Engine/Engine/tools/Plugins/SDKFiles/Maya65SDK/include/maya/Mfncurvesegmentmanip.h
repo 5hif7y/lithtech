@@ -1,0 +1,1 @@
+mfncurvesegmentmanip.h

@@ -1,0 +1,31 @@
+/****************************************************************************
+;
+;	FILE:			Inventory.txt
+;
+;	PURPOSE:		Inventory item names & descriptions
+;
+;	HISTORY:		3/20/2002 [kml] This file was created
+;
+;	COMMENT:		Copyright (c) 2002, Monolith Productions, Inc.
+;
+;****************************************************************************
+;
+;	NOTES:
+;	
+;	[Item#]			Inventory Item starting with 0
+;
+;	Name			The name of the inventory item that will show up
+;					in DEdit
+;
+;	NameID			The localizeable name of the inventory item that
+;					will show up in the game (stored in cres.dll)
+;
+;	DescriptionID	The localizeable description of the inventory item
+;					that will show up in the game (scored in cres.dll)
+;
+;
+****************************************************************************/
+
+[Item0]
+Name = "None"
+

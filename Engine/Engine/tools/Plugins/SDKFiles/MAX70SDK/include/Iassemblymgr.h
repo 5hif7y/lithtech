@@ -1,0 +1,1 @@
+iassemblymgr.h

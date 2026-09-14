@@ -1,0 +1,392 @@
+
+[properties]
+
+// animation properties definitions
+//
+// propertygroup
+// { 
+//		property,
+//		property,
+//		property...
+// }
+//
+// for each group, a property named "Any(groupname)" will be implicitly added.
+// for example, a group named movement will have a property named "AnyMovement" 
+// automatically created which can be used to match any property in that group
+
+Posture
+{ 
+	Crouch 
+	Stand 
+	Sit
+	Ride
+	Prone
+}
+
+WeaponAction 
+{ 
+	Aim 
+	Fire 
+	Reload 
+
+	Draw
+	Holster
+
+	Throw
+}
+
+WeaponPosition 
+{ 
+	Lower
+	Down 
+	Up 
+}
+
+Movement 
+{ 
+	Swim 
+	Run 
+	Walk 
+	Crawl
+	Pinned
+	ClimbUp
+	ClimbDown
+
+	JumpDownStart
+	JumpDownFly
+	JumpDownLand
+	JumpDownLandBad
+}
+
+Weapon 
+{ 
+	Weapon1 
+	Weapon2 
+	Weapon3 
+}
+
+Mood 
+{ 
+	Silent 
+	Happy 
+	Angry 
+	Sad 
+	Tense 
+	Agree
+	Disagree
+
+	DamageSleeping
+	DamageStunned
+	DamageTrapped
+	DamageGlued
+	DamageLaughing
+	DamageSlipping
+}
+
+Evasive
+{
+	CornerLeft 
+	CornerRight 
+	RollLeft 
+	RollRight 
+	ShuffleLeft 
+	ShuffleRight 
+	Blind
+	Popup
+}
+
+Awareness
+{
+	Patrol
+	Distress 
+	Investigate 
+	InvestigateDark 
+	Panic
+	Covered
+	Uncovered
+	Covering
+	Uncovering
+
+	Smoking
+	DeskWork
+	FilingHigh
+	FilingLow
+	Peeing
+	PeeingOutside
+	Drinking
+	Hammering
+	Wrenching
+	LeaningBack
+	LeaningBar
+	LeaningLeft
+	LeaningRight
+	Drowsy
+	Typing
+	Operating
+	Researching
+	Microscoping
+	Warming
+	Examining
+	Banging
+	Vending
+	WashingHands
+	Dancing
+	Entertaining
+	Menacing
+	Admiring
+
+	OverRailing
+
+	AwarenessTest1
+	AwarenessTest2
+	AwarenessTest3
+}
+
+Action
+{
+	CheckPulse 
+	KickBody 
+	DisposeBody 
+	Clipboard 
+	Ticket
+	Dust
+	Sweep
+	Wipe
+	OpenDoor 
+	KickDoor 
+	KnockOnDoor
+	Pickup 
+	CloseDrawer
+	ThrowDown
+	PushButton 
+	Tail 
+	Poster
+	KnockOver
+	Phone
+
+	Asleep
+	Awake
+	Death
+
+	Unconscious
+	Stunned
+
+	Alert
+	LookAround
+	LookLeft
+	LookRight
+	LookUp
+	LookUnder
+	LookOver
+	Flashlight
+	Alarm
+	AlarmBox
+
+	FlipTable
+	FlipDesk
+
+	SwitchOn
+	SwitchOff
+
+	Idle
+	Fidget
+	Interrupt
+}
+
+[animations]
+
+// animations are formatted as follows:
+// 
+// animation movement_type { properties }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G
+//
+
+Base None {}
+		
+//--------------------------------------------------------------------------------
+
+//																										
+// Rifle Animations (weapon1)
+//
+
+
+
+//--------------------------------------------------------------------------------
+
+//
+// Tulwar Animations (weapon2)
+//
+
+
+//--------------------------------------------------------------------------------
+
+//
+// Fists Animations (weapon3)
+//
+
+
+3StGd		None { stand anyweaponposition weapon3 }
+ 
+// walk
+
+walk		Encode_G { stand walk anyweaponposition weapon3 } 
+walk 		Encode_G { stand walk down weapon3 patrol }
+
+// run
+
+run		Encode_G { stand run anyweaponposition weapon3 } 
+run		Encode_G { stand run anyweaponposition weapon3 } 
+
+// jump
+
+// investigate/search
+
+sniff       	None     { stand lower weapon3 idle }
+scratch       	None     { stand lower weapon3 idle }
+sniff		None { stand anyweaponposition weapon3 fidget }
+scratch		None { stand anyweaponposition weapon3 fidget }
+sniff		None { stand down weapon3 alert }
+walk		Encode_G { stand walk up weapon3 investigate }
+walk		Encode_G { stand walk down weapon3 investigate }
+sniff		None { stand down weapon3 investigate }
+
+// darkness
+
+sniff		None { stand down weapon3 alert investigatedark }
+scratch		None { stand down weapon3 alert investigatedark }
+sniff		None { stand anyweaponposition weapon3 fidget investigatedark }
+scratch		None { stand anyweaponposition weapon3 fidget investigatedark }
+walk		Encode_G { stand walk up weapon3 investigatedark }
+walk		Encode_G { stand walk down weapon3 investigatedark }
+sniff		None { stand up weapon3 investigatedark }
+
+// doors
+
+// Special Damage Types
+
+KnockOut_idle	None { stand weapon3 lower damagesleeping idle }
+KnockOut_idle	None { stand weapon3 lower damagesleeping death }
+
+SleepDesk	Encode_NG { sit weapon3 lower deskwork damagesleeping idle }
+SleepDesk	Encode_NG { sit weapon3 lower deskwork damagesleeping death }
+SleepDesk	Encode_NG { sit weapon3 lower typing damagesleeping idle }
+SleepDesk	Encode_NG { sit weapon3 lower typing damagesleeping death }
+bed_sleep	Encode_NG { crouch weapon3 lower drowsy damagesleeping idle }
+bed_sleep	Encode_NG { crouch weapon3 lower drowsy damagesleeping death }
+
+Stun_idle		None { stand weapon3 lower damagestunned idle }
+
+BearTrap_idle	None { stand weapon3 lower damagetrapped idle }
+BearTrap_1		None { stand weapon3 lower damagetrapped fidget }
+BearTrap_2		None { stand weapon3 lower damagetrapped fidget }
+BearTrap_idle	None { stand weapon3 lower damageglued idle }
+
+Glue_1			None { stand weapon3 lower damageglued fidget }
+Glue_2			None { stand weapon3 lower damageglued fidget }
+
+Laugh_idle		None { stand weapon3 lower damagelaughing idle }
+Laugh_1			None { stand weapon3 lower damagelaughing fidget }
+Laugh_2			None { stand weapon3 lower damagelaughing fidget }
+banana_idle		None { stand weapon3 lower damageslipping idle }
+banana_idle		None { stand weapon3 lower damageslipping death }
+
+
+
+// Work Goal (UseObjectNode) stuff.
+
+//--------------------------------------------------------------------------------
+
+//
+// Non-Weapon Animations
+// 
+
+// climbing
+
+// grenade
+
+run		Encode_G { stand run anyweapon panic }
+panic		None { stand anyweapon panic }
+panic		None { crouch anyweapon panic }
+
+panic		None { stand anyweapon distress }
+
+sniff		None { stand anyweapon checkpulse }
+sniff		None { stand anyweapon kickbody }
+sniff		None { stand anyweapon disposebody }
+
+
+3StGd		None { stand anyweapon lower silent }
+3StGd		None { stand anyweapon lower happy }
+3StGd		None { stand anyweapon lower angry }
+3StGd		None { stand anyweapon lower sad }
+3StGd		None { stand anyweapon lower tense }
+3StGd		None { stand anyweapon lower agree }
+3StGd		None { stand anyweapon lower disagree }
+
+3StGd		None { sit anyweapon lower silent }
+3StGd		None { sit anyweapon lower happy }
+3StGd		None { sit anyweapon lower angry }
+3StGd		None { sit anyweapon lower sad }
+3StGd		None { sit anyweapon lower tense }
+3StGd		None { sit anyweapon lower agree }
+3StGd		None { sit anyweapon lower disagree }
+
+
+//--------------------------------------------------------------------------------
+
+[transitions]
+
+// transitions are formatted as follows:
+//
+// "animation name" movement_type { initial set }  +{ add set }  ~{ remove set }  ={ constant set }  !{ not set }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G
+//
+// to go from a set of props F to a set of props T, via the transition, the following
+// conditions must be met:
+//
+// F must contain all elements of "initial set"
+// F must have none of "add set"
+// T must have all of "add set"
+// F must have all of "remove set"
+// T must not have "remove set"
+// both F and T must have all of "constant set"
+// both F and T must not have anything in "not set"
+//
+// more specific transitions must be specified later (see 1StGd-1StGuAiIn vs. 1StGd-1StGuAi)
+
+																										
+
+// Work Goal (UseObjectNode) transitions.
+//
+
+// Special Damage Types
+
+KnockOut_In			None { }								+{ damagesleeping }		~{ }					={ }							!{ }
+KnockOut_Out		None { damagesleeping }					+{  }					~{ damagesleeping }		={ }							!{ }
+
+DDesk				Encode_NG { }								+{ damagesleeping }		~{ }							={ typing }			!{ }
+type_Interrupt	Encode_NG { damagesleeping }			+{  }					~{ typing damagesleeping }	={ }			!{ }
+
+DDesk				Encode_NG { }								+{ damagesleeping }		~{ }							={ deskwork }			!{ }
+sidesk_Interrupt	Encode_NG { damagesleeping }			+{  }					~{ deskwork damagesleeping }	={ }			!{ }
+
+bed_sleep			Encode_NG {  }								+{ damagesleeping }		~{ }							={ drowsy }			!{ }
+bed_out		Encode_NG { damagesleeping }			+{  }					~{ drowsy damagesleeping }	={ }			!{ }
+
+banana_In			None { }								+{ damageslipping }		~{ }					={ }							!{ }
+banana_Out			None { damageslipping }					+{  }					~{ damageslipping }		={ }							!{ }
+
+Stun_In				None { }								+{ damagestunned }		~{ }					={ }							!{ }
+Stun_Out			None { damagestunned }					+{  }					~{ damagestunned }		={ }							!{ }
+
+BearTrap_In			None { }								+{ damagetrapped }		~{ }					={ }							!{ }
+BearTrap_Out		None { damagetrapped }					+{  }					~{ damagetrapped }		={ }							!{ }
+
+Glue_In				None { }								+{ damageglued }		~{ }					={ }							!{ }
+Glue_Out			None { damageglued }					+{  }					~{ damageglued }		={ }							!{ }
+
+Laugh_In			None { }								+{ damagelaughing }		~{ }					={ }							!{ }
+Laugh_Out			None { damagelaughing }					+{  }					~{ damagelaughing }		={ }							!{ }
+

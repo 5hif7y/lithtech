@@ -1,0 +1,120 @@
+
+(lt-model-0 
+	(on-load-cmds 
+		(
+			(anim-bindings 
+				(
+					(anim-binding 
+						(name "Default" )
+						(dims 
+							(16.000000 16.000000 16.000000 )
+						)
+						(translation 
+							(0.000000 0.000000 0.000000 )
+						)
+						(interp-time 200 )
+					)
+				)
+			)
+			(set-node-flags 
+				(
+					("joint1" 0 )
+				)
+			)
+			(set-command-string "" )
+			(lod-groups 
+				()
+			)
+			(set-global-radius 96.000000 )
+			(add-node-obb-list 
+				(
+					(add-node-obb "joint1" 
+						(position 
+							(0.000000 0.000000 0.000000 )
+						)
+						(orientation 
+							(0.000000 0.000000 0.000000 1.000000 )
+						)
+						(dimensions 
+							(1.000000 1.000000 1.000000 )
+						)
+						(enabled false )
+					)
+				)
+			)
+			(add-sockets 
+				(
+					(socket "Socket" 
+						(parent "joint1" )
+						(pos 
+							(0.000000 0.000000 0.000000 )
+						)
+						(quat 
+							(0.000000 0.000000 0.000000 1.000000 )
+						)
+						(scale 
+							(1.000000 1.000000 1.000000 )
+						)
+					)
+				)
+			)
+		)
+	)
+	(hierarchy 
+		(children 
+			(
+				(transform "joint1" 
+					(matrix 
+						(
+							(1.000000 0.000000 0.000000 0.000000 )
+							(0.000000 1.000000 0.000000 0.000000 )
+							(0.000000 0.000000 1.000000 0.000000 )
+							(0.000000 0.000000 0.000000 1.000000 )
+						)
+					)
+				)
+			)
+		)
+	)
+	(tools-info 
+		(
+			(compile-options 
+				(
+					(compression-type 2 )
+				)
+			)
+		)
+	)
+	(animset "Default" 
+		(keyframe 
+			(keyframe 
+				(times 
+					(0 1000 )
+				)
+				(values 
+					("" "" )
+				)
+			)
+		)
+		(anims 
+			(
+				(anim 
+					(parent "joint1" )
+					(frames 
+						(posquat 
+							(
+								(
+									(0.000000 0.000000 0.000000 )
+									(0.000000 0.000000 0.000000 1.000000 )
+								)
+								(	(0.000000 0.000000 1.000000 )
+									(0.000000 0.000000 0.000000 1.000000 )
+								)
+							)
+						)
+					)
+				)
+			)
+		)
+	)
+)

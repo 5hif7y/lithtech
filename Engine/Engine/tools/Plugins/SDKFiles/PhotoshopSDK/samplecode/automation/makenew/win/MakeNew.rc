@@ -1,0 +1,131 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "MakeNew-sym.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "MakeNew-sym.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+	"#include ""MakeNew.pipl""\r\n"
+	"#include ""About.rc""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+16001 DIALOG DISCARDABLE  0, 0, 222, 142
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "MakeNew"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&OK",1,174,7,41,14
+    PUSHBUTTON      "&Cancel",2,174,24,41,14
+    RTEXT           "&Width:",3,7,9,65,9
+    EDITTEXT        4,87,7,78,12,ES_AUTOHSCROLL
+    RTEXT           "&Height:",5,7,29,65,9
+    EDITTEXT        6,87,27,78,12,ES_AUTOHSCROLL
+    RTEXT           "&Resolution:",7,7,49,65,9
+    EDITTEXT        8,87,47,78,12,ES_AUTOHSCROLL
+    RTEXT           "&Mode:",9,7,66,65,9
+    CONTROL         "R&GB",10,"Button",BS_AUTORADIOBUTTON,87,65,54,11
+    CONTROL         "CM&YK",11,"Button",BS_AUTORADIOBUTTON,87,78,54,11
+    RTEXT           "&Fill:",12,7,102,65,9
+    CONTROL         "Wh&ite",13,"Button",BS_AUTORADIOBUTTON,87,101,54,11
+    CONTROL         "&Transparent",14,"Button",BS_AUTORADIOBUTTON,87,114,54,
+                    11
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    16001, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 215
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 135
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    16010                   "Dummy"
+    16011                   "Reset"
+	16012					"Cancel"
+END
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "MakeNew.pipl"
+#include "About.rc"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

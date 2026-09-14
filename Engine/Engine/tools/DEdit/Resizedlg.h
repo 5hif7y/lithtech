@@ -1,0 +1,1 @@
+resizedlg.h

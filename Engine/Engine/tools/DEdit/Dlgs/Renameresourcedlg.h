@@ -1,0 +1,1 @@
+renameresourcedlg.h

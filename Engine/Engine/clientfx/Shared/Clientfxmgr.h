@@ -1,0 +1,1 @@
+clientfxmgr.h

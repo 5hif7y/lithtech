@@ -1,0 +1,1 @@
+rezmgr.h

@@ -1,0 +1,1 @@
+IParticleChannelScale.h

@@ -1,0 +1,1 @@
+mfnplugindata.h

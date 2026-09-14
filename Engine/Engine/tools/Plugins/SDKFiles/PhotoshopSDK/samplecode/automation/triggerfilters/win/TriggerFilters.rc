@@ -1,0 +1,164 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "TriggerFilters-sym.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "TriggerFilters-sym.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+	"#include ""TriggerFilters.pipl""\r\n"
+	"#include ""About.rc""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+16001 DIALOG DISCARDABLE  0, 0, 393, 154
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "TriggerFilters"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&OK",1,336,7,50,13
+    PUSHBUTTON      "Cancel",2,336,24,50,13
+    PUSHBUTTON      "Do it!",3,277,7,50,13
+    PUSHBUTTON      "&Undo",4,277,24,50,13
+    COMBOBOX        7,13,18,84,13,CBS_DROPDOWNLIST | WS_TABSTOP
+    COMBOBOX        8,102,18,159,13,CBS_DROPDOWNLIST | WS_TABSTOP
+    COMBOBOX        9,102,36,110,13,CBS_DROPDOWNLIST | WS_TABSTOP
+    RTEXT           "Show dialog:",10,13,38,84,11,NOT WS_GROUP
+    EDITTEXT        11,101,54,110,14,ES_AUTOHSCROLL
+    RTEXT           "Other:",12,13,56,84,12,NOT WS_GROUP
+    LTEXT           "",15,14,94,366,16
+    CONTROL         "&Append to log:",16,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,14,120,60,13
+    LTEXT           "",17,77,123,303,19
+    GROUPBOX        " Results: ",14,7,84,379,63
+    LTEXT           " Filter: ",5,14,4,24,10,NOT WS_GROUP
+    GROUPBOX        "",6,7,7,261,70,WS_DISABLED
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    16001, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 386
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+	16010					"Dummy"
+	16011					"%s%s: %s ticks = %s mins, %s secs."
+	16012					"User cancel, "
+	16013					"Can't find "
+	16014					"%s error, "
+	16015					"Append to log..."
+	16016					"TriggerFilters-log.txt"
+	16017					"Reset"
+	16018					"Cancel"
+	16019					"Once"
+	16020					"Always"
+	16021					"Never"
+	16022					"Internal|16100|Standard|16200|Effect|16300|"
+	16100					"Dummy"
+	16101					"Blur|Blr |Blur More|BlrM|Gaussian Blur|GsnB|Motion Blur|MtnB|-|-|+"
+	16102					"Add Noise|AdNs|Despeckle|Dspc|Dust & Scratches|DstS|Median|Mdn |-|-|+"
+	16103					"Facet|Fct |Fragment|Frgm|Mosaic|Msc |-|-|+"
+	16104					"Sharpen|Shrp|Sharpen Edges|ShrE|Sharpen More|ShrM|Unsharp Mask|UnsM|-|-|+"
+	16105					"Diffuse|Dfs |Emboss|Embs|Find Edges|FndE|Trace Contour|TrcC|-|-|+"
+	16106					"Custom|Cstm|High Pass|HghP|Maximum|Mxm |Minimum|Mnm |Offset|Ofst|-|-|+"
+	16107					"Other...|othR|"
+	16200					"Dummy"
+	16201					"Radial Blur|RdlB|Smart Blur|SmrB|-|-|+"
+	16202					"Color Halftone|ClrH|Crystallize|Crst|Mezzotint|Mztn|-|-|+"
+	16203					"3D Transform|TdT |Clouds|Clds|Difference Clouds|DfrC|Lens Flare|LnsF|-|-|+"
+	16204					"Extrude|Extr|Solarize|Slrz|Tiles|Tls |Wind|Wnd |-|-|+"
+	16205					"De-Interlace|Dntr|NTSC Colors|NTSC|-|-|+"
+	16206					"Other...|othR|"
+	16300					"Dummy"
+	16301					"Colored Pencil|ClrP|Cutout|Ct  |Dry Brush|DryB|Film Grain|FlmG|Fresco|Frsc|Neon Glow|NGlw|Paint Daubs|PntD|Palette Knife|PltK|Plastic Wrap|PlsW|Poster Edges|PstE|Rough Pastels|RghP|Smudge Stick|SmdS|Sponge|Spng|Underpainting|Undr|Watercolor|Wtrc|-|-|+"
+	16302					"Accented Edges|AccE|Angled Strokes|AngS|Crosshatch|Crsh|Dark Strokes|DrkS|Ink Outlines|InkO|Splatter|Spt |Sprayed Strokes|SprS|Sumi-e|Smie|-|-|+"
+	16303					"Diffuse Glow|DfsG|Glass|Gls |Ocean Ripple|OcnR|-|-|+"
+	16304					"Craquelure|Crql|Grain|Grn |Mosaic|MscT|Patchwork|Ptch|Stained Glass|StnG|Texturizer|Txtz|-|-|+"
+	16305					"Other...|othR|"
+END
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "TriggerFilters.pipl"
+#include "About.rc"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

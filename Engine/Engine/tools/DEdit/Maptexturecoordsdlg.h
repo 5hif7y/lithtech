@@ -1,0 +1,1 @@
+maptexturecoordsdlg.h

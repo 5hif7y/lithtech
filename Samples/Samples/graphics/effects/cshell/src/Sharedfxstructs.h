@@ -1,0 +1,1 @@
+sharedfxstructs.h

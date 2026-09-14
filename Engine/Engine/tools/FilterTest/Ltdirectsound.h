@@ -1,0 +1,1 @@
+ltdirectsound.h

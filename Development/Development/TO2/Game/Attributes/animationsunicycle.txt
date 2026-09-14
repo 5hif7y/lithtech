@@ -1,0 +1,245 @@
+
+[properties]
+
+// animation properties definitions
+//
+// propertygroup
+// { 
+//		property,
+//		property,
+//		property...
+// }
+//
+// for each group, a property named "Any(groupname)" will be implicitly added.
+// for example, a group named movement will have a property named "AnyMovement" 
+// automatically created which can be used to match any property in that group
+
+Posture
+{ 
+	Crouch 
+	Stand 
+	Sit
+	Ride
+	Prone
+}
+
+WeaponAction 
+{ 
+	Aim 
+	Fire 
+	Reload 
+
+	Draw
+	Holster
+
+	Throw
+}
+
+WeaponPosition 
+{ 
+	Lower
+	Down 
+	Up 
+}
+
+Movement 
+{ 
+	Swim 
+	Run 
+	Walk 
+	Crawl
+	Pinned
+	ClimbUp
+	ClimbDown
+
+	JumpDownStart
+	JumpDownFly
+	JumpDownLand
+}
+
+Weapon 
+{ 
+	Weapon1 
+	Weapon2 
+	Weapon3 
+}
+
+Mood 
+{ 
+	Silent 
+	Happy 
+	Angry 
+	Sad 
+	Tense 
+	Agree
+	Disagree
+}
+
+Evasive
+{
+	CornerLeft 
+	CornerRight 
+	RollLeft 
+	RollRight 
+	ShuffleLeft 
+	ShuffleRight 
+	Blind
+	Popup
+}
+
+Awareness
+{
+	Patrol
+	Distress 
+	Investigate 
+	InvestigateDark 
+	Panic
+	Covered
+	Uncovered
+	Covering
+	Uncovering
+
+	Smoking
+	DeskWork
+	FilingHigh
+	FilingLow
+	Peeing
+	Drinking
+	Hammering
+	Wrenching
+	LeaningBack
+	LeaningBar
+	LeaningLeft
+	LeaningRight
+	Drowsy
+	Typing
+	Researching
+	Microscoping
+	Warming
+	Examining
+
+	AwarenessTest1
+	AwarenessTest2
+	AwarenessTest3
+}
+
+Action
+{
+	CheckPulse 
+	Clipboard 
+	Ticket
+	Dust
+	Sweep
+	Wipe
+	OpenDoor 
+	KickDoor 
+	KnockOnDoor
+	Pickup 
+	CloseDrawer
+	ThrowDown
+	PushButton 
+	Tail 
+	Poster
+
+	Asleep
+	Awake
+
+	Unconscious
+	Stunned
+
+	Alert
+	LookAround
+	LookLeft
+	LookRight
+	LookUnder
+	LookOver
+	Flashlight
+	Alarm
+
+	SwitchOn
+	SwitchOff
+
+	Idle
+	Fidget
+}
+
+[animations]
+
+// animations are formatted as follows:
+// 
+// animation movement_type { properties }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G
+//
+
+Base None {}
+		
+//--------------------------------------------------------------------------------
+
+
+//--------------------------------------------------------------------------------
+
+//
+// Fists Animations
+//
+
+3StGd		None { stand anyweaponposition weapon3 }
+ 
+// walk
+
+run		Run { stand walk anyweaponposition weapon3 } 
+run	 	Run { stand walk down weapon3 patrol }
+
+// run
+
+run		Run { stand run anyweaponposition weapon3 } 
+
+
+// investigate/search
+stop1	Encode_G { stand anyweaponposition weapon3 lookaround }
+stop2	Encode_G { stand anyweaponposition weapon3 lookaround }
+
+
+// Work Goal (UseObjectNode) stuff.
+
+
+stop1	Encode_G { stand anyweaponposition weapon3 tail }
+stop2	Encode_G { stand anyweaponposition weapon3 dust }
+
+
+
+
+//--------------------------------------------------------------------------------
+
+//
+// Non-Weapon Animations
+// 
+
+
+
+
+
+
+//--------------------------------------------------------------------------------
+
+[transitions]
+
+// transitions are formatted as follows:
+//
+// "animation name" movement_type { initial set }  +{ add set }  ~{ remove set }  ={ constant set }  !{ not set }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G
+//
+// to go from a set of props F to a set of props T, via the transition, the following
+// conditions must be met:
+//
+// F must contain all elements of "initial set"
+// F must have none of "add set"
+// T must have all of "add set"
+// F must have all of "remove set"
+// T must not have "remove set"
+// both F and T must have all of "constant set"
+// both F and T must not have anything in "not set"
+//
+// more specific transitions must be specified later (see 1StGd-1StGuAiIn vs. 1StGd-1StGuAi)
+

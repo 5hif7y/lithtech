@@ -1,0 +1,1 @@
+admdialogold.h

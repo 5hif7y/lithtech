@@ -1,0 +1,1 @@
+backgroundmgr.h

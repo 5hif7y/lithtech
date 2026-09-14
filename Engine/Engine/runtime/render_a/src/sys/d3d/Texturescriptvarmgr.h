@@ -1,0 +1,1 @@
+texturescriptvarmgr.h

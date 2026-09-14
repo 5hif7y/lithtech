@@ -1,0 +1,1 @@
+d3dmeshrendobj_vertanim.h

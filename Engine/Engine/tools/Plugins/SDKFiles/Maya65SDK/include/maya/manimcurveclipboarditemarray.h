@@ -1,0 +1,1 @@
+MAnimCurveClipboardItemArray.h

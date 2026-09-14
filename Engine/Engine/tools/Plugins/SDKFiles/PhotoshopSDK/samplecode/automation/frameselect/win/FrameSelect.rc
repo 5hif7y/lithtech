@@ -1,0 +1,138 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "FrameSelect-sym.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "FrameSelect-sym.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""FrameSelect.pipl""\r\n"
+	"#include ""About.rc""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+16001 DIALOG DISCARDABLE  0, 0, 245, 177
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "FrameSelect"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&OK",1,197,7,41,14
+    PUSHBUTTON      "&Cancel",2,197,24,41,14
+    RTEXT           "&Amount:",5,17,21,56,11
+    EDITTEXT        6,83,19,86,14,ES_AUTOHSCROLL
+    RTEXT           "&Units:",7,17,44,56,11
+    COMBOBOX        8,83,42,86,17,CBS_DROPDOWNLIST | WS_TABSTOP
+    GROUPBOX        " Gutter: ",3,7,7,175,59
+    RTEXT           "&Top:",11,17,89,56,11
+    EDITTEXT        12,83,88,86,14,ES_AUTOHSCROLL
+    RTEXT           "&Left:",13,17,107,56,11
+    EDITTEXT        14,83,106,86,14,ES_AUTOHSCROLL
+    RTEXT           "&Bottom:",15,17,126,56,11
+    EDITTEXT        16,83,125,86,14,ES_AUTOHSCROLL
+    RTEXT           "&Right:",17,17,147,56,11
+    EDITTEXT        18,83,146,86,14,ES_AUTOHSCROLL
+    GROUPBOX        " Offset: ",9,7,73,175,97
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    16001, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 238
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 170
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    16010                   "Dummy"
+    16011                   "Reset"
+	16012					"Cancel"
+	16013					"pixels"
+	16014					"inches"
+	16015					"cm"
+	16016					"points"
+	16017					"picas"
+	16018					"percent"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "FrameSelect.pipl"
+#include "About.rc"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

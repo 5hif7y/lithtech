@@ -1,0 +1,135 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: CRes - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+
+
+
+<h3>Results</h3>
+cres.dll - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: CShell - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP32F.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\..\..\..\engine\sdk\inc" /I "..\..\..\..\..\libs\STLPORT-4.0\STLPORT" /I "..\..\shared\src" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR"..\obj\debug6/" /Fp"..\obj\debug6/cshell.pch" /YX /Fo"..\obj\debug6/" /Fd"..\obj\debug6/" /FD /GZ /c 
+"E:\proj\Jupiter_PC\Samples\base\samplebase\cshell\src\camera.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\cshell\src\clienthelper.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\cshell\src\clientinterfaces.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\cshell\src\ltclientshell.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\cshell\src\playerclnt.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\cshell\src\worldpropsclient.cpp"
+"E:\proj\Jupiter_PC\Engine\sdk\inc\iltbaseclass.cpp"
+"E:\proj\Jupiter_PC\Engine\sdk\inc\ltmodule.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP32F.tmp" 
+Creating temporary file "C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP330.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"..\obj\debug6/cshell.pdb" /debug /machine:I386 /out:"..\obj\debug6/cshell.dll" /implib:"..\obj\debug6/cshell.lib" /pdbtype:sept 
+\proj\Jupiter_PC\Samples\base\samplebase\cshell\obj\debug6\camera.obj
+\proj\Jupiter_PC\Samples\base\samplebase\cshell\obj\debug6\clienthelper.obj
+\proj\Jupiter_PC\Samples\base\samplebase\cshell\obj\debug6\clientinterfaces.obj
+\proj\Jupiter_PC\Samples\base\samplebase\cshell\obj\debug6\ltclientshell.obj
+\proj\Jupiter_PC\Samples\base\samplebase\cshell\obj\debug6\playerclnt.obj
+\proj\Jupiter_PC\Samples\base\samplebase\cshell\obj\debug6\worldpropsclient.obj
+\proj\Jupiter_PC\Samples\base\samplebase\cshell\obj\debug6\iltbaseclass.obj
+\proj\Jupiter_PC\Samples\base\samplebase\cshell\obj\debug6\ltmodule.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP330.tmp"
+<h3>Output Window</h3>
+Compiling...
+camera.cpp
+clienthelper.cpp
+clientinterfaces.cpp
+ltclientshell.cpp
+playerclnt.cpp
+worldpropsclient.cpp
+iltbaseclass.cpp
+ltmodule.cpp
+Linking...
+   Creating library ..\obj\debug6/cshell.lib and object ..\obj\debug6/cshell.exp
+Creating temporary file "C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP334.bat" with contents
+[
+@echo off
+copy  ..\obj\debug6\cshell.dll   ..\..\rez
+]
+Creating command line "C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP334.bat"
+
+        1 file(s) copied.
+
+
+
+<h3>Results</h3>
+cshell.dll - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: Object - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP335.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /I "..\..\..\..\..\engine\sdk\inc" /I "..\..\..\..\..\libs\STLPORT-4.0\STLPORT" /I "..\..\shared\src" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FR"..\obj\debug6/" /Fp"..\obj\debug6/object.pch" /YX /Fo"..\obj\debug6/" /Fd"..\obj\debug6/" /FD /GZ /c 
+"E:\proj\Jupiter_PC\Samples\base\samplebase\sshell\src\gamestartpoint.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\sshell\src\ltservershell.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\sshell\src\playersrvr.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\sshell\src\serverinterfaces.cpp"
+"E:\proj\Jupiter_PC\Samples\base\samplebase\sshell\src\worldproperties.cpp"
+"E:\proj\Jupiter_PC\Engine\sdk\inc\iltbaseclass.cpp"
+"E:\proj\Jupiter_PC\Engine\sdk\inc\ltengineobjects.cpp"
+"E:\proj\Jupiter_PC\Engine\sdk\inc\ltmodule.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP335.tmp" 
+Creating temporary file "C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP336.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /incremental:yes /pdb:"..\obj\debug6/Object.pdb" /debug /machine:I386 /out:"..\obj\debug6/Object.lto" /implib:"..\obj\debug6/Object.lib" /pdbtype:sept 
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\gamestartpoint.obj
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\ltservershell.obj
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\playersrvr.obj
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\serverinterfaces.obj
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\worldproperties.obj
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\iltbaseclass.obj
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\ltengineobjects.obj
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\ltmodule.obj
+\proj\Jupiter_PC\Samples\base\samplebase\sshell\obj\debug6\ltquatbase.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP336.tmp"
+<h3>Output Window</h3>
+Compiling...
+gamestartpoint.cpp
+ltservershell.cpp
+playersrvr.cpp
+serverinterfaces.cpp
+worldproperties.cpp
+iltbaseclass.cpp
+ltengineobjects.cpp
+ltmodule.cpp
+Linking...
+Creating temporary file "C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP337.bat" with contents
+[
+@echo off
+copy  ..\obj\debug6\object.lto   ..\..\rez
+]
+Creating command line "C:\DOCUME~1\davidj\LOCALS~1\Temp\RSP337.bat"
+
+        1 file(s) copied.
+
+
+
+<h3>Results</h3>
+Object.lto - 0 error(s), 0 warning(s)
+<h3>
+--------------------Configuration: SRes - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+
+
+
+<h3>Results</h3>
+sres.dll - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

@@ -1,0 +1,240 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "..\resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "..\\resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\r\n"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "Game.ico"
+IDI_SELECTED            ICON                    "selected.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_GAMESERVER DIALOGEX 0, 0, 494, 323
+STYLE DS_SETFONT | DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "SealHunter - Dedicated Server"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Server Info",IDC_GRPSERVERINFO,7,7,236,120
+    LTEXT           "Server Name:",IDC_LBLSERVERNAME,17,19,75,12
+    CONTROL         "<server name>",IDC_SERVER_NAME,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,110,19,129,12
+    LTEXT           "Running Time:",IDC_LBLRUNNINGTIME,17,44,47,12
+    CONTROL         "<server time>",IDC_SERVER_TIME,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,110,43,127,12
+    LTEXT           "Current Players:",IDC_LBLCURRENTPLAYERS,18,203,71,12
+    EDITTEXT        IDC_TOTALPLAYERS,110,88,65,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    LTEXT           "Total/Unique Players:",IDC_LBLTOTALPLAYERS,17,88,81,12
+    EDITTEXT        IDC_PEAKPLAYERS,110,75,67,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    LTEXT           "Time in Level:",IDC_LBLTIMEINLEVEL,17,58,84,12
+    LTEXT           "<level time>",IDC_TIMEINLEVEL,110,56,127,12
+    LTEXT           "Average Ping:",IDC_LBLAVERAGEPING,175,203,65,12
+    EDITTEXT        IDC_AVERAGEPING,243,203,80,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER | NOT WS_TABSTOP
+    GROUPBOX        "Players",IDC_GRPPLAYERS,7,131,480,92
+    CONTROL         "List1",IDC_PLAYERS,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_NOSORTHEADER | WS_BORDER | 
+                    WS_TABSTOP,16,144,462,51
+    PUSHBUTTON      "&Boot Player",IDC_PLAYER_BOOT,381,201,95,14,WS_DISABLED
+    GROUPBOX        "Missions",IDC_GRPMISSIONS,251,7,236,120
+    CONTROL         "List1",IDC_LEVELS,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOLABELWRAP | 
+                    LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | 
+                    WS_TABSTOP,262,20,213,78
+    PUSHBUTTON      "&Next Mission",IDC_COMMANDS_NEXTLEVEL,262,105,95,14
+    PUSHBUTTON      "Select &Mission",IDC_COMMANDS_SELLEVEL,382,105,94,14
+    PUSHBUTTON      "S&top Server",IDC_STOPSERVER,78,105,95,14
+    GROUPBOX        "Console",IDC_GRPCONSOLE,7,228,480,88
+    EDITTEXT        IDC_CONSOLE_COMMAND,16,295,462,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Clear",IDC_CONSOLE_CLEAR,348,275,55,12
+    EDITTEXT        IDC_CONSOLE_WINDOW,16,242,462,52,ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+    DEFPUSHBUTTON   "*Send*",IDC_CONSOLE_SEND,196,87,40,8,NOT WS_VISIBLE
+    PUSHBUTTON      "*Button1*",IDC_STARTUP,193,73,40,8,NOT WS_VISIBLE
+    LTEXT           "Game Type:",IDC_LBLGAMETYPE,17,31,82,12
+    CONTROL         "<game type>",IDC_GAME_TYPE,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,110,31,128,12
+    LTEXT           "Peak Players:",IDC_LBLPEAKPLAYERS,17,75,49,12
+    LTEXT           "<players>",IDC_NUM_PLAYERS,89,203,67,12
+END
+
+IDD_SELECTCONFIG DIALOGEX 0, 0, 192, 62
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select Config"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,77,41,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,135,41,50,14
+    COMBOBOX        IDC_CONFIG,7,20,178,55,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Server Config File:",IDC_SC_LBLSERVERCONFIGFILE,7,7,178,
+                    10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,0
+ PRODUCTVERSION 1,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "TouchdownEntertainment"
+            VALUE "FileDescription", "SealHunter Stand-Alone Server"
+            VALUE "FileVersion", "1, 0, 0, 0"
+            VALUE "InternalName", "SealHunterServer"
+            VALUE "LegalCopyright", "Copyright (C) 2004, Touchdown Entertainment Inc."
+            VALUE "OriginalFilename", "ServerApp.exe"
+            VALUE "ProductName", "SealHunterServer"
+            VALUE "ProductVersion", "1, 0, 0, 0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_GAMESERVER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 487
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 316
+    END
+
+    IDD_SELECTCONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 185
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 55
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_SPLASH              BITMAP                  "splash.bmp"
+IDB_SPLASH_A8           BITMAP                  "splash_a8.bmp"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif
+#include "afxres.rc"         // Standard components
+#endif
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

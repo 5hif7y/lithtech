@@ -1,0 +1,1 @@
+iparticlechannellifespan.h

@@ -1,0 +1,260 @@
+;
+; LithTech DirectMusic Level Control File
+;
+; Copyright (C) 1999 Monolith Productions, Inc. 
+; All Rights Reserved
+;
+;
+; This is sample file that you can use to make your own control file from.  
+;
+
+; number of intensities that are defined
+NUMINTENSITIES 44
+
+; initial intensity to start playing (use 0 for none)
+INITIALINTENSITY 1
+
+; optional volume to set music playback to (default is 0) volume is in decibals and can be negative or positive
+; negative numbers reduce the volume and positive numbers increase the volume
+INITIALVOLUME 0
+VOLUMEOFFSET -1500
+
+; number of pchannels to use
+PCHANNELS 256
+
+; number of voices to use
+VOICES 64
+
+; sample rate for synthesizer to run at
+SYNTHSAMPLERATE 44100
+
+; reverb can be either on or off. Default is OFF.
+REVERB OFF
+
+; specify the reverb Input Gain in decibels. The default value is 0. This value is a floating point value.
+REVERBINGAIN 0.0
+
+; specify the reverb Mix in decibels. The default value is -10.0. A value of 0 means 100 percent wet reverb 
+; (no direct signal). This value is a floating point value.
+REVERBMIX -10
+; Specify reverb decay time, in milliseconds. The default value is 1000. This value is a floating point value.
+REVERBTIME 1000
+
+; Specify reverb RBTime value. Ratio of the high frequencies to the global reverb time. Unless very bright 
+; reverbs are wanted, this should be set to a value less than 1. The default value is 0.001. This value is a 
+; loating point value.
+REVERBHIGHFREQRTRATIO 0.001
+
+; downloadable sound banks (.DLS) to load (you can specify any number of these)
+
+
+; styles (.STY) to load (you can specify any number of these)
+
+STYLE Fade.sty
+
+; name of bands to use (you can specify any number of these) (these are contained in the styles)
+; format : BAND <style name> <band name>
+
+
+; chordmaps to load (you can specify any number of these)
+; CHORDMAP samplechrd.crd
+; CHORDMAP samplechrd2.crd
+
+
+; intensity definitions 
+
+; format is INTENSITY <intensity number> <times to loop (-1 for infinite loop)> <intensity to switch to when finished or 0 for stop> [any number of segments]
+
+; Silence
+INTENSITY	1	0	1	Silence.sgt
+
+; Exploration
+INTENSITY	2	0	3	Explore1.sgt
+INTENSITY	3	0	4	Explore2.sgt
+INTENSITY	4	0	5	Explore3.sgt
+INTENSITY	5	0	6	Explore4.sgt
+INTENSITY	6	0	7	Explore5.sgt
+INTENSITY	7	0	8	Explore6.sgt
+INTENSITY	8	0	9	Explore7.sgt
+INTENSITY	9	0	10	Explore8.sgt
+INTENSITY	10	0	11	Explore9.sgt
+INTENSITY	11	0	12	Explore10.sgt
+INTENSITY	12	0	13	Explore11.sgt
+INTENSITY	13	0	14	Explore12.sgt
+INTENSITY	14	0	15	Explore13.sgt
+INTENSITY	15	0	16	Explore14.sgt
+INTENSITY	16	0	2	Explore15.sgt
+
+; Warning
+INTENSITY	21 	0	22	Warning1.sgt
+INTENSITY	22	0	23	Warning2.sgt
+INTENSITY	23	0	24	Warning3.sgt
+INTENSITY	24	0	25	Warning4.sgt
+INTENSITY	25	0	26	Warning5.sgt
+INTENSITY	26	0	27	Warning6.sgt
+INTENSITY	27	0	28	Warning7.sgt
+INTENSITY	28	0	29	Warning8.sgt
+INTENSITY	29	0	30	Warning9.sgt
+INTENSITY	30	0	23	Warning10.sgt
+
+; Combat
+INTENSITY	31	0	32	Combat1.sgt
+INTENSITY	32	0	33	Combat2.sgt
+INTENSITY	33	0	34	Combat3.sgt
+INTENSITY	34	0	35	Combat4.sgt
+INTENSITY	35	0	36	Combat5.sgt
+INTENSITY	36	0	37	Combat6.sgt
+INTENSITY	37	0	38	Combat7.sgt
+INTENSITY	38	0	39	Combat8.sgt
+INTENSITY	39	0	40	Combat9.sgt
+INTENSITY	40	0	41	Combat10.sgt
+INTENSITY	41	0	42	Combat11.sgt
+INTENSITY	42	0	43	Combat12.sgt
+INTENSITY	43	0	44	Combat13.sgt
+INTENSITY	44	0	32	Combat14.sgt
+
+; Transitions (only transitions that are not going to use MEASURE MANUAL with no transition segment
+;			   need to be defined)
+;
+; format is TRANSITION <from intensity> <to intensity> <when to enact transition> <automatic or manual> [optional segment to play if manual] [optional chordmap if automatic]
+;
+;	when to enact transition = SEGMENT, MEASURE, BEAT, IMMEDIATE, GRID, MARKER, DEFAULT (defined in segment)
+;
+;	automatic or manual = AUTOMATIC for directmusic automatic transition, MANUAL for manual playing of transition segments (if no 
+;						  transitions are specified for manual then no transition happens new intensity just starts playing)
+
+; From Silence
+TRANSITION	1	2	MEASURE		MANUAL
+TRANSITION	1	21	MEASURE		MANUAL
+TRANSITION	1	31	MEASURE		MANUAL
+
+; From Exploration
+TRANSITION	2	1	MEASURE		MANUAL	TransES1.sgt
+TRANSITION	2	21	MEASURE		MANUAL
+TRANSITION	2	31	MEASURE		MANUAL
+TRANSITION	3	1	MEASURE		MANUAL	TransES2.sgt
+TRANSITION	3	21	MEASURE		MANUAL  
+TRANSITION	3	31	MEASURE		MANUAL	
+TRANSITION	4	1	MEASURE		MANUAL	TransES3.sgt
+TRANSITION	4	21	MEASURE		MANUAL	TransEW3.sgt
+TRANSITION	4	31	MEASURE		MANUAL	TransEW3.sgt
+TRANSITION	5	1	MEASURE		MANUAL	
+TRANSITION	5	21	MEASURE		MANUAL	TransEW4.sgt
+TRANSITION	5	31	MEASURE		MANUAL	TransEW4.sgt
+TRANSITION	6	1	MEASURE		MANUAL	TransES5.sgt
+TRANSITION	6	21	MEASURE		MANUAL 	TransEW5.sgt
+TRANSITION	6	31	MEASURE		MANUAL	TransEC5.sgt
+TRANSITION	7	1	MEASURE		MANUAL	TransES6.sgt
+TRANSITION	7	21	MEASURE		MANUAL	TransEW6.sgt
+TRANSITION	7	31	MEASURE		MANUAL	TransEW6.sgt
+TRANSITION	8	1	MEASURE		MANUAL	TransES7.sgt	
+TRANSITION	8	21	MEASURE		MANUAL
+TRANSITION	8	31	MEASURE		MANUAL
+TRANSITION	9	1	MEASURE		MANUAL	TransES8.sgt
+TRANSITION	9	21	MEASURE		MANUAL	TransEW8.sgt
+TRANSITION	9	31	MEASURE		MANUAL	TransEW8.sgt
+TRANSITION	10	1	MEASURE		MANUAL	TransES9.sgt
+TRANSITION	10	21	MEASURE		MANUAL	TransEW9.sgt
+TRANSITION	10	31	MEASURE		MANUAL	TransEW9.sgt
+TRANSITION	11	1	MEASURE		MANUAL	
+TRANSITION	11	21	MEASURE		MANUAL	TransEW4.sgt
+TRANSITION	11	31	MEASURE		MANUAL	TransEW4.sgt
+TRANSITION	12	1	MEASURE		MANUAL	TransES11.sgt
+TRANSITION	12	21	MEASURE		MANUAL	TransEW11.sgt
+TRANSITION	12	31	MEASURE		MANUAL	TransEC11.sgt
+TRANSITION	13	1	MEASURE		MANUAL	TransES12.sgt
+TRANSITION	13	21	MEASURE		MANUAL	TransEW12.sgt
+TRANSITION	13	31	MEASURE		MANUAL	TransEW12.sgt
+TRANSITION	14	1	MEASURE		MANUAL	TransES13.sgt
+TRANSITION	14	21	MEASURE		MANUAL
+TRANSITION	14	31	MEASURE		MANUAL
+TRANSITION	15	1	MEASURE		MANUAL	TransES14.sgt
+TRANSITION	15	21	MEASURE		MANUAL
+TRANSITION	15	31	MEASURE		MANUAL
+TRANSITION	16	1	MEASURE		MANUAL	TransES14.sgt
+TRANSITION	16	21	MEASURE		MANUAL
+TRANSITION	16	31	MEASURE		MANUAL
+
+; From Warning
+TRANSITION	21	1	MEASURE		MANUAL	TransWS1.sgt
+TRANSITION	21	2	MEASURE		MANUAL
+TRANSITION	21	31	MEASURE		MANUAL
+TRANSITION	22	1	MEASURE		MANUAL	TransWS1.sgt
+TRANSITION	22	2	MEASURE		MANUAL
+TRANSITION	22	31	MEASURE		MANUAL
+TRANSITION	23	1	MEASURE		MANUAL	TransWS3.sgt
+TRANSITION	23	2	MEASURE		MANUAL	TransWE3.sgt
+TRANSITION	23	31	MEASURE		MANUAL	TransWE3.sgt
+TRANSITION	24	1	MEASURE		MANUAL	TransWS1.sgt
+TRANSITION	24	2	MEASURE		MANUAL
+TRANSITION	24	31	MEASURE		MANUAL
+TRANSITION	25	1	MEASURE		MANUAL	TransWS1.sgt
+TRANSITION	25	2	MEASURE		MANUAL
+TRANSITION	25	31	MEASURE		MANUAL
+TRANSITION	26	1	MEASURE		MANUAL	TransWS1.sgt
+TRANSITION	26	2	MEASURE		MANUAL
+TRANSITION	26	31	MEASURE		MANUAL
+TRANSITION	27	1	MEASURE		MANUAL	TransWS7.sgt
+TRANSITION	27	2	MEASURE		MANUAL
+TRANSITION	27	31	MEASURE		MANUAL
+TRANSITION	28	1	MEASURE		MANUAL	TransWS7.sgt
+TRANSITION	28	2	MEASURE		MANUAL
+TRANSITION	28	31	MEASURE		MANUAL
+TRANSITION	29	1	MEASURE		MANUAL	TransWS7.sgt
+TRANSITION	29	2	MEASURE		MANUAL
+TRANSITION	29	31	MEASURE		MANUAL
+TRANSITION	30	1	MEASURE		MANUAL	TransWS1.sgt
+TRANSITION	30	2	MEASURE		MANUAL
+TRANSITION	30	31	MEASURE		MANUAL
+
+; From Combat
+TRANSITION	31	1	MEASURE		MANUAL	TransCS4.sgt
+TRANSITION	31	2	MEASURE		MANUAL	TransCW4.sgt
+TRANSITION	31	21	MEASURE		MANUAL	
+TRANSITION	32	1	MEASURE		MANUAL	TransCS4.sgt
+TRANSITION	32	2	MEASURE		MANUAL	TransCW4.sgt
+TRANSITION	32	21	MEASURE		MANUAL	
+TRANSITION	33	1	MEASURE		MANUAL	TransCS3.sgt
+TRANSITION	33	2	MEASURE		MANUAL	TransCW3.sgt
+TRANSITION	33	21	MEASURE		MANUAL	TransCW3.sgt
+TRANSITION	34	1	MEASURE		MANUAL	TransCS4.sgt
+TRANSITION	34	2	MEASURE		MANUAL	TransCW4.sgt
+TRANSITION	34	21	MEASURE		MANUAL	
+TRANSITION	35	1	MEASURE		MANUAL	TransCS3.sgt
+TRANSITION	35	2	MEASURE		MANUAL	TransCW3.sgt
+TRANSITION	35	21	MEASURE		MANUAL	TransCW3.sgt
+TRANSITION	36	1	MEASURE		MANUAL	TransCS6.sgt
+TRANSITION	36	2	MEASURE		MANUAL	TransCS10.sgt
+TRANSITION	36	21	MEASURE		MANUAL	TransCS10.sgt
+TRANSITION	37	1	MEASURE		MANUAL	TransCS7.sgt
+TRANSITION	37	2	MEASURE		MANUAL
+TRANSITION	37	21	MEASURE		MANUAL
+TRANSITION	38	1	MEASURE		MANUAL	TransCS7.sgt
+TRANSITION	38	2	MEASURE		MANUAL
+TRANSITION	38	21	MEASURE		MANUAL
+TRANSITION	39	1	MEASURE		MANUAL	TransCS7.sgt
+TRANSITION	39	2	MEASURE		MANUAL
+TRANSITION	39	21	MEASURE		MANUAL
+TRANSITION	40	1	MEASURE		MANUAL	TransCS10.sgt
+TRANSITION	40	2	MEASURE		MANUAL	TransCS10.sgt
+TRANSITION	40	21	MEASURE		MANUAL	TransCS10.sgt
+TRANSITION	41	1	MEASURE		MANUAL	
+TRANSITION	41	2	MEASURE		MANUAL
+TRANSITION	41	21	MEASURE		MANUAL
+TRANSITION	42	1	MEASURE		MANUAL	TransCS12.sgt
+TRANSITION	42	2	MEASURE		MANUAL
+TRANSITION	42	21	MEASURE		MANUAL
+TRANSITION	43	1	MEASURE		MANUAL	TransCS13.sgt
+TRANSITION	43	2	MEASURE		MANUAL	TransCW13.sgt
+TRANSITION	43	21	MEASURE		MANUAL	TransCW13.sgt
+TRANSITION	44	1	MEASURE		MANUAL	TransCS10.sgt
+TRANSITION	44	2	MEASURE		MANUAL	TransCS10.sgt
+TRANSITION	44	21	MEASURE		MANUAL	TransCS10.sgt
+
+; secondary segments to preload (you can specify any number of these)
+; format : SECONDARYSEGMENT <segment name> [optional default enact time]
+
+; motifs that we need to preload (you can specify any number of these)
+; format : MOTIF <style name> <motif name> [optional default enact time] 
+
+MOTIF Fade.sty Fade IMMEDIATE

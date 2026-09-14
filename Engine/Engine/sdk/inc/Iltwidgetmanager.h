@@ -1,0 +1,1 @@
+iltwidgetmanager.h

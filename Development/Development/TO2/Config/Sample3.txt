@@ -1,0 +1,28 @@
+[General]
+Name	= "Sample Config 3"
+
+[Settings]
+SoundFilters	= 1
+TripleBuffer	= 1
+Mirrors			= 1
+LightMap		= 1
+DrawShadows		= 1
+DetailTextures	= 1
+WorldChrome		= 1
+ModelChrome		= 1
+Trilinear		= 1
+MuzzleLight		= 1
+Tracers			= 1
+ShellCasings	= 1
+WeatherFX		= 1
+ImpactFX		= 2
+DebrisFX		= 2
+DetailLevel		= 3
+
+[Details]
+WorldTex			= 0
+SkyTex				= 1
+CharTex				= 2
+WeaponTex			= 0
+PropTex				= 1
+SFXTex				= 2

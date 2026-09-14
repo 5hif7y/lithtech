@@ -1,0 +1,25 @@
+/************************************************************************
+**
+**		No One Lives Forever Client Sound Attributes file
+**
+** This file contains attributes for the following:
+**
+**  Sound paths
+**
+**
+*/
+
+/************************************************************************
+**
+** Path Sound Attributes
+**
+**  The following specifies paths to id based sounds
+**  
+*/
+
+[Paths]
+
+Dialogue = "Voice\"
+
+
+

@@ -1,0 +1,1 @@
+renderinfostruct.h

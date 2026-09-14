@@ -1,0 +1,1579 @@
+/*
+ * Goal Sets:
+ * Name			       = AIGoal Set name.
+ * RequiredBrain0-N    = Name of Brain required by AI to use this goalset.
+ *                       If no required brain is listed, anyone can use the goalset.
+ * IncludeGoalSet0-N   = Name of goalset to include. Must be the name of a 
+ *                       goalset listed earlier in this file.
+ * Hidden              = TRUE or FALSE whether goalset appears as a choice in Dedit.
+ *                       Default = FALSE
+ * Permanent           = TRUE or FALSE whether goals in goalset can ever be removed from an AI.
+ *                       Default = FALSE
+ * Goal0-N		       = Name of goal [name=value ...]
+ */
+
+[GoalSet0]
+Name = "None"
+
+[GoalSet1]
+Name = "Test"
+Goal0 = "SpecialDamage"
+Goal1 = "Patrol"
+
+[GoalSet2]
+Name = "EngineerTest"
+GoalSet0 = "Test"
+
+[GoalSet3]
+Name = "DefaultRequired"
+Hidden = TRUE
+Permanent = TRUE
+Goal0 = "Cover"
+Goal1 = "SpecialDamage"
+Goal2 = "Distress"
+Goal3 = "Flee"
+
+[GoalSet4]
+Name = "DefaultBasic"
+Hidden = TRUE
+Goal0 = "DrawWeapon"
+Goal1 = "HolsterWeapon"
+Goal2 = "Investigate"
+Goal3 = "FollowFootprint"
+Goal4 = "Chase"
+Goal5 = "CheckBody"
+Goal6 = "AttackMelee"
+Goal7 = "AttackRangedDynamic"
+Goal8 = "AttackFromCover"
+Goal9 = "AttackFromVantage"
+Goal10 = "AttackFromView"
+Goal11 = "AttackProne"
+Goal12 = "GetBackup"
+Goal13 = "Alarm"
+Goal14 = "RespondToAlarm"
+Goal15 = "RespondToBackup"
+Goal16 = "LoveKitty"
+Goal17 = "MountedFlashlight"
+
+[GoalSet5]
+Name = "SuicideBasic"
+Hidden = TRUE
+Goal0 = "DrawWeapon"
+Goal1 = "HolsterWeapon"
+Goal2 = "Investigate"
+Goal3 = "FollowFootprint"
+Goal4 = "Chase"
+Goal5 = "CheckBody"
+Goal6 = "AttackMelee"
+Goal7 = "AttackRangedDynamic"
+Goal8 = "Alarm"
+Goal9 = "RespondToAlarm"
+Goal10 = "RespondToBackup"
+Goal11 = "LoveKitty"
+Goal12 = "MountedFlashlight"
+
+[GoalSet6]
+Name = "Sniper"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "ViewMaster"
+RequiredBrain2 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+Goal0 = "Sniper"
+Goal1 = "Guard"
+Goal2 = "DrawWeapon"
+Goal3 = "Alarm"
+
+[GoalSet7]
+Name = "Patrol"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "DefaultBasic"
+Goal0 = "Patrol"
+Goal1 = "Work"
+
+[GoalSet8]
+Name = "Guard"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "DefaultBasic"
+Goal0 = "Guard"
+Goal1 = "Sniper"
+Goal2 = "Work"
+Goal3 = "Menace"
+
+[GoalSet9]
+Name = "Reinforcement"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "DefaultBasic"
+Goal0 = "Patrol"
+Goal1 = "Guard"
+Goal2 = "ExitLevel"
+Goal3 = "Sniper"
+Goal4 = "Work"
+Goal5 = "Menace"
+
+[GoalSet10]
+Name = "SuicidePatrol"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "SuicideBasic"
+Goal0 = "Patrol"
+Goal1 = "Work"
+
+[GoalSet11]
+Name = "SuicideGuard"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "SuicideBasic"
+Goal0 = "Guard"
+Goal1 = "Work"
+
+[GoalSet12]
+Name = "SleepGuard"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "DefaultBasic"
+Goal0 = "Sleep"
+Goal1 = "Work"
+Goal2 = "Guard"
+
+[GoalSet13]
+Name = "NinjaBasic"
+Hidden = TRUE
+Goal0 = "DrawWeapon"
+Goal1 = "HolsterWeapon"
+Goal2 = "Investigate"
+Goal3 = "FollowFootprint"
+Goal4 = "Chase"
+Goal5 = "CheckBody"
+Goal6 = "AttackMelee"
+Goal7 = "AttackRanged"
+Goal8 = "AttackFromCover"
+Goal9 = "AttackFromVantage"
+Goal10 = "AttackFromView"
+Goal11 = "GetBackup"
+Goal12 = "Alarm"
+Goal13 = "RespondToAlarm"
+Goal14 = "RespondToBackup"
+Goal15 = "LoveKitty"
+Goal16 = "AttackFromRoofVantage"
+Goal17 = "Lunge"
+Goal18 = "Retreat"
+Goal19 = "DisappearReappearEvasive"
+Goal20 = "Menace"
+
+[GoalSet14]
+Name = "NinjaPatrol"
+RequiredBrain0 = "Ninja"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "NinjaBasic"
+Goal0 = "Patrol"
+Goal1 = "Work"
+
+[GoalSet15]
+Name = "NinjaGuard"
+RequiredBrain0 = "Ninja"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "NinjaBasic"
+Goal0 = "Guard"
+Goal1 = "Work"
+
+[GoalSet16]
+Name = "NinjaReinforcement"
+RequiredBrain0 = "Ninja"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "NinjaBasic"
+Goal0 = "Patrol"
+Goal1 = "Guard"
+Goal2 = "ExitLevel"
+Goal3 = "Work"
+
+[GoalSet17]
+Name = "EZNinjaBasic"
+Hidden = TRUE
+Goal0 = "DrawWeapon"
+Goal1 = "HolsterWeapon"
+Goal2 = "Investigate"
+Goal3 = "FollowFootprint"
+Goal4 = "Chase"
+Goal5 = "CheckBody"
+Goal6 = "AttackMelee"
+Goal7 = "AttackRanged"
+Goal8 = "AttackFromCover"
+Goal9 = "AttackFromVantage"
+Goal10 = "AttackFromView"
+Goal11 = "GetBackup"
+Goal12 = "Alarm"
+Goal13 = "RespondToAlarm"
+Goal14 = "RespondToBackup"
+Goal15 = "LoveKitty"
+Goal16 = "AttackFromRoofVantage"
+Goal17 = "DisappearReappearEvasive"
+Goal18 = "Menace"
+
+[GoalSet18]
+Name = "EZNinjaPatrol"
+RequiredBrain0 = "EZNinja"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "EZNinjaBasic"
+Goal0 = "Patrol"
+Goal1 = "Work"
+
+[GoalSet19]
+Name = "EZNinjaGuard"
+RequiredBrain0 = "EZNinja"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "EZNinjaBasic"
+Goal0 = "Guard"
+Goal1 = "Work"
+
+[GoalSet20]
+Name = "EZNinjaReinforcement"
+RequiredBrain0 = "EZNinja"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "EZNinjaBasic"
+Goal0 = "Patrol"
+Goal1 = "Guard"
+Goal2 = "ExitLevel"
+Goal3 = "Work"
+
+[GoalSet21]
+Name = "Whimp"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+
+[GoalSet22]
+Name = "Talk"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+Goal0 = "Talk"
+
+[GoalSet23]
+Name = "Tail"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Tulwar"
+RequiredBrain2 = "Bystander"
+RequiredBrain3 = "ViewMaster"
+RequiredBrain4 = "Police"
+RequiredBrain5 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+Goal0 = "Tail"
+
+[GoalSet24]
+Name = "ScientistPatrol"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Bystander"
+RequiredBrain2 = "ViewMaster"
+RequiredBrain3 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+Goal0 = "GetBackup"
+Goal1 = "Patrol"
+Goal2 = "Work"
+Goal3 = "Alarm"
+
+[GoalSet25]
+Name = "ScientistGuard"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Bystander"
+RequiredBrain2 = "ViewMaster"
+RequiredBrain3 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+Goal0 = "GetBackup"
+Goal1 = "Guard"
+Goal2 = "Work"
+Goal3 = "Alarm"
+
+[GoalSet26]
+Name = "RobotPatrol"
+RequiredBrain0 = "Robot"
+Goal0 = "Patrol"
+Goal1 = "DrawWeapon"
+Goal2 = "HolsterWeapon"
+Goal3 = "Chase"
+Goal4 = "AttackMelee"
+Goal5 = "AttackRanged"
+Goal6 = "AttackFromVantage"
+Goal7 = "AttackFromView"
+Goal8 = "RespondToAlarm"
+Goal9 = "RespondToBackup"
+Goal10 = "Investigate"
+Goal11 = "SpecialDamage"
+
+[GoalSet27]
+Name = "SSRequired"
+Hidden = TRUE
+Permanent = TRUE
+Goal0 = "SerumDeath"
+
+[GoalSet28]
+Name = "SSBasic"
+Hidden = TRUE
+Goal0 = "Destroy"
+Goal1 = "Investigate"
+Goal2 = "Chase"
+Goal3 = "AttackRanged"
+Goal4 = "AttackFromVantage"
+Goal5 = "AttackFromView"
+Goal6 = "RespondToAlarm"
+Goal7 = "RespondToBackup"
+Goal8 = "LoveKitty"
+Goal9 = "Menace"
+
+[GoalSet29]
+Name = "SSPatrol"
+RequiredBrain0 = "SSoldier"
+IncludeGoalSet0 = "SSRequired"
+IncludeGoalSet1 = "SSBasic"
+Goal0 = "Patrol"
+
+[GoalSet30]
+Name = "SSGuard"
+RequiredBrain0 = "SSoldier"
+IncludeGoalSet0 = "SSRequired"
+IncludeGoalSet1 = "SSBasic"
+Goal0 = "Guard"
+
+[GoalSet31]
+Name = "PierreBoss"
+RequiredBrain0 = "PierreBoss"
+Goal0 = "DramaDeath"
+Goal1 = "Ride"
+Goal2 = "AttackFromRandomVantage"
+
+[GoalSet32]
+Name = "MimeArena"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Bystander"
+RequiredBrain2 = "ViewMaster"
+RequiredBrain3 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+Goal0 = "Investigate"
+Goal1 = "AttackMelee"
+Goal2 = "AttackRangedDynamic"
+Goal3 = "RespondToAlarm"
+Goal4 = "AttackFromView"
+Goal5 = "PsychoChase"
+
+[GoalSet33]
+Name = "Mime"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Bystander"
+RequiredBrain2 = "ViewMaster"
+RequiredBrain3 = "Terrain"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "DefaultBasic"
+Goal0 = "Guard"
+Goal1 = "Sniper"
+Goal2 = "Menace"
+Goal3 = "Work"
+
+[GoalSet34]
+Name = "RatGuard"
+RequiredBrain0 = "Rat"
+Goal0 = "Guard"
+Goal1 = "Work"
+Goal2 = "Flee"
+Goal3 = "SpecialDamage"
+
+[GoalSet35]
+Name = "RatPatrol"
+RequiredBrain0 = "Rat"
+Goal0 = "Patrol"
+Goal1 = "Flee"
+Goal2 = "SpecialDamage"
+
+[GoalSet36]
+Name = "NonViolentBasic"
+Hidden = TRUE
+Goal0 = "DrawWeapon"
+Goal1 = "HolsterWeapon"
+Goal2 = "Investigate"
+Goal3 = "FollowFootprint"
+Goal4 = "Chase"
+Goal5 = "CheckBody"
+Goal6 = "GetBackup"
+Goal7 = "Alarm"
+Goal8 = "RespondToAlarm"
+Goal9 = "RespondToBackup"
+Goal10 = "LoveKitty"
+Goal11 = "MountedFlashlight"
+
+[GoalSet37]
+Name = "NonViolentPatrol"
+RequiredBrain0 = "Tulwar"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "NonViolentBasic"
+Goal0 = "Patrol"
+Goal1 = "Work"
+Goal2 = "ProximityCommand"
+
+[GoalSet38]
+Name = "NonViolentGuard"
+RequiredBrain0 = "Tulwar"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "NonViolentBasic"
+Goal0 = "Guard"
+Goal1 = "Work"
+Goal2 = "ProximityCommand"
+
+[GoalSet39]
+Name = "NonViolentReinforcement"
+RequiredBrain0 = "Tulwar"
+IncludeGoalSet0 = "DefaultRequired"
+IncludeGoalSet1 = "NonViolentBasic"
+Goal0 = "Patrol"
+Goal1 = "Guard"
+Goal2 = "ExitLevel"
+Goal3 = "Work"
+Goal4 = "ProximityCommand"
+
+[GoalSet40]
+Name = "Volkov"
+RequiredBrain0 = "Volkov"
+Goal0 = "Patrol"
+Goal1 = "DrawWeapon"
+Goal2 = "HolsterWeapon"
+Goal3 = "Chase"
+Goal4 = "AttackMelee"
+Goal5 = "AttackRanged"
+Goal6 = "AttackFromVantage"
+Goal7 = "AttackFromView"
+Goal8 = "RespondToAlarm"
+Goal9 = "RespondToBackup"
+Goal10 = "Investigate"
+Goal11 = "DramaDeath"
+
+[GoalSet41]
+Name = "PilotGuard"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Contact"
+Goal0 = "SpecialDamage"
+Goal1 = "Guard"
+Goal2 = "Work"
+
+[GoalSet42]
+Name = "PilotPatrol"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Contact"
+Goal0 = "SpecialDamage"
+Goal1 = "Patrol"
+Goal2 = "Work"
+
+[GoalSet43]
+Name = "AllyMelee"
+RequiredBrain0 = "Contact"
+IncludeGoalSet0 = "DefaultRequired"
+Goal0 = "DrawWeapon"
+Goal1 = "HolsterWeapon"
+Goal2 = "Investigate"
+Goal3 = "Chase"
+Goal4 = "AttackMelee"
+Goal5 = "Guard"
+
+[GoalSet44]
+Name = "Isako"
+RequiredBrain0 = "Ninja"
+IncludeGoalSet0 = "NinjaBasic"
+Goal0 = "Guard"
+Goal1 = "Work"
+
+[GoalSet45]
+Name = "Kamal"
+RequiredBrain0 = "Default"
+RequiredBrain1 = "Contact"
+Goal0 = "Guard"
+Goal1 = "Work"
+Goal2 = "Flee"
+Goal3 = "SpecialDamage"
+
+
+/*
+ * Goal Templates:
+ * Name            = AIGoal Name (Goal is a C++ class in code)
+ * Importance      = Base importance of goal when activated. Decays over time.
+ * DecayTime       = Amount of time (secs) for AI to lose all interest.
+ * FreezeDecay     = TRUE or FALSE whether other goals decay when this one is active.
+ *                   Default = FALSE
+ * LockedAnimIsInterruptable = TRUE or FALSE whether other goals can activate when a locked anim is playing.
+ *                   Default = TRUE
+ * ForceAnimInterrupt = TRUE or FALSE whether this goal can interrupt other goals when a locked anim is playing.
+ *                   Default = FALSE
+ * UpdateRate      = Time in secs to update goal's value.  
+ *                   Zero means constant value.
+ * DeleteWhenDone  = TRUE or FALSE whether goal deletes after completion.
+ *                   Default = FALSE
+ * DamagePriority  = Priority of goal when handling damage. 0 means goal does not handle damage.
+ *                   Default = 0
+ * ChanceToActivate= 0.0 to 1.0 for % chance of activating when criteria is met.
+ *                   Default = 1.0
+ * Frequency       = Min and max number of seconds before can activate again.
+ *                   Default = [0.0, 0.0]
+ * SenseTrigger0-N = Senses that toggle goal on when present.
+ * Attractor0-N    = Types of nodes that attract this goal.
+ * AttractorDist   = Distance from AI to search for Attractors, in addition
+ *                   to node's radius. This dist gets multiplied by goal's
+ *                   base importance.
+ *
+ */
+
+[Goal0]
+Name = "SpecialDamage"
+Importance = 1000.00
+DecayTime = 10.0
+UpdateRate = 0.5
+LockedAnimIsInterruptable = FALSE
+ForceAnimInterrupt = TRUE
+DamagePriority = 10
+SenseTrigger0 = "HearEnemyFootstep"
+SenseTrigger1 = "HearEnemyWeaponFire"
+SenseTrigger2 = "HearEnemyWeaponImpact"
+SenseTrigger3 = "SeeEnemyWeaponImpact"
+SenseTrigger4 = "SeeAllyDeath"
+SenseTrigger5 = "HearAllyDeath"
+SenseTrigger6 = "HearAllyPain"
+SenseTrigger7 = "HearAllyWeaponFire"
+SenseTrigger8 = "HearEnemyDisturbance"
+SenseTrigger9 = "SeeEnemyDisturbance"
+SenseTrigger10 = "SeeEnemyLightDisturbance"
+SenseTrigger11 = "HearAllyDisturbance"
+SenseTrigger12 = "SeeAllySpecialDamage"
+SenseTrigger13 = "SeeEnemy"
+SenseTrigger14 = "SeeEnemyLean"
+SenseTrigger15 = "HearEnemyAlarm"
+
+[Goal1]
+Name = "SerumDeath"
+Importance = 1000.00
+DecayTime = 0.0
+UpdateRate = 0.0
+LockedAnimIsInterruptable = FALSE
+ForceAnimInterrupt = TRUE
+DamagePriority = 10
+
+[Goal2]
+Name = "DramaDeath"
+Importance = 1000.00
+DecayTime = 0.0
+UpdateRate = 0.0
+LockedAnimIsInterruptable = FALSE
+ForceAnimInterrupt = TRUE
+DamagePriority = 10
+
+[Goal3]
+Name = "ProximityCommand"
+Importance = 1000.00
+DecayTime = 0.0
+UpdateRate = 0.0
+SenseTrigger0 = "SeeEnemy"
+
+[Goal4]
+Name = "Ride"
+Importance = 500.00
+DecayTime = 0.0
+UpdateRate = 0.1
+LockedAnimIsInterruptable = FALSE
+ForceAnimInterrupt = TRUE
+Attractor0 = "Ride"
+AttractorDist = 0.00
+
+[Goal5]
+Name = "Animate"
+Importance = 100.00
+DecayTime = 0.0
+UpdateRate = 0.0
+DeleteWhenDone = TRUE
+
+[Goal6]
+Name = "DrawWeapon"
+Importance = 50.00
+DecayTime = 0.0
+FreezeDecay = TRUE
+UpdateRate = 0.00
+DamagePriority = 1
+LockedAnimIsInterruptable = FALSE
+SenseTrigger0 = "SeeEnemy"
+SenseTrigger1 = "SeeEnemyLean"
+SenseTrigger2 = "SeeEnemyFootprint"
+SenseTrigger3 = "HearEnemyWeaponFire"
+SenseTrigger4 = "HearEnemyWeaponImpact"
+SenseTrigger5 = "SeeEnemyWeaponImpact"
+SenseTrigger6 = "HearEnemyFootstep"
+SenseTrigger7 = "HearEnemyAlarm"
+SenseTrigger8 = "HearEnemyDisturbance"
+SenseTrigger9 = "SeeEnemyDisturbance"
+SenseTrigger10 = "SeeEnemyLightDisturbance"
+SenseTrigger11 = "SeeAllyDeath"
+SenseTrigger12 = "HearAllyDeath"
+SenseTrigger13 = "HearAllyPain"
+SenseTrigger14 = "HearAllyWeaponFire"
+SenseTrigger15 = "SeeAllyDisturbance"
+SenseTrigger16 = "HearAllyDisturbance"
+SenseTrigger17 = "SeeAllySpecialDamage"
+
+[Goal7]
+Name = "Apprehend"
+Importance = 33.00
+DecayTime = 2.0
+UpdateRate = 0.30
+DeleteWhenDone = TRUE
+LockedAnimIsInterruptable = FALSE
+SenseTrigger0 = "SeeEnemy"
+SenseTrigger1 = "HearEnemyWeaponFire"
+SenseTrigger2 = "HearEnemyWeaponImpact"
+SenseTrigger3 = "SeeEnemyWeaponImpact"
+SenseTrigger4 = "SeeAllyDeath"
+SenseTrigger5 = "HearAllyDeath"
+SenseTrigger6 = "HearAllyPain"
+SenseTrigger7 = "HearAllyWeaponFire"
+
+[Goal8]
+Name = "Alarm"
+Importance = 32.00
+DecayTime = 15.0
+UpdateRate = 0.20
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Alarm"
+AttractorDist = 0.00
+SenseTrigger0 = "SeeEnemy"
+
+[Goal9]
+Name = "DisappearReappearEvasive"
+Importance = 31.00
+DecayTime = 0.0
+UpdateRate = 1.0
+LockedAnimIsInterruptable = FALSE
+DamagePriority = 1
+Frequency = [20.0, 30.0]
+SenseTrigger0 = "SeeEnemy"
+
+[Goal10]
+Name = "GetBackup"
+Importance = 30.00
+DecayTime = 5.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Backup"
+AttractorDist = 0.00
+SenseTrigger0 = "SeeEnemy"
+SenseTrigger1 = "SeeEnemyWeaponImpact"
+
+[Goal11]
+Name = "Sniper"
+Importance = 29.00
+DecayTime = 0.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Sniper"
+AttractorDist = 0.00
+
+[Goal12]
+Name = "AttackFromRoofVantage"
+Importance = 28.00
+DecayTime = 10.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "VantageRoof"
+AttractorDist = 0.00
+SenseTrigger0 = "SeeEnemy"
+
+[Goal13]
+Name = "AttackFromCover"
+Importance = 27.00
+DecayTime = 10.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Cover"
+AttractorDist = 300.00
+SenseTrigger0 = "SeeEnemy"
+
+[Goal14]
+Name = "AttackFromVantage"
+Importance = 27.00
+DecayTime = 10.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Vantage"
+AttractorDist = 0.00
+SenseTrigger0 = "SeeEnemy"
+
+[Goal15]
+Name = "AttackFromRandomVantage"
+Importance = 27.00
+DecayTime = 10.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Vantage"
+AttractorDist = 0.00
+
+[Goal16]
+Name = "AttackFromView"
+Importance = 27.00
+DecayTime = 10.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "View"
+AttractorDist = 0.00
+SenseTrigger0 = "SeeEnemy"
+SenseTrigger1 = "SeeEnemyLean"
+SenseTrigger2 = "HearEnemyWeaponFire"
+SenseTrigger3 = "HearEnemyWeaponImpact"
+SenseTrigger4 = "SeeEnemyWeaponImpact"
+SenseTrigger5 = "HearAllyDeath"
+SenseTrigger6 = "HearAllyPain"
+SenseTrigger7 = "HearAllyWeaponFire"
+SenseTrigger8 = "HearEnemyDisturbance"
+SenseTrigger9 = "SeeEnemyDisturbance"
+
+[Goal17]
+Name = "AttackProne"
+Importance = 26.00
+DecayTime = 10.00
+UpdateRate = 0.00
+LockedAnimIsInterruptable = FALSE
+Frequency = [30.0, 45.0]
+SenseTrigger0 = "SeeEnemy"
+
+[Goal18]
+Name = "Lunge"
+Importance = 26.00
+DecayTime = 1.00
+UpdateRate = 0.00
+LockedAnimIsInterruptable = FALSE
+SenseTrigger0 = "SeeEnemy"
+
+[Goal19]
+Name = "Retreat"
+Importance = 25.00
+DecayTime = 1.00
+UpdateRate = 0.00
+LockedAnimIsInterruptable = FALSE
+Frequency = [45.0, 75.0]
+SenseTrigger0 = "SeeEnemy"
+
+[Goal20]
+Name = "Assassinate"
+Importance = 24.00
+DecayTime = 0.00
+UpdateRate = 0.50
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Assassinate"
+AttractorDist = 0.00
+ 
+[Goal21]
+Name = "AttackMelee"
+Importance = 24.00
+DecayTime = 2.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+SenseTrigger0 = "SeeEnemy"
+
+[Goal22]
+Name = "AttackProp"
+Importance = 23.00
+DecayTime = 10.0
+UpdateRate = 0.50
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Attackable"
+AttractorDist = 0.00
+
+[Goal23]
+Name = "AttackRanged"
+Importance = 23.00
+DecayTime = 2.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+SenseTrigger0 = "SeeEnemy"
+
+[Goal24]
+Name = "AttackRangedDynamic"
+Importance = 23.00
+DecayTime = 2.0
+UpdateRate = 0.30
+LockedAnimIsInterruptable = FALSE
+SenseTrigger0 = "SeeEnemy"
+
+[Goal25]
+Name = "Charge"
+Importance = 22.00
+DecayTime = 10.0
+UpdateRate = 0.30
+SenseTrigger0 = "SeeEnemy"
+
+[Goal26]
+Name = "PsychoChase"
+Importance = 21.00
+DecayTime = 0.00
+UpdateRate = 0.30
+
+[Goal27]
+Name = "Chase"
+Importance = 20.00
+DecayTime = 0.00
+UpdateRate = 0.30
+SenseTrigger0 = "SeeEnemy"
+SenseTrigger1 = "SeeEnemyLean"
+SenseTrigger2 = "HearEnemyWeaponFire"
+SenseTrigger3 = "HearEnemyWeaponImpact"
+SenseTrigger4 = "SeeEnemyWeaponImpact"
+SenseTrigger5 = "HearAllyDeath"
+SenseTrigger6 = "HearAllyPain"
+SenseTrigger7 = "HearAllyWeaponFire"
+SenseTrigger8 = "HearEnemyDisturbance"
+SenseTrigger9 = "SeeEnemyDisturbance"
+
+[Goal28]
+Name = "RespondToAlarm"
+Importance = 19.00
+DecayTime = 30.00
+UpdateRate = 0.00
+SenseTrigger0 = "HearEnemyAlarm"
+
+[Goal29]
+Name = "RespondToBackup"
+Importance = 19.00
+DecayTime = 5.0
+UpdateRate = 0.30
+SenseTrigger0 = "SeeEnemy"
+SenseTrigger1 = "SeeAllyDistress"
+
+[Goal30]
+Name = "Cover"
+Importance = 18.00
+DecayTime = 10.0
+UpdateRate = 0.0
+DamagePriority = 2
+LockedAnimIsInterruptable = FALSE
+Attractor0 = "Cover"
+AttractorDist = 0.00
+SenseTrigger0 = "HearEnemyWeaponImpact"
+
+[Goal31]
+Name = "Distress"
+Importance = 17.00
+DecayTime = 10.0
+UpdateRate = 0.30
+SenseTrigger0 = "SeeEnemy"
+
+[Goal32]
+Name = "Flee"
+Importance = 16.00
+DecayTime = 10.0
+UpdateRate = 0.00
+SenseTrigger0 = "SeeEnemy"
+SenseTrigger1 = "HearEnemyWeaponFire"
+SenseTrigger2 = "HearEnemyWeaponImpact"
+SenseTrigger3 = "SeeEnemyWeaponImpact"
+SenseTrigger4 = "SeeAllyDeath"
+SenseTrigger5 = "HearAllyDeath"
+SenseTrigger6 = "HearAllyPain"
+SenseTrigger7 = "HearAllyWeaponFire"
+SenseTrigger8 = "SeeAllyDisturbance"
+
+[Goal33]
+Name = "CheckBody"
+Importance = 15.00
+DecayTime = 10.0
+UpdateRate = 0.50
+DamagePriority = 2
+LockedAnimIsInterruptable = FALSE
+SenseTrigger0 = "SeeAllyDeath"
+SenseTrigger1 = "HearEnemyWeaponFire"
+SenseTrigger2 = "HearEnemyWeaponImpact"
+SenseTrigger3 = "SeeEnemyWeaponImpact"
+SenseTrigger4 = "HearAllyDeath"
+SenseTrigger5 = "HearAllyPain"
+SenseTrigger6 = "HearAllyWeaponFire"
+SenseTrigger7 = "HearEnemyAlarm"
+
+[Goal34]
+Name = "FollowFootprint"
+Importance = 14.00
+DecayTime = 5.0
+UpdateRate = 0.30
+SenseTrigger0 = "SeeEnemyFootprint"
+
+[Goal35]
+Name = "Investigate"
+Importance = 13.00
+DecayTime = 10.0
+UpdateRate = 0.30
+DamagePriority = 1
+SenseTrigger0 = "HearEnemyFootstep"
+SenseTrigger1 = "HearEnemyWeaponFire"
+SenseTrigger2 = "HearEnemyWeaponImpact"
+SenseTrigger3 = "SeeEnemyWeaponImpact"
+SenseTrigger4 = "HearAllyDeath"
+SenseTrigger5 = "HearAllyPain"
+SenseTrigger6 = "HearAllyWeaponFire"
+SenseTrigger7 = "HearEnemyDisturbance"
+SenseTrigger8 = "SeeEnemyDisturbance"
+SenseTrigger9 = "SeeEnemyLightDisturbance"
+SenseTrigger10 = "SeeAllyDisturbance"
+SenseTrigger11 = "HearAllyDisturbance"
+SenseTrigger12 = "SeeAllySpecialDamage"
+SenseTrigger13 = "SeeEnemyLean"
+SenseTrigger14 = "SeeEnemy"
+
+[Goal36]
+Name = "Search"
+Importance = 12.00
+DecayTime = 10.00
+UpdateRate = 0.30
+DeleteWhenDone = TRUE
+
+[Goal37]
+Name = "HolsterWeapon"
+Importance = 10.00
+DecayTime = 0.0
+UpdateRate = 0.01
+LockedAnimIsInterruptable = FALSE
+
+[Goal38]
+Name = "LoveKitty"
+Importance = 9.00
+DecayTime = 10.00
+UpdateRate = 0.00
+SenseTrigger0 = "SeeEnemyDanger"
+DamagePriority = 100
+
+[Goal39]
+Name = "Goto"
+Importance = 8.00
+DecayTime = 0.00
+UpdateRate = 0.00
+DeleteWhenDone = TRUE
+
+[Goal40]
+Name = "ExitLevel"
+Importance = 7.00
+DecayTime = 0.00
+UpdateRate = 0.50
+
+[Goal41]
+Name = "Talk"
+Importance = 6.00
+DecayTime = 0.00
+UpdateRate = 0.50
+
+[Goal42]
+Name = "Guard"
+Importance = 5.00
+DecayTime = 0.00
+UpdateRate = 0.50
+
+[Goal43]
+Name = "Sleep"
+Importance = 4.00
+DecayTime = 10.00
+UpdateRate = 0.50
+DamagePriority = 10
+Attractor0 = "Bed"
+AttractorDist = 0.00
+DamagePriority = 10
+
+[Goal44]
+Name = "Work"
+Importance = 4.00
+DecayTime = 10.0
+UpdateRate = 0.50
+Attractor0 = "WorkItem"
+AttractorDist = 0.00
+
+[Goal45]
+Name = "PlacePoster"
+Importance = 4.00
+DecayTime = 10.0
+UpdateRate = 0.50
+Attractor0 = "PostingPlace"
+AttractorDist = 0.00
+
+[Goal46]
+Name = "EnjoyPoster"
+Importance = 4.00
+DecayTime = 10.0
+UpdateRate = 0.50
+Attractor0 = "Examinable"
+AttractorDist = 0.00
+
+[Goal47]
+Name = "Destroy"
+Importance = 4.00
+DecayTime = 10.0
+UpdateRate = 0.50
+Attractor0 = "Smashable"
+Attractor1 = "Attackable"
+AttractorDist = 0.00
+
+[Goal48]
+Name = "Menace"
+Importance = 4.00
+DecayTime = 10.0
+UpdateRate = 0.50
+Attractor0 = "MenacePlace"
+AttractorDist = 0.00
+
+[Goal49]
+Name = "Follow"
+Importance = 3.00
+DecayTime = 0.00
+UpdateRate = 0.00
+
+[Goal50]
+Name = "Patrol"
+Importance = 2.00
+DecayTime = 0.00
+UpdateRate = 0.30
+
+[Goal51]
+Name = "Tail"
+Importance = 2.00
+DecayTime = 0.00
+UpdateRate = 0.00
+
+[Goal52]
+Name = "MountedFlashlight"
+Importance = 0.00
+DecayTime = 0.00
+UpdateRate = 1.00
+
+
+/*
+ * SmartObject Templates:
+ * Name     = SmartObject Name
+ * Flag0-N  = Type of object. Can have any number.
+ * Cmd0-N   = Command for flag with matching index.
+ * StateDefault0-N = Types active in the Default state.
+ * StateDisturbed0-N = Types active in the Disturbed state.
+ *
+ */
+
+[SmartObject0]
+Name  = "LightSwitch"
+Flag0 = "LightSwitch"
+Cmd0  = "HumanUseObject Action=PushButton LockNode=TRUE"
+
+[SmartObject1]
+Name  = "Desk"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=DeskWork Pose=Sit LoopTime=[30.0,60.0] FidgetFreq=[8.0,10.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\desk.ltb"
+
+[SmartObject2]
+Name  = "DeskDrawer"
+Flag0 = "Disturbance"
+Cmd0  = "HumanUseObject Action=CloseDrawer LockNode=FALSE"
+StateDisturbed0 = "Disturbance"
+AddAnimsLTB0 = "\chars\models\anims\desk.ltb"
+
+[SmartObject3]
+Name  = "Alarm"
+Flag0 = "Alarm"
+Cmd0  = "HumanUseObject Action=Alarm LockNode=FALSE"
+
+[SmartObject4]
+Name  = "SmokingSection"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Smoking LoopTime=[30.0,45.0] FidgetFreq=[4.0,6.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\smokingsection.ltb"
+
+[SmartObject5]
+Name  = "FileCabinet"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=FilingHigh LoopTime=[15.0,25.0] LockNode=FALSE"
+Flag1 = "Disturbance"
+Cmd1  = "HumanUseObject Action=CloseDrawer LockNode=FALSE"
+StateDefault0 = "WorkItem"
+StateDisturbed0 = "Disturbance"
+AddAnimsLTB0 = "\chars\models\anims\filecabinet.ltb"
+
+[SmartObject6]
+Name  = "Chair"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Pose=Sit LoopTime=[20.0,40.0] FidgetFreq=[5.0,7.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\chair.ltb"
+
+[SmartObject7]
+Name  = "Urinal"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Peeing LoopTime=[8.0,14.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\urinal.ltb"
+
+[SmartObject8]
+Name  = "CoffeePot"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Drinking LoopTime=[20.0,35.0] FidgetFreq=[3.0,5.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\coffeepot.ltb"
+
+[SmartObject9]
+Name  = "Hammer"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Hammering LoopTime=[8.0,15.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\hammer.ltb"
+
+[SmartObject10]
+Name  = "HammerLow"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Pose=Crouch Activity=Hammering LoopTime=[8.0,15.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\hammerlow.ltb"
+
+[SmartObject11]
+Name  = "Wrench"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Wrenching LoopTime=[8.0,15.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\wrench.ltb"
+
+[SmartObject12]
+Name  = "WrenchLow"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Pose=Crouch Activity=Wrenching LoopTime=[8.0,15.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\wrenchlow.ltb"
+
+[SmartObject13]
+Name  = "LeanBack"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=LeaningBack LoopTime=[20.0,40.0] FidgetFreq=[8.0,12.0]  LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\leanback.ltb"
+
+[SmartObject14]
+Name  = "LeanBar"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=LeaningBar LoopTime=[20.0,40.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\leanbar.ltb"
+
+[SmartObject15]
+Name  = "LeanLeft"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=LeaningLeft LoopTime=[20.0,40.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\leanleft.ltb"
+
+
+[SmartObject16]
+Name  = "LeanRight"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=LeaningRight LoopTime=[20.0,40.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\leanright.ltb"
+
+[SmartObject17]
+Name  = "Lazyboy"
+Flag0 = "Bed"
+Cmd0  = "HumanUseObject Pose=Sit Activity=Drowsy LoopTime=[90.0,120.0] FidgetFreq=[10.0,15.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\lazyboy.ltb"
+
+
+[SmartObject18]
+Name  = "PosterSpot"
+Flag0 = "PostingPlace"
+Cmd0  = "HumanUseObject Action=Poster LockNode=TRUE"
+AddAnimsLTB0 = "\chars\models\anims\posterspot.ltb"
+
+[SmartObject19]
+Name  = "Poster"
+Flag0 = "Examinable"
+Cmd0  = "HumanUseObject Activity=Examining LoopTime=[4.0,8.0] FidgetFreq=[3.0,7.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\posterspot.ltb"
+
+[SmartObject20]
+Name  = "StandControlPanel"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Operating LoopTime=[60.0,90.0] FidgetFreq=[1.0,3.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\StandControls.ltb"
+
+[SmartObject21]
+Name  = "Research"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Researching LoopTime=[60.0,90.0] FidgetFreq=[5.0,7.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\research.ltb"
+
+[SmartObject22]
+Name  = "ResearchMicroscope"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Microscoping LoopTime=[20.0,30.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\researchmicroscope.ltb"
+
+[SmartObject23]
+Name  = "Fire"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Warming LoopTime=[20.0,30.0] FidgetFreq=[7.0,10.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\fire.ltb"
+
+[SmartObject24]
+Name  = "NinjaIdle"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject LoopTime=[30.0,45.0] FidgetFreq=[3.0,5.0] LockNode=FALSE"
+
+[SmartObject25]
+Name  = "FileCabinetD"
+Flag0 = "Disturbance"
+Cmd0  = "HumanUseObject Action=CloseDrawer LockNode=FALSE"
+StateDisturbed0 = "Disturbance"
+AddAnimsLTB0 = "\chars\models\anims\filecabinet.ltb"
+
+[SmartObject26]
+Name  = "BedTime"
+Flag0 = "Bed"
+Cmd0  = "HumanUseObject Pose=Crouch Activity=Drowsy LoopTime=[20.0,30.0] FidgetFreq=[10.0,15.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\bedtime.ltb"
+
+[SmartObject27]
+Name  = "BedTimeInfinite"
+Flag0 = "Bed"
+Cmd0  = "HumanUseObject Pose=Crouch Activity=Drowsy LoopTime=[0.0,0.0] FidgetFreq=[10.0,15.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\bedtime.ltb"
+
+[SmartObject28]
+Name  = "SmashLeft"
+Flag0 = "Smashable"
+Cmd0  = "HumanUseObject Action=SmashLeft LockNode=TRUE"
+
+[SmartObject29]
+Name  = "SmashRight"
+Flag0 = "Smashable"
+Cmd0  = "HumanUseObject Action=SmashRight LockNode=TRUE"
+
+[SmartObject30]
+Name  = "AttackProp"
+Flag0 = "Attackable"
+Cmd0  = "HumanUseObject WeaponAction=Fire LockNode=TRUE"
+
+[SmartObject31]
+Name  = "AttackPropRepeatedly"
+Flag0 = "Attackable"
+Cmd0  = "HumanUseObject WeaponAction=Fire LockNode=FALSE"
+
+[SmartObject32]
+Name  = "Steam"
+Flag0 = "Ride"
+Cmd0  = "HumanUseObject Activity=Steaming LoopTime=[2.0,2.0] LockNode=FALSE"
+
+[SmartObject33]
+Name  = "LazyboyInfinite"
+Flag0 = "Bed"
+Cmd0  = "HumanUseObject Pose=Sit Activity=Drowsy LoopTime=[0.0,0.0] FidgetFreq=[10.0,15.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\lazyboy.ltb"
+
+[SmartObject34]
+Name  = "ChairInfinite"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Pose=Sit LoopTime=[0.0,0.0] FidgetFreq=[5.0,7.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\chair.ltb"
+
+[SmartObject35]
+Name  = "KnockOut"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageSleeping LoopTime=[50.0,70.0]"
+
+[SmartObject36]
+Name  = "Stun"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageStunned LoopTime=[6.0,12.0]"
+
+[SmartObject37]
+Name  = "BearTrap"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageTrapped LoopTime=[25.0,35.0] FidgetFreq=[2.0,4.0]"
+
+[SmartObject38]
+Name  = "Glue"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageGlued LoopTime=[15.0,25.0] FidgetFreq=[2.0,4.0]"
+
+[SmartObject39]
+Name  = "LaughingGas"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageLaughing LoopTime=[9.0,9.0] FidgetFreq=[0.9,1.1]"
+
+[SmartObject40]
+Name  = "SniperStand"
+Flag0 = "Sniper"
+Cmd0  = "HumanSniper"
+
+[SmartObject41]
+Name  = "SniperCrouch"
+Flag0 = "Sniper"
+Cmd0  = "HumanSniper Pose=Crouch"
+
+[SmartObject42]
+Name  = "CoverFlipTable"
+Flag0 = "Coverable"
+Cmd0  = "HumanUseObject Action=FlipTable LockNode=TRUE"
+
+[SmartObject43]
+Name  = "CoverFlipDesk"
+Flag0 = "Coverable"
+Cmd0  = "HumanUseObject Action=FlipDesk LockNode=TRUE"
+
+[SmartObject44]
+Name  = "Entertain"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Entertaining LoopTime=[60.0,90.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\dance.ltb"
+
+[SmartObject45]
+Name  = "Dance"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Dancing LoopTime=[20.0,45.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\dance.ltb"
+
+[SmartObject46]
+Name  = "Barrel"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Action=KnockOver LockNode=TRUE"
+
+[SmartObject47]
+Name  = "NinjaHideRight"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=HidingRight LoopTime=[15.0,25.0] FidgetFreq=[4.0,6.0] LockNode=FALSE"
+
+[SmartObject48]
+Name  = "NinjaHideLeft"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=HidingLeft LoopTime=[15.0,25.0] FidgetFreq=[4.0,6.0] LockNode=FALSE"
+
+[SmartObject49]
+Name  = "VendingMachine"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Vending LoopTime=[10.0,15.0] FidgetFreq=[1.0,3.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\vendingmachine.ltb"
+
+[SmartObject50]
+Name  = "HitWall"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Banging LoopTime=[0.0,0.0] FidgetFreq=[2.0,5.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\hitwall.ltb"
+
+[SmartObject51]
+Name  = "OutdoorUrinal"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=PeeingOutside LoopTime=[15.0,25.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\outdoorurinal.ltb"
+
+[SmartObject52]
+Name  = "WashHands"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=WashingHands LoopTime=[10.0,20.0] FidgetFreq=[2.0,5.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\washhands.ltb"
+
+[SmartObject53]
+Name  = "SmokingChair"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Pose=Sit Activity=Smoking LoopTime=[30.0,45.0] FidgetFreq=[2.0,5.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\smokingchair.ltb"
+
+[SmartObject54]
+Name  = "SitControlPanel"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Pose=Sit Activity=Operating LoopTime=[60.0,90.0] FidgetFreq=[0.5,2.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\sitcontrols.ltb"
+
+[SmartObject55]
+Name  = "Typewriter"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Pose=Sit Activity=Typing LoopTime=[40.0,60.0] FidgetFreq=[5.0,10.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\type.ltb"
+
+[SmartObject56]
+Name  = "SpeakerPhone"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Action=Phone LockNode=TRUE"
+AddAnimsLTB0 = "\chars\models\anims\speakerphone.ltb"
+
+[SmartObject57]
+Name  = "AlarmBox"
+Flag0 = "Alarm"
+Cmd0  = "HumanUseObject Action=AlarmBox LockNode=FALSE"
+
+[SmartObject58]
+Name  = "Slip"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageSlipping LoopTime=[5.0,10.0]"
+
+[SmartObject59]
+Name  = "MenaceInfinite"
+Flag0 = "MenacePlace"
+Cmd0  = "HumanUseObject Activity=Menacing LoopTime=[0.0,0.0]"
+AddAnimsLTB0 = "\chars\models\anims\menace.ltb"
+
+[SmartObject60]
+Name  = "MenaceNonInfinite"
+Flag0 = "MenacePlace"
+Cmd0  = "HumanUseObject Activity=Menacing LoopTime=[10.0,15.0]"
+AddAnimsLTB0 = "\chars\models\anims\menace.ltb"
+
+[SmartObject61]
+Name  = "NinjaMenace"
+Flag0 = "MenacePlace"
+Cmd0  = "HumanUseObject Activity=Menacing LoopTime=[10.0,15.0]"
+
+[SmartObject62]
+Name  = "AdmireScenery"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Admiring LoopTime=[30.0,45.0] FidgetFreq=[4.0,7.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\AdmireScenery.ltb"
+
+[SmartObject63]
+Name  = "StandSleep"
+Flag0 = "Bed"
+Cmd0  = "HumanUseObject Pose=Stand Activity=Drowsy LoopTime=[45.0,60.0] FidgetFreq=[8.0,12.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\standsleep.ltb"
+
+[SmartObject64]
+Name  = "StandSleepInfinite"
+Flag0 = "Bed"
+Cmd0  = "HumanUseObject Pose=Stand Activity=Drowsy LoopTime=[0.0,0.0] FidgetFreq=[8.0,12.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\standsleep.ltb"
+
+[SmartObject65]
+Name  = "RatIdle"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject LoopTime=[2.8,3.0] LockNode=FALSE"
+
+[SmartObject66]
+Name  = "Browse"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Browsing LoopTime=[15.0,25.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\browse.ltb"
+
+[SmartObject67]
+Name  = "ArmstrongStruggle"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Struggling LoopTime=[0.0,0.0] FidgetFreq=[0.5,1.5] LockNode=FALSE"
+
+[SmartObject68]
+Name  = "ResearcherCabinet"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Struggling LoopTime=[0.0,0.0] LockNode=FALSE"
+
+[SmartObject69]
+Name  = "DrinkingFountain"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Action=DrinkFountain LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\DrinkingFountain.ltb"
+
+[SmartObject70]
+Name  = "PushButton"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Action=PushButton LockNode=FALSE"
+
+[SmartObject71]
+Name  = "Hide"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=HidingLeft LoopTime=[0.0,0.0] LockNode=FALSE"
+
+[SmartObject72]
+Name  = "HideCrouch"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Pose=Crouch Activity=HidingLeft LoopTime=[0.0,0.0] LockNode=FALSE"
+
+[SmartObject73]
+Name  = "Bleed"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageBleeding LoopTime=[0.0,0.0]"
+
+[SmartObject74]
+Name  = "Burn"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageBurning LoopTime=[0.0,0.0]"
+
+[SmartObject75]
+Name  = "Choke"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageChoking LoopTime=[0.0,0.0]"
+
+[SmartObject76]
+Name  = "KickSomething"
+Flag0 = "MenacePlace"
+Cmd0  = "HumanUseObject Action=KickDoor LockNode=FALSE"
+
+[SmartObject77]
+Name  = "PierreStop1"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Action=Tail LockNode=FALSE"
+
+[SmartObject78]
+Name  = "PierreStop2"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Action=Dust LockNode=FALSE"
+
+[SmartObject79]
+Name  = "SovietIdleSort"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject LoopTime=[5.0,7.0] FidgetFreq=[1.0,3.0] LockNode=FALSE"
+
+[SmartObject80]
+Name  = "CoverBarrel"
+Flag0 = "Coverable"
+Cmd0  = "HumanUseObject Action=KnockOver LockNode=TRUE"
+
+[SmartObject81]
+Name  = "BrokenUrinal"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Action=Dust LockNode=TRUE"
+AddAnimsLTB0 = "\chars\models\anims\Urinal.ltb"
+
+[SmartObject82]
+Name  = "Electrocute"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageElectrocuting LoopTime=[0.0,0.0]"
+
+[SmartObject83]
+Name  = "LeanRail"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=LeaningRail LoopTime=[20.0,40.0] FidgetFreq=[8.0,12.0]  LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\leanrail.ltb"
+
+[SmartObject84]
+Name  = "MimeEntertain"
+Flag0 = "WorkItem"
+Cmd0  = "HumanUseObject Activity=Entertaining LoopTime=[0.0,0.0] FidgetFreq=[1.0,2.0] LockNode=FALSE"
+AddAnimsLTB0 = "\chars\models\anims\mimeentertain.ltb"
+
+[SmartObject85]
+Name  = "Poison"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamagePoisoning LoopTime=[0.0,0.0]"
+
+[SmartObject86]
+Name  = "KnockOutInfinite"
+Flag0 = "DamageType"
+Cmd0  = "HumanUseObject Mood=DamageSleeping LoopTime=[0.0,0.0]"

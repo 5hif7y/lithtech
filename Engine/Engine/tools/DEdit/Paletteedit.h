@@ -1,0 +1,1 @@
+paletteedit.h

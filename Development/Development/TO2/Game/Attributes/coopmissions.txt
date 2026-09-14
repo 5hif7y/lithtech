@@ -1,0 +1,172 @@
+/************************************************************************
+**
+** M I S S I O N
+**
+** Mission definitions specify what levels are in the game.  The 
+** ordering of the missions are the same as they appear in this file
+** (Mission0, Mission1, Mission2, etc.)
+**
+** All mission definitions should contain the following properties:
+**
+**	NameId (Integer)
+**
+**		The Id (stored in CRes.dll)	of the text string containing the
+**		name of the mission.
+**
+**	DescId (Integer)
+**
+**		The Id (stored in CRes.dll)	of the text string containing a
+**		brief description of the mission.
+**
+**	ObjectiveIds (String)
+**
+**		A comma separated list of Ids (stored in CRes.dll) of objectives
+**		known at the start of the mission.
+**
+**	LayoutInfo (String)
+**
+**		The layout definition used for this level.
+**
+**	DefaultWeapons (String)
+**
+**		A comma separated list of weapon names that should be chosen by default
+**		for the mission. 
+**		(e.g., "P38,AK47" ).
+**
+**	DefaultAmmo (String)
+**
+**		A comma separated list of ammo names that should be chosen by default
+**		for the mission. 
+**		(e.g., "Camera Disabler,Code Breaker" ).
+**
+**	DefaultMods (String)
+**
+**		A comma separated list of ammo names that should be chosen by default
+**		for the mission. 
+**		(e.g., "Camera Disabler,Code Breaker" ).
+**
+**	Level0-??? (String)
+**
+**		The file name for each level (scene) file (e.g., Worlds\m01s01).
+**		associated with this mission.  Multiple levels may be specified
+**		(e.g., Level0 = "xxx", Level1 = "yyy", etc.).
+**	
+**		NOTE:  the .dat extension should NOT be included.
+**
+**	Level(x)NameId (Integer)
+**
+**		The Id (stored in CRes.dll)	of the text string containing the
+**		name of the level.
+**
+**	Level(x)BriefingId (Integer)
+**
+**		The Id (stored in CRes.dll)	of the text containing a detailed
+**		explanaation the level.
+**
+**	Level(x)DefaultWeapons (String)
+**
+**		A comma separated list of weapon names that should be chosen by default
+**		for the level. 
+**		(e.g., "P38,AK47" ).
+**		The (x) should be replaced by the level number 0-???.
+**
+**	Level(x)DefaultMods (String)
+**
+**		A comma separated list of mod names that should be chosen by default
+**		for the level. 
+**		(e.g., "Camera Disabler,Code Breaker" ).
+**		The (x) should be replaced by the level number 0-???.
+**
+**	Level(x)DefaultAmmo (String)
+**
+**		A comma separated list of ammo names that should be chosen by default
+**		for the level. 
+**		(e.g., "Camera Disabler,Code Breaker" ).
+**		The (x) should be replaced by the level number 0-???.
+**
+**	Reward0-??? (String)
+**
+**		Specification for the experience rewards available in this mission.
+**		Each specification consists of a name and a value separated by a comma.
+**		(e.g., Reward0 = "xxx,50", Reward1 = "yyy,10", etc.).
+**	
+*/
+
+[Mission0]
+//	Rescue Cate
+
+NameId			= 2516
+DescId			= 2765
+ObjectiveIds	= "5001"
+LayoutInfo		= "LoadScreenC01x"
+BriefingLayout	= "LoadScreenC01"
+DefaultWeapons	= "Beretta,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+Level0			= "Worlds\RetailMultiplayer\CP_c01s01"
+Level0BriefingId = 2716
+Level1			= "Worlds\RetailMultiplayer\CP_c01s02"
+Level2			= "Worlds\RetailMultiplayer\CP_c01s03"
+//Reward total is 4,000
+
+[Mission1]
+//	Destroy the super computer archive
+
+NameId			= 2517
+DescId			= 2766
+ObjectiveIds	= "5001"
+LayoutInfo		= "LoadScreenC04x"
+BriefingLayout	= "LoadScreenC04"
+DefaultWeapons	= "Tazer,Beretta,Compact Codebreaker,Keychain,Utility Launcher,Timebomb"
+DefaultAmmo		= "Tranquilizer"
+DefaultMods		= ""
+Level0			= "Worlds\RetailMultiplayer\CP_c02s01"
+Level0BriefingId = 2717
+Level1			= "Worlds\RetailMultiplayer\CP_c02s02"
+Level2			= "Worlds\RetailMultiplayer\CP_c02s03"
+//Reward total is 4,000
+
+[Mission2]
+//	Photograph Balaji
+
+NameId			= 2518
+DescId			= 2767
+ObjectiveIds	= "5001"
+LayoutInfo		= "LoadScreenC07x"
+BriefingLayout	= "LoadScreenC07"
+DefaultWeapons	= "Beretta,Compact Codebreaker,Keychain,Camera"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+Level0			= "Worlds\RetailMultiplayer\CP_c03s01"
+Level0BriefingId = 2718
+//Reward total is 4,000
+
+[Mission3]
+//	Antarctica
+
+NameId			= 2519
+DescId			= 2768
+ObjectiveIds	= "5001"
+LayoutInfo		= "LoadScreenC09x"
+BriefingLayout	= "LoadScreenC09"
+DefaultWeapons	= "Tazer,Beretta,Compact Codebreaker,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+Level0			= "Worlds\RetailMultiplayer\CP_c04s01"
+Level0BriefingId = 2719
+//Reward total is 4,000
+
+[Mission4]
+//	Unity HQ
+
+NameId			= 2520
+DescId			= 2769
+ObjectiveIds	= "5001"
+LayoutInfo		= "LoadScreenC11x"
+BriefingLayout	= "LoadScreenC11"
+DefaultWeapons	= "Tazer,Beretta,Compact Codebreaker,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+Level0			= "Worlds\RetailMultiplayer\CP_c05s01"
+Level0BriefingId = 2720
+//Reward total is 4,000

@@ -1,0 +1,1 @@
+NvTriStripObjects.h

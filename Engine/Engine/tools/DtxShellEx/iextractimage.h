@@ -1,0 +1,1 @@
+IExtractImage.h

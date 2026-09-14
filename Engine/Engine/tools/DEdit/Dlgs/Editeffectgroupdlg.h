@@ -1,0 +1,1 @@
+editeffectgroupdlg.h

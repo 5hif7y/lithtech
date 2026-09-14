@@ -1,0 +1,1 @@
+manimcurvechange.h

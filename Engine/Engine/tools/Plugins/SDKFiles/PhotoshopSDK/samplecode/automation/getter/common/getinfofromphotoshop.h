@@ -1,0 +1,1 @@
+GetInfoFromPhotoshop.h

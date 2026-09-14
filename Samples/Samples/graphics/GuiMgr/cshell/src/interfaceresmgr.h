@@ -1,0 +1,1 @@
+InterfaceResMgr.h

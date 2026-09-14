@@ -1,0 +1,601 @@
+
+[properties]
+
+// animation properties definitions
+//
+// propertygroup
+// { 
+//		property,
+//		property,
+//		property...
+// }
+//
+// for each group, a property named "Any(groupname)" will be implicitly added.
+// for example, a group named movement will have a property named "AnyMovement" 
+// automatically created which can be used to match any property in that group
+
+Posture
+{ 
+	Crouch 
+	Stand 
+	Sit
+	Ride
+	Prone
+}
+
+WeaponAction 
+{ 
+	Aim 
+	Fire
+	FireSecondary 
+	Reload 
+
+	Draw
+    Holster
+
+	Throw
+}
+
+WeaponPosition 
+{ 
+	Lower
+	Down 
+	Up 
+}
+
+Movement 
+{ 
+	Swim 
+	Run 
+	Walk 
+	Crawl
+	Pinned
+	ClimbUp
+	ClimbDown
+
+	LungeStart
+	LungeFly
+	LungeLand
+	RetreatStart
+	RetreatFly
+	RetreatLand
+
+	JumpStart
+	JumpFly
+	JumpLand
+	JumpUpStart
+	JumpUpFly
+	JumpUpLand
+	JumpDownStart
+	JumpDownFly
+	JumpDownLand
+}
+
+Weapon 
+{ 
+	Weapon1 
+	Weapon2 
+	Weapon3 
+}
+
+Mood 
+{ 
+	Silent 
+	Happy 
+	Angry 
+	Sad 
+	Tense 
+	Agree
+	Disagree
+
+	DamageSleeping
+	DamageStunned
+	DamageTrapped
+	DamageGlued
+	DamageLaughing
+	DamageSlipping
+	DamageBleeding
+	DamageBurning
+	DamageChoking
+	DamagePoisoning
+	DamageelEctrocuting
+}
+
+Evasive
+{
+	CornerLeft 
+	CornerRight 
+	RollLeft 
+	RollRight 
+	ShuffleLeft 
+	ShuffleRight 
+	Blind
+	Popup
+	Block
+}
+
+Awareness
+{
+	Patrol
+	Distress 
+	Investigate 
+	InvestigateDark 
+	Panic
+	Drowsy
+	Covered
+	Uncovered
+	Covering
+	Uncovering
+	Attracted
+	Menacing
+
+	HidingLeft
+	HidingRight
+}
+
+Action
+{
+	KickBody 
+	DisposeBody
+
+	LookAround
+	OpenDoor 
+	KickDoor 
+	KnockOnDoor
+	Pickup 
+	PushButton 
+	Tail 
+
+	Asleep
+	Awake
+	Death
+
+	Unconscious
+	Stunned
+
+	Alert
+	LookLeft
+	LookRight
+	LookUnder
+	LookOver
+	LookUp
+	Flashlight
+	Alarm
+
+    Disappear
+    Reappear
+
+	FlipTable
+	FlipDesk
+
+	Discover
+
+	Idle
+	Fidget
+
+	Taunt
+}
+
+[animations]
+
+// animations are formatted as follows:
+// 
+// animation movement_type { properties }
+//
+// movement_type is one of: None, Set, Walk, Run, JumpUp, Fall, Swim, Climb, Encode_NG, Encode_G
+// velocity is set in aibutes.txt for Walk, Run, JumpUp, Fall, Swim, Climb
+// velocity is set in code for Set
+// velocity comes from movement encoding for Encode_NG, Encode_G
+// velocity is zero for None
+//
+
+Base None {}
+
+//--------------------------------------------------------------------------------
+
+//
+// Unarmed Animations
+//
+
+3StGd       None     { stand anyweaponposition weapon3 } 
+
+// walk
+
+3StWaGdPa   Walk     { stand walk down weapon3 }
+
+// run
+
+Run1		Encode_G { stand down run weapon3 } 
+Run1		Encode_G { stand up run weapon3 } 
+
+// patrol
+
+3StWaGdPa		Walk     { stand walk down weapon3 patrol }
+3StGd       	None     { stand lower weapon3 idle }
+IdleHair		None     { stand lower weapon3 fidget }
+IdleLookAround	None     { stand lower weapon3 fidget }
+IdleNails		None     { stand lower weapon3 fidget }
+IdleRubButt		None     { stand lower weapon3 fidget }
+IdleRubHip		None     { stand lower weapon3 fidget }
+IdleShift		None     { stand lower weapon3 fidget }
+IdleStretch1	None     { stand lower weapon3 fidget }
+IdleStretch2	None     { stand lower weapon3 fidget }
+IdleStretch3    	None     { stand lower weapon3 fidget }
+IdleLookAround	None     { stand lower weapon3 lookaround }
+LookB       	None     { stand lower weapon3 lookaround }
+
+// alarm
+
+SoundAlarm	Encode_G { stand lower weapon3 alarm }
+
+// investigate
+
+WalkInvestigate Encode_G { stand down weapon3 walk investigate }
+LookRL1			None     { stand weapon3 alert }
+LookRL1			None     { stand down weapon3 alert }
+LookRL2			None     { stand down weapon3 alert }
+LookRL3			None     { stand down weapon3 alert }
+
+// doors
+
+1DoorHinge	None     { stand lower weapon3 opendoor }
+1DoorKick	Encode_G { stand lower weapon3 kickdoor }
+Knock       None     { stand lower weapon3 knockondoor }
+
+// jump
+
+JumpUpStart Encode_NG { stand down weapon3 jumpupstart }
+JumpUpFly   JumpUp    { stand down weapon3 jumpupfly }
+JumpUpLand  Encode_NG { stand down weapon3 jumpupland }
+JumpDnStart Encode_NG { stand down weapon3 jumpdownstart }
+JumpDnFly   Fall      { stand down weapon3 jumpdownfly }
+JumpDnLand  Encode_G  { stand down weapon3 jumpdownland }
+JumpStart   Encode_NG { stand down weapon3 jumpstart }
+JumpFly     JumpOver  { stand down weapon3 jumpfly }
+JumpLand    Encode_G  { stand down weapon3 jumpland }
+
+JumpUpStart Encode_NG { stand up weapon3 jumpupstart }
+JumpUpFly   JumpUp    { stand up weapon3 jumpupfly }
+JumpUpLand  Encode_NG { stand up weapon3 jumpupland }
+JumpDnStart Encode_NG { stand up weapon3 jumpdownstart }
+JumpDnFly   Fall      { stand up weapon3 jumpdownfly }
+JumpDnLand  Encode_G  { stand up weapon3 jumpdownland }
+JumpStart   Encode_NG { stand up weapon3 jumpstart }
+JumpFly     JumpOver  { stand up weapon3 jumpfly }
+JumpLand    Encode_G  { stand up weapon3 jumpland }
+
+// disappear/reappear
+
+Disappear   None      { stand up weapon3 disappear }
+Reappear    None      { stand up weapon3 reappear }
+
+// Talking (placeholders)
+
+3StGd		None { stand weapon3 lower silent }
+3StGd		None { stand weapon3 lower happy }
+3StGd		None { stand weapon3 lower angry }
+3StGd		None { stand weapon3 lower sad }
+3StGd		None { stand weapon3 lower tense }
+3StGd		None { stand weapon3 lower agree }
+3StGd		None { stand weapon3 lower disagree }
+
+// Special Damage Types
+
+KnockOut_idle	None { stand weapon3 lower damagesleeping idle }
+KnockOut_idle	None { stand weapon3 lower damagesleeping death }
+Stun_idle		None { stand weapon3 lower damagestunned idle }
+banana_idle		None { stand weapon3 lower damageslipping idle }
+banana_idle		None { stand weapon3 lower damageslipping death }
+BearTrap_idle		None { stand weapon3 lower damageglued idle }
+Glue_1			None { stand weapon3 lower damageglued fidget }
+Glue_2			None { stand weapon3 lower damageglued fidget }
+Laugh_idle		None { stand weapon3 lower damagelaughing idle }
+Laugh_1			None { stand weapon3 lower damagelaughing fidget }
+Laugh_2			None { stand weapon3 lower damagelaughing fidget }
+
+// Progressive Damage Types
+
+Bleed			None { stand weapon3 lower damagebleeding idle }
+Bleed			None { stand weapon3 down damagebleeding }
+WalkBleed		Encode_G { stand walk down weapon3 damagebleeding }
+Bleed			None { stand weapon3 lower damageburning idle }
+Bleed			None { stand weapon3 down damageburning }
+WalkBleed		Encode_G { stand walk down weapon3 damageburning }
+Bleed			None { stand weapon3 lower damagechoking idle }
+Bleed			None { stand weapon3 down damagechoking }
+WalkBleed		Encode_G { stand walk down weapon3 damagechoking }
+Bleed			None { stand weapon3 lower damagepoisoning idle }
+Bleed			None { stand weapon3 down damagepoisoning }
+WalkBleed		Encode_G { stand walk down weapon3 damagepoisoning }
+Bleed			None { stand weapon3 lower damageelectrocuting idle }
+Bleed			None { stand weapon3 down damageelectrocuting }
+WalkBleed		Encode_G { stand walk down weapon3 damageelectrocuting } 
+
+// kitty
+
+seekitty		None { stand weapon3 down discover }
+WalkInvestigate	Encode_G { stand walk down weapon3 attracted }
+
+//--------------------------------------------------------------------------------
+
+//
+// Katana animations
+//
+
+1StGuAi     None     { stand anyweaponposition weapon2 }
+
+ // draw/holster
+
+Draw        Encode_G { stand weapon2 draw }
+Sheath      Encode_G { stand weapon2 holster }
+
+// walk
+
+3StWaGdPa   Walk     { stand walk down weapon2 }
+
+// patrol
+
+3StWaGdPa		Walk     { stand walk down weapon2 patrol }
+3StGd       	None     { stand lower weapon2 idle }
+IdleHair		None     { stand lower weapon2 fidget }
+IdleLookAround	None     { stand lower weapon2 fidget }
+IdleNails		None     { stand lower weapon2 fidget }
+IdleRubButt		None     { stand lower weapon2 fidget }
+IdleRubHip		None     { stand lower weapon2 fidget }
+IdleShift		None     { stand lower weapon2 fidget }
+IdleStretch1	None     { stand lower weapon2 fidget }
+IdleStretch2	None     { stand lower weapon2 fidget }
+IdleStretch3    	None     { stand lower weapon2 fidget }
+IdleLookAround	None     { stand lower weapon2 lookaround }
+LookB       	None     { stand lower weapon2 lookaround }
+
+// run
+
+Run1		Encode_G { stand up run weapon2 } 
+Run1		Encode_G { stand down run weapon2 } 
+
+// doors
+
+1DoorHinge	None     { stand lower weapon2 opendoor }
+1DoorKick	Encode_G { stand lower weapon2 kickdoor }
+Knock       None     { stand lower weapon2 knockondoor }
+1DoorHinge	None     { stand lower weapon2 opendoor investigate }
+1DoorKick	Encode_G { stand lower weapon2 kickdoor investigate }
+Knock       None     { stand lower weapon2 knockondoor investigate }
+1DoorHinge	None     { stand lower weapon2 opendoor investigatedark }
+1DoorKick	Encode_G { stand lower weapon2 kickdoor investigatedark }
+Knock       None     { stand lower weapon2 knockondoor investigatedark }
+
+// alarm
+
+SoundAlarm	Encode_G { stand lower weapon2 alarm }
+
+// investigate
+
+1StGuAi     None     { stand up weapon2 investigate }
+WalkInvestigate Encode_G { stand up weapon2 walk investigate }
+WalkInvestigate Encode_G { stand down weapon2 walk investigate }
+Run1		Encode_G { stand up run weapon2 investigate } 
+LookRL1     None     { stand weapon2 alert }
+LookRL1     None     { stand down weapon2 alert }
+LookRL2     None     { stand down weapon2 alert }
+LookRL3     None     { stand down weapon2 alert }
+
+// bodies
+
+kickbody     None     { stand anyweapon kickbody }
+Disappear   None     { stand anyweapon disposebody }
+
+// search
+
+LookRL1     None     { stand up weapon2 flashlight }
+LookD       None     { stand up weapon2 lookover }
+LookD1      None     { stand up weapon2 lookover }
+LookUnder   None     { stand up weapon2 lookunder } 
+Knock       None     { stand up weapon2 knockondoor } 
+LookL       None     { stand anyweaponposition weapon2 lookleft } 
+LookR       None     { stand anyweaponposition weapon2 lookright }
+LookUp		None { stand up weapon2 lookup }
+
+// darkness
+ 
+1StGuAi     None     { stand anyweaponposition weapon2 investigatedark } 
+WalkLantern Encode_G { stand up weapon2 walk investigatedark }
+Run1		Encode_G { stand up run weapon2 investigatedark } 
+StopLantern None     { stand down weapon2 alert investigatedark }
+StopLantern None     { stand up weapon2 flashlight investigatedark }
+LookD       None     { stand up weapon2 lookover investigatedark } // Placeholder
+LookD1      None     { stand up weapon2 lookover investigatedark } // Placeholder
+LookUnder   None     { stand up weapon2 lookunder investigatedark } // Placeholder
+Knock       None     { stand up weapon2 knockondoor investigatedark } // Placeholder
+LookL       None     { stand anyweaponposition weapon2 lookleft investigatedark } // Placeholder
+LookR       None     { stand anyweaponposition weapon2 lookright investigatedark } // Placeholder
+LookUp		None { stand up weapon2 lookup investigatedark }
+
+// Jump
+
+JumpUpStart Encode_NG  { stand up weapon2 jumpupstart }
+JumpUpFly   JumpUp    { stand up weapon2 jumpupfly }
+JumpUpLand  Encode_NG { stand up weapon2 jumpupland }
+JumpDnStart Encode_NG { stand up weapon2 jumpdownstart }
+JumpDnFly   Fall      { stand up weapon2 jumpdownfly }
+JumpDnLand  Encode_G  { stand up weapon2 jumpdownland }
+JumpStart   Encode_NG { stand up weapon2 jumpstart }
+JumpFly     JumpOver  { stand up weapon2 jumpfly }
+JumpLand    Encode_G  { stand up weapon2 jumpland }
+
+JumpUpStart Encode_NG  { stand down weapon2 jumpupstart }
+JumpUpFly   JumpUp    { stand down weapon2 jumpupfly }
+JumpUpLand  Encode_NG { stand down weapon2 jumpupland }
+JumpDnStart Encode_NG { stand down weapon2 jumpdownstart }
+JumpDnFly   Fall      { stand down weapon2 jumpdownfly }
+JumpDnLand  Encode_G  { stand down weapon2 jumpdownland }
+JumpStart   Encode_NG { stand down weapon2 jumpstart }
+JumpFly     JumpOver  { stand down weapon2 jumpfly }
+JumpLand    Encode_G  { stand down weapon2 jumpland }
+
+JumpUpStart Encode_NG  { stand up weapon2 jumpupstart investigatedark }
+JumpUpFly   JumpUp    { stand up weapon2 jumpupfly investigatedark }
+JumpUpLand  Encode_NG { stand up weapon2 jumpupland investigatedark }
+JumpDnStart Encode_NG { stand up weapon2 jumpdownstart investigatedark }
+JumpDnFly   Fall      { stand up weapon2 jumpdownfly investigatedark }
+JumpDnLand  Encode_G  { stand up weapon2 jumpdownland investigatedark }
+JumpStart   Encode_NG { stand up weapon2 jumpstart investigatedark }
+JumpFly     JumpOver  { stand up weapon2 jumpfly investigatedark }
+JumpLand    Encode_G  { stand up weapon2 jumpland investigatedark }
+
+// Disappear/Reappear
+
+Disappear   None      { stand up weapon2 disappear }
+Reappear    None      { stand up weapon2 reappear }
+
+// Combat
+
+1StGuAi     None     	{ stand up weapon2 aim } 
+Attack2     None 	{ stand up weapon2 fire } 
+Attack4     None 	{ stand up weapon2 fire } 
+Attack5     None 	{ stand up weapon2 fire } 
+Attack6     None 	{ stand up weapon2 fire } 
+Throw       None     { stand up weapon2 firesecondary } 
+Throw2      None     { stand up weapon2 firesecondary } 
+Lunge1Start	Encode_G { stand up weapon2 lungestart }
+Lunge1Fly	Set      { stand up weapon2 lungefly }
+Lunge1Land	Encode_G { stand up weapon2 lungeland }
+Retreat1Start Encode_G { stand up weapon2 retreatstart }
+Retreat2Start Encode_G { stand up weapon2 retreatstart }
+Retreat1Fly   Set      { stand up weapon2 retreatfly }
+Retreat2Fly   Set      { stand up weapon2 retreatfly }
+Retreat1Land  Encode_G { stand up weapon2 retreatland }
+Retreat2Land  Encode_G { stand up weapon2 retreatland }
+
+// dodge
+
+ShuffleR	Encode_G { stand up weapon2 shuffleright }
+SpinShuffleR	Encode_G { stand up weapon2 shuffleright }
+ShuffleL	Encode_G { stand up weapon2 shuffleleft }
+SpinShuffleL	Encode_G { stand up weapon2 shuffleleft }
+RollR		Encode_G { stand up weapon2 rollright }
+CartwheelR	Encode_G { stand up weapon2 rollright }
+RollL		Encode_G { stand up weapon2 rollleft }
+CartwheelL	Encode_G { stand up weapon2 rollleft }
+Block3		None     { stand up weapon2 block }
+React4		None     { stand up weapon2 taunt }
+
+// cover
+
+FlipTable	None 	{ stand lower weapon2 fliptable }
+FlipDesk	None 	{ stand lower weapon2 flipdesk }
+
+CrCv        None     { crouch down weapon2 }
+CrCv        None     { crouch up weapon2 aim }
+CrCv        None     { crouch up weapon2 blind }
+CrCv        None     { crouch up weapon2 aim blind }
+CrCvFire    None     { crouch up weapon2 firesecondary blind }
+CrCv        None     { crouch up weapon2 firesecondary }
+StCv        None     { stand up weapon2 aim covered }
+StCv        None     { stand up weapon2 uncovered cornerright }
+StCv        None     { stand up weapon2 uncovered cornerleft }
+StCv        None     { stand up weapon2 aim uncovered cornerright }
+StCv        None     { stand up weapon2 aim uncovered cornerleft }
+CvRFire     Encode_G { stand up weapon2 firesecondary uncovered cornerright }
+CvLFire     Encode_G { stand up weapon2 firesecondary uncovered cornerleft }
+Throw       None     { stand up weapon2 firesecondary covered }
+Throw2      None     { stand up weapon2 firesecondary covered }
+
+StCv        None     { stand up weapon2 covered }
+
+
+// "work"
+
+HideR_idle		None { stand weapon3 lower hidingright idle }
+HideR_peek		None { stand weapon3 lower hidingright fidget }
+HideL_idle		None { stand weapon3 lower hidingleft idle }
+HideL_peek		None { stand weapon3 lower hidingleft fidget }
+menace                  Encode_G { stand weapon2 lower menacing idle }
+
+// Special Damage Types
+
+KnockOut_idle	None { stand weapon2 lower damagesleeping idle }
+KnockOut_idle	None { stand weapon2 lower damagesleeping death }
+Stun_idle		None { stand weapon2 lower damagestunned idle }
+banana_idle		None { stand weapon2 lower damageslipping idle }
+banana_idle		None { stand weapon2 lower damageslipping death }
+BearTrap_idle		None { stand weapon2 lower damageglued idle }
+Glue_1			None { stand weapon2 lower damageglued fidget }
+Glue_2			None { stand weapon2 lower damageglued fidget }
+Laugh_idle		None { stand weapon2 lower damagelaughing idle }
+Laugh_1			None { stand weapon2 lower damagelaughing fidget }
+Laugh_2			None { stand weapon2 lower damagelaughing fidget }
+
+// Progressive Damage Types
+
+Bleed			None { stand weapon2 lower damagebleeding idle }
+Bleed			None { stand weapon2 down damagebleeding }
+WalkBleed		Encode_G { stand walk down weapon2 damagebleeding }
+Bleed			None { stand weapon2 lower damageburning idle }
+Bleed			None { stand weapon2 down damageburning }
+WalkBleed		Encode_G { stand walk down weapon2 damageburning }
+Bleed			None { stand weapon2 lower damagechoking idle }
+Bleed			None { stand weapon2 down damagechoking }
+WalkBleed		Encode_G { stand walk down weapon2 damagechoking }
+Bleed			None { stand weapon2 lower damagepoisoning idle }
+Bleed			None { stand weapon2 down damagepoisoning }
+WalkBleed		Encode_G { stand walk down weapon2 damagepoisoning }
+Bleed			None { stand weapon2 lower damageelectrocuting idle }
+Bleed			None { stand weapon2 down damageelectrocuting }
+WalkBleed		Encode_G { stand walk down weapon2 damageelectrocuting }
+
+// kitty
+seekitty		None { stand weapon2 down discover }
+WalkInvestigate	Encode_G { stand walk down weapon2 attracted }
+
+//--------------------------------------------------------------------------------
+
+[transitions]
+
+// transitions are formatted as follows:
+//
+// "animation name" movement_type { initial set }  +{ add set }  ~{ remove set }  ={ constant set }  !{ not set }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G
+//
+// to go from a set of props F to a set of props T, via the transition, the following
+// conditions must be met:
+//
+// F must contain all elements of "initial set"
+// F must have none of "add set"
+// T must have all of "add set"
+// F must have all of "remove set"
+// T must not have "remove set"
+// both F and T must have all of "constant set"
+// both F and T must not have anything in "not set"
+//
+// more specific transitions must be specified later (see 1StGd-1StGuAiIn vs. 1StGd-1StGuAi)
+
+DrawLantern None { }  +{ investigatedark }  ~{ }  ={ }  !{ }
+ThrowAway   None { investigatedark }  +{ }  ~{ investigatedark }  ={ }  !{ }
+
+St-StCv     None { stand up }          +{ covered }  ~{ }          ={ stand up }  !{ }
+StCv-St     None { stand up covered }  +{ }          ~{ covered }  ={ stand up }  !{ }
+
+St-CrCv     None { stand up }   +{ crouch }  ~{ stand }   ={ up }  !{ }
+CrCv-St     None { crouch up }  +{ stand }   ~{ crouch }  ={ up }  !{ }
+
+// JumpUpStart Encode_G  { stand }  +{ climbup } ~{ }         ={ stand } !{ }
+// JumpUpLand  Encode_NG { stand }  +{ }         ~{ climbup } ={ stand } !{ }
+// Special Damage Types
+
+KnockOut_In			None { }								+{ damagesleeping }		~{ }					={ }							!{ }
+KnockOut_Out		None { damagesleeping }					+{  }					~{ damagesleeping }		={ }							!{ }
+
+banana_in			None { }								+{ damageslipping }		~{ }					={ }							!{ }
+banana_out			None { damageslipping }					+{  }					~{ damageslipping }		={ }							!{ }
+
+Stun_In				None { }								+{ damagestunned }		~{ }					={ }							!{ }
+Stun_Out			None { damagestunned }					+{  }					~{ damagestunned }		={ }							!{ }
+
+Glue_In				None { }								+{ damageglued }		~{ }					={ }							!{ }
+Glue_Out			None { damageglued }					+{  }					~{ damageglued }		={ }							!{ }
+
+HideR_In			Encode_G { }								+{ hidingright }		~{ }					={ }							!{ }
+HideL_In			Encode_G { }								+{ hidingleft }		~{ }					={ }							!{ }

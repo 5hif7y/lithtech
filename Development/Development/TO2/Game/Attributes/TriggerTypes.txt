@@ -1,0 +1,32 @@
+/************************************************************************
+**
+** T R I G G E R  T Y P E S
+**
+** All TriggerTypes definitions should contain the following properties:
+**
+**  Name (String)
+**
+**	The user friendly name of the TriggerType (what shows up in DEdit).
+**
+**  Icon (string)
+**
+**	The name of the texture file used to display the item in the HUD.
+*/
+
+/*
+** TriggerType0 - Trans AM
+*/
+
+[TriggerType0]
+
+Name		= "TransAM"
+Icon		= "interface\hud\transam.dtx"
+
+/*
+** TriggerType1 - Exit Trigger
+*/
+
+[TriggerType1]
+
+Name		= "Exit Trigger"
+Icon		= "interface\hud\exit.dtx"

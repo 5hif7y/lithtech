@@ -1,0 +1,1 @@
+optionsclipboard.h

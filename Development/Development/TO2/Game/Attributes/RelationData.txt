@@ -1,0 +1,272 @@
+/* 
+** RelationalObject Attributes
+**
+**	The RelationalObject specifies the objects links to other Relation
+**	information.  
+**
+**		Name
+**			The 'Key' used to select a relation set
+** 
+**		RelationSet
+**			Name of the RelationSet this Object uses.  "" if no
+**			RelationSet is to be used.
+** 
+**		RelationData
+**			Name of the RelationData this Object uses.  "" if there
+**			is no RelationData
+** 
+**		Collective: 
+**			Name of the collective, if any.  "" if there is no Collective
+** 
+** 
+*/
+
+[RelationalObject0]
+Name			= "GoodCharacter"
+RelationSet		= "GoodCharacter"
+RelationData	= "GoodCharacter"
+Collective		= ""
+
+[RelationalObject1]
+Name			= "BadCharacter"
+RelationSet		= "BadCharacter"
+RelationData	= "BadCharacter"
+Collective		= ""
+
+[RelationalObject2]
+Name			= "Player"
+RelationSet		= "Player"
+RelationData	= "Player"
+Collective		= ""
+
+[RelationalObject3]
+Name			= "NeutralCharacter"
+RelationSet		= "NeutralCharacter"
+RelationData	= "NeutralCharacter"
+Collective		= ""
+
+[RelationalObject4]
+Name			= "SecurityCamera"
+RelationSet		= "SecurityCamera"
+RelationData	= "SecurityCamera"
+Collective		= ""
+
+[RelationalObject5]
+Name			= "SearchLight"
+RelationSet		= "SearchLight"
+RelationData	= "SearchLight"
+Collective		= ""
+
+[RelationalObject6]
+Name			= "Rat"
+RelationSet		= "Rat"
+RelationData	= "Rat"
+Collective		= ""
+
+[RelationalObject7]
+Name			= "Scientist"
+RelationSet		= "Scientist"
+RelationData	= "Scientist"
+Collective		= ""
+
+[RelationalObject8]
+Name			= "Police"
+RelationSet		= "Police"
+RelationData	= "Police"
+Collective		= ""
+
+[RelationalObject9]
+Name			= "Robot"
+RelationSet		= "Robot"
+RelationData	= "Robot"
+Collective		= ""
+
+
+/* 
+** Collectives
+**
+**	Collectives are for 'Collective minded' characters who all think alike in some way.
+**	They should be used ONLY in situations where they are obviously meant
+**	to exist.
+**	
+**	Characters RelationSets subscribe to Collectives as sources of information.
+**	Information which is not in the Collective MAY still be different for these
+**	characters.  Whenever information matching that listed in the Collective is 
+**	uncovered, the Collective learns that information, and it remains until the
+**	Collective releases it.
+**	
+**		Name = Key
+**	
+**	
+*/
+
+[Collective0]
+Name				= "void"
+RelationSet			= ""
+
+/* 
+** Relation Attributes
+**
+** Name			the 'Key' used to select a relation set
+** Relation0-N	list of Relations in format:
+** 
+**		TraitName<space>Relationship<space>Value
+** 
+**		Valid TraitNames:
+**			Name, Class, Alignment
+** 
+**		Valid Alignments:
+**			HATE, TOLERATE, HATE, UNDETERMINED
+** 
+**		Valid ObjectID: 
+**			String with no spaces
+** 
+*/
+
+[RelationSet0]
+Name    = "NO_LABEL"
+Relation0   = "Alignment HATE Good"
+Relation1   = "Alignment HATE Neutral"
+Relation2   = "Alignment HATE Bad"
+Relation3   = "Alignment HATE Player"
+Relation4   = "Alignment HATE Rat"
+
+[RelationSet1]
+Name    = "GoodCharacter"
+Relation0   = "Alignment LIKE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment HATE Bad"
+Relation3   = "Alignment LIKE Player"
+Relation4   = "Alignment LIKE Rat"
+
+[RelationSet2]
+Name    = "BadCharacter"
+Relation0   = "Alignment HATE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment LIKE Bad"
+Relation3   = "Alignment HATE Player"
+Relation4   = "Alignment TOLERATE Rat"
+ 
+[RelationSet3]
+Name    = "NeutralCharacter"
+Relation0   = "Alignment LIKE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment TOLERATE Bad"
+Relation3   = "Alignment TOLERATE Player"
+Relation4   = "Alignment LIKE Rat"
+
+[RelationSet4]
+Name    = "Player"
+Relation0   = "Alignment LIKE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment HATE Bad"
+Relation3   = "Alignment LIKE Rat"
+
+[RelationSet5]
+Name    = "SecurityCamera"
+Relation0   = "Alignment HATE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment LIKE Bad"
+Relation3   = "Alignment HATE Player"
+Relation4   = "Alignment LIKE Rat"
+
+[RelationSet6]
+Name    = "SearchLight"
+Relation0   = "Alignment HATE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment LIKE Bad"
+Relation3   = "Alignment HATE Player"
+Relation4   = "Alignment LIKE Rat"
+
+[RelationSet7]
+Name    = "Rat"
+Relation0   = "Alignment TOLERATE Good"
+Relation1   = "Alignment TOLERATE Neutral"
+Relation2   = "Alignment TOLERATE Bad"
+Relation3   = "Alignment HATE Player"
+Relation4   = "Alignment LIKE Rat"
+
+[RelationSet8]
+Name    = "Scientist"
+Relation0   = "Alignment HATE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment LIKE Bad"
+Relation3   = "Alignment HATE Player"
+Relation4   = "Alignment LIKE Rat"
+
+[RelationSet9]
+Name    = "Police"
+Relation0   = "Alignment LIKE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment TOLERATE Bad"
+Relation3   = "Alignment HATE Player"
+Relation4   = "Alignment LIKE Rat"
+
+[RelationSet10]
+Name    = "Robot"
+Relation0   = "Alignment HATE Good"
+Relation1   = "Alignment LIKE Neutral"
+Relation2   = "Alignment LIKE Bad"
+Relation3   = "Alignment HATE Player"
+Relation4   = "Alignment LIKE Rat"
+
+
+/* 
+** Relation Attributes
+**
+** Name			the 'Key' used to select a relation set
+** Relation0-N	list of Relations in format:
+** 
+**		TraitName<space>Value
+** 
+**		Valid TraitNames:
+**			Name, Class, Alignment
+** 
+**		Valid ObjectID: 
+**			String with no spaces
+** 
+** 
+*/
+
+[RelationData0]
+Name  = "NO_LABEL"
+
+[RelationData1]
+Name  = "GoodCharacter"
+Data0  = "Alignment Good"
+ 
+[RelationData2]
+Name  = "BadCharacter"
+Data0  = "Alignment Bad"
+ 
+[RelationData3]
+Name  = "NeutralCharacter"
+Data0  = "Alignment Neutral"
+
+[RelationData4]
+Name  = "Player"
+Data0  = "Alignment Player"
+
+[RelationData5]
+Name  = "SecurityCamera"
+Data0  = "Alignment Bad"
+
+[RelationData6]
+Name  = "SearchLight"
+Data0  = "Alignment Bad"
+
+[RelationData7]
+Name  = "Rat"
+Data0  = "Alignment Rat"
+
+[RelationData8]
+Name  = "Scientist"
+Data0  = "Alignment Bad"
+
+[RelationData9]
+Name = "Police"
+Data0 = "Alignment Neutral"
+
+[RelationData10]
+Name = "Robot"
+Data0 = "Alignment Bad"

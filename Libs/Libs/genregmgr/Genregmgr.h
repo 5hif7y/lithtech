@@ -1,0 +1,1 @@
+genregmgr.h

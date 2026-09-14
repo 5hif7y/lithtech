@@ -1,0 +1,1 @@
+resourcelocator.h

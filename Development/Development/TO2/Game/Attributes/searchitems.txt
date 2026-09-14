@@ -1,0 +1,1499 @@
+/************************************************************************
+**
+**		Search Items Attributes file
+**
+**
+*/
+
+
+/************************************************************************
+**
+** SearchItem
+**
+** The SearchItem definitions define all of the attributes associated with
+** a particular item that is found while searching. 
+**
+**
+** All SearchItem definitions should contain the following properties:
+**
+**  Name (String)
+**
+**      The user friendly name of the search item 
+**
+**	Icon (String)
+**
+**		Name of the texture to be used as an icon when this item is found. Interface\Photos\Ammo\Bullet_Def.dtx
+**
+**	TextId (Integer)
+**
+**		The text id used for this search item (corresponds to
+**		a string id in CRes.dll).
+**
+**
+*/
+
+[SearchItem0]
+
+Name	= "pencil"
+Icon	= ""
+TextId	= 3501
+
+[SearchItem1]
+
+Name	= "mousetrap"
+Icon	= ""
+TextId	= 3502
+
+[SearchItem2]
+
+Name	= "paperclips"
+Icon	= ""
+TextId	= 3503
+
+[SearchItem3]
+
+Name	= "sandwich"
+Icon	= ""
+TextId	= 3504
+
+[SearchItem4]
+
+Name	= "mouse"
+Icon	= ""
+TextId	= 3505
+
+[SearchItem5]
+
+Name	= "porn"
+Icon	= ""
+TextId	= 3506
+
+[SearchItem6]
+
+Name	= "blankpaper"
+Icon	= ""
+TextId	= 3507
+
+[SearchItem7]
+
+Name	= "tissues"
+Icon	= ""
+TextId	= 3508
+
+[SearchItem8]
+
+Name	= "hairtonic"
+Icon	= ""
+TextId	= 3509
+
+[SearchItem9]
+
+Name	= "lipstick"
+Icon	= ""
+TextId	= 3510
+
+[SearchItem10]
+
+Name	= "stockings"
+Icon	= ""
+TextId	= 3511
+
+[SearchItem11]
+
+Name	= "gum"
+Icon	= ""
+TextId	= 3512
+
+[SearchItem12]
+
+Name	= "eraser"
+Icon	= ""
+TextId	= 3513
+
+[SearchItem13]
+
+Name	= "chewedpencil"
+Icon	= ""
+TextId	= 3514
+
+[SearchItem14]
+
+Name	= "gin"
+Icon	= ""
+TextId	= 3515
+
+[SearchItem15]
+
+Name	= "jammedstapler"
+Icon	= ""
+TextId	= 3516
+
+[SearchItem16]
+
+Name	= "supplycatalog"
+Icon	= ""
+TextId	= 3517
+
+[SearchItem17]
+
+Name	= "notebook"
+Icon	= ""
+TextId	= 3518
+
+[SearchItem18]
+
+Name	= "donut"
+Icon	= ""
+TextId	= 3519
+
+[SearchItem19]
+
+Name	= "forks"
+Icon	= ""
+TextId	= 3520
+
+[SearchItem20]
+
+Name	= "scissors"
+Icon	= ""
+TextId	= 3521
+
+[SearchItem21]
+
+Name	= "tacks"
+Icon	= ""
+TextId	= 3522
+
+[SearchItem22]
+
+Name	= "blackpens"
+Icon	= ""
+TextId	= 3523
+
+[SearchItem23]
+
+Name	= "aspirin"
+Icon	= ""
+TextId	= 3524
+
+[SearchItem24]
+
+Name	= "marker"
+Icon	= ""
+TextId	= 3525
+
+[SearchItem25]
+
+Name	= "coin"
+Icon	= ""
+TextId	= 3526
+
+[SearchItem26]
+
+Name	= "spearmints"
+Icon	= ""
+TextId	= 3527
+
+[SearchItem27]
+
+Name	= "stamp"
+Icon	= ""
+TextId	= 3528
+
+[SearchItem28]
+
+Name	= "cheese"
+Icon	= ""
+TextId	= 3529
+
+[SearchItem29]
+
+Name	= "photocopies"
+Icon	= ""
+TextId	= 3530
+
+[SearchItem30]
+
+Name	= "cream"
+Icon	= ""
+TextId	= 3531
+
+[SearchItem31]
+
+Name	= "toothbrush"
+Icon	= ""
+TextId	= 3532
+
+[SearchItem32]
+
+Name	= "taxreturns"
+Icon	= ""
+TextId	= 3551
+
+[SearchItem33]
+
+Name	= "loveletters"
+Icon	= ""
+TextId	= 3552
+
+[SearchItem34]
+
+Name	= "manual"
+Icon	= ""
+TextId	= 3553
+
+[SearchItem35]
+
+Name	= "requisition"
+Icon	= ""
+TextId	= 3554
+
+[SearchItem36]
+
+Name	= "vacation"
+Icon	= ""
+TextId	= 3555
+
+[SearchItem37]
+
+Name	= "pizza"
+Icon	= ""
+TextId	= 3556
+
+[SearchItem38]
+
+Name	= "novel"
+Icon	= ""
+TextId	= 3557
+
+[SearchItem39]
+
+Name	= "Olgaautograph"
+Icon	= ""
+TextId	= 3576
+
+[SearchItem40]
+
+Name	= "olgahandbill"
+Icon	= ""
+TextId	= 3577
+
+[SearchItem41]
+
+Name	= "chekhov"
+Icon	= ""
+TextId	= 3578
+
+[SearchItem42]
+
+Name	= "grocerylist"
+Icon	= ""
+TextId	= 3579
+
+[SearchItem43]
+
+Name	= "armyreceipt"
+Icon	= ""
+TextId	= 3580
+
+[SearchItem44]
+
+Name	= "aleppo"
+Icon	= ""
+TextId	= 3581
+
+[SearchItem45]
+
+Name	= "gogol"
+Icon	= ""
+TextId	= 3582
+
+[SearchItem46]
+
+Name	= "eminescu"
+Icon	= ""
+TextId	= 3583
+
+[SearchItem47]
+
+Name	= "felineautograph"
+Icon	= ""
+TextId	= 3584
+
+[SearchItem48]
+
+Name	= "vodka"
+Icon	= ""
+TextId	= 3601
+
+[SearchItem49]
+
+Name	= "hockeycards"
+Icon	= ""
+TextId	= 3602
+
+[SearchItem50]
+
+Name	= "meattin"
+Icon	= ""
+TextId	= 3603
+
+[SearchItem51]
+
+Name	= "russianporn"
+Icon	= ""
+TextId	= 3604
+
+[SearchItem52]
+
+Name	= "siberiavacation"
+Icon	= ""
+TextId	= 3605
+
+[SearchItem53]
+
+Name	= "deniedstamp"
+Icon	= ""
+TextId	= 3606
+
+[SearchItem54]
+
+Name	= "redmitten"
+Icon	= ""
+TextId	= 3607
+
+[SearchItem55]
+
+Name	= "russiancigs"
+Icon	= ""
+TextId	= 3608
+
+[SearchItem56]
+
+Name	= "lighter"
+Icon	= ""
+TextId	= 3609
+
+[SearchItem57]
+
+Name	= "puffin"
+Icon	= ""
+TextId	= 3610
+
+[SearchItem58]
+
+Name	= "warandpeace"
+Icon	= ""
+TextId	= 3611
+
+[SearchItem59]
+
+Name	= "conductmanual"
+Icon	= ""
+TextId	= 3612
+
+[SearchItem60]
+
+Name	= "autograph"
+Icon	= ""
+TextId	= 3612
+
+[SearchItem61]
+
+Name	= "deadcat"
+Icon	= ""
+TextId	= 3612
+
+[SearchItem62]
+
+Name	= "mints"
+Icon	= ""
+TextId	= 3626
+
+[SearchItem63]
+
+Name	= "chewedgum"
+Icon	= ""
+TextId	= 3627
+
+[SearchItem64]
+
+Name	= "lint"
+Icon	= ""
+TextId	= 3628
+
+[SearchItem65]
+
+Name	= "yoyo"
+Icon	= ""
+TextId	= 3629
+
+[SearchItem66]
+
+Name	= "movieticket"
+Icon	= ""
+TextId	= 3630
+
+[SearchItem67]
+
+Name	= "apple"
+Icon	= ""
+TextId	= 3631
+
+[SearchItem68]
+
+Name	= "pocketknife"
+Icon	= ""
+TextId	= 3632
+
+[SearchItem69]
+
+Name	= "shoppinglist"
+Icon	= ""
+TextId	= 3633
+
+[SearchItem70]
+
+Name	= "comb"
+Icon	= ""
+TextId	= 3634
+
+[SearchItem71]
+
+Name	= "housekeys"
+Icon	= ""
+TextId	= 3635
+
+[SearchItem72]
+
+Name	= "hanky"
+Icon	= ""
+TextId	= 3636
+
+[SearchItem73]
+
+Name	= "underware"
+Icon	= ""
+TextId	= 3637
+
+[SearchItem74]
+
+Name	= "dice"
+Icon	= ""
+TextId	= 3638
+
+[SearchItem75]
+
+Name	= "cards"
+Icon	= ""
+TextId	= 3639
+
+[SearchItem76]
+
+Name	= "vitamins"
+Icon	= ""
+TextId	= 3640
+
+[SearchItem77]
+
+Name	= "cherrycough"
+Icon	= ""
+TextId	= 3641
+
+[SearchItem78]
+
+Name	= "mentholcough"
+Icon	= ""
+TextId	= 3642
+
+[SearchItem79]
+
+Name	= "usedtissue"
+Icon	= ""
+TextId	= 3643
+
+[SearchItem80]
+
+Name	= "aluminumball"
+Icon	= ""
+TextId	= 3644
+
+[SearchItem81]
+
+Name	= "babypic"
+Icon	= ""
+TextId	= 3645
+
+[SearchItem82]
+
+Name	= "condom"
+Icon	= ""
+TextId	= 3646
+
+[SearchItem83]
+
+Name	= "eyecurler"
+Icon	= ""
+TextId	= 3647
+
+[SearchItem84]
+
+Name	= "rubberband"
+Icon	= ""
+TextId	= 3648
+
+[SearchItem85]
+
+Name	= "cockroach"
+Icon	= ""
+TextId	= 3649
+
+[SearchItem86]
+
+Name	= "tooth"
+Icon	= ""
+TextId	= 3650
+
+[SearchItem87]
+
+Name	= "toenails"
+Icon	= ""
+TextId	= 3651
+
+[SearchItem88]
+
+Name	= "pinkmitten"
+Icon	= ""
+TextId	= 3661
+
+[SearchItem89]
+
+Name	= "fishlips"
+Icon	= ""
+TextId	= 3662
+
+[SearchItem90]
+
+Name	= "olgaticket"
+Icon	= ""
+TextId	= 3663
+
+[SearchItem91]
+
+Name	= "dentalfloss"
+Icon	= ""
+TextId	= 3653
+
+[SearchItem92]
+
+Name	= "rabbitfoot"
+Icon	= ""
+TextId	= 3654
+
+[SearchItem93]
+
+Name	= "go"
+Icon	= ""
+TextId	= 3681
+
+[SearchItem94]
+
+Name	= "pocky"
+Icon	= ""
+TextId	= 3682
+
+[SearchItem95]
+
+Name	= "shuriken"
+Icon	= ""
+TextId	= 3683
+
+[SearchItem96]
+
+Name	= "pinklipstick"
+Icon	= ""
+TextId	= 3684
+
+[SearchItem97]
+
+Name	= "barrette"
+Icon	= ""
+TextId	= 3685
+
+[SearchItem98]
+
+Name	= "keychain"
+Icon	= ""
+TextId	= 3686
+
+[SearchItem99]
+
+Name	= "japanmovie"
+Icon	= ""
+TextId	= 3687
+
+[SearchItem100]
+
+Name	= "eyelashes"
+Icon	= ""
+TextId	= 3688
+
+[SearchItem101]
+
+Name	= "creditcard"
+Icon	= ""
+TextId	= 3689
+
+[SearchItem102]
+
+Name	= "perfume"
+Icon	= ""
+TextId	= 3690
+
+[SearchItem103]
+
+Name	= "crackedmirror"
+Icon	= ""
+TextId	= 3691
+
+[SearchItem104]
+
+Name	= "woodcharm"
+Icon	= ""
+TextId	= 3692
+
+[SearchItem105]
+
+Name	= "lacehanky"
+Icon	= ""
+TextId	= 3693
+
+[SearchItem106]
+
+Name	= "goldcharm"
+Icon	= ""
+TextId	= 3694
+
+[SearchItem107]
+
+Name	= "silvercharm"
+Icon	= ""
+TextId	= 3695
+
+[SearchItem108]
+
+Name	= "japancandy"
+Icon	= ""
+TextId	= 3696
+
+[SearchItem109]
+
+Name	= "nigiri"
+Icon	= ""
+TextId	= 3697
+
+[SearchItem110]
+
+Name	= "coincase"
+Icon	= ""
+TextId	= 3698
+
+[SearchItem111]
+
+Name	= "japancleanser"
+Icon	= ""
+TextId	= 3701
+
+[SearchItem112]
+
+Name	= "calligraphypen"
+Icon	= ""
+TextId	= 3702
+
+[SearchItem113]
+
+Name	= "sewingkit"
+Icon	= ""
+TextId	= 3703
+
+[SearchItem114]
+
+Name	= "japanbread"
+Icon	= ""
+TextId	= 3704
+
+[SearchItem115]
+
+Name	= "wasabi"
+Icon	= ""
+TextId	= 3705
+
+[SearchItem116]
+
+Name	= "japanbottle"
+Icon	= ""
+TextId	= 3706
+
+[SearchItem117]
+
+Name	= "indiahanky"
+Icon	= ""
+TextId	= 3721
+
+[SearchItem118]
+
+Name	= "tobacco"
+Icon	= ""
+TextId	= 3722
+
+[SearchItem119]
+
+Name	= "cricket"
+Icon	= ""
+TextId	= 3723
+
+[SearchItem120]
+
+Name	= "shastigod"
+Icon	= ""
+TextId	= 3724
+
+[SearchItem121]
+
+Name	= "lakshmigod"
+Icon	= ""
+TextId	= 3725
+
+[SearchItem122]
+
+Name	= "durgagod"
+Icon	= ""
+TextId	= 3726
+
+[SearchItem123]
+
+Name	= "kartikeyagod"
+Icon	= ""
+TextId	= 3727
+
+[SearchItem124]
+
+Name	= "gaurigod"
+Icon	= ""
+TextId	= 3728
+
+[SearchItem125]
+
+Name	= "angarakagod"
+Icon	= ""
+TextId	= 3729
+
+[SearchItem126]
+
+Name	= "cardamom"
+Icon	= ""
+TextId	= 3730
+
+[SearchItem127]
+
+Name	= "kaamdhenugod"
+Icon	= ""
+TextId	= 3731
+
+[SearchItem128]
+
+Name	= "saraswatigod"
+Icon	= ""
+TextId	= 3732
+
+[SearchItem129]
+
+Name	= "batikhanky"
+Icon	= ""
+TextId	= 3733
+
+[SearchItem130]
+
+Name	= "tamarind"
+Icon	= ""
+TextId	= 3734
+
+[SearchItem131]
+
+Name	= "koorka"
+Icon	= ""
+TextId	= 3724
+
+[SearchItem132]
+
+Name	= "nuttela"
+Icon	= ""
+TextId	= 3741
+
+[SearchItem133]
+
+Name	= "pathicards"
+Icon	= ""
+TextId	= 3742
+
+[SearchItem134]
+
+Name	= "coconutoil"
+Icon	= ""
+TextId	= 3743
+
+[SearchItem135]
+
+Name	= "facepowder"
+Icon	= ""
+TextId	= 3744
+
+[SearchItem136]
+
+Name	= "loris"
+Icon	= ""
+TextId	= 3745
+
+[SearchItem137]
+
+Name	= "henna"
+Icon	= ""
+TextId	= 3746
+
+[SearchItem138]
+
+Name	= "mutton"
+Icon	= ""
+TextId	= 3747
+
+[SearchItem139]
+
+Name	= "basmati"
+Icon	= ""
+TextId	= 3748
+
+[SearchItem140]
+
+Name	= "indiabook"
+Icon	= ""
+TextId	= 3749
+
+[SearchItem141]
+
+Name	= "gillisticks"
+Icon	= ""
+TextId	= 3750
+
+[SearchItem142]
+
+Name	= "indiaoil"
+Icon	= ""
+TextId	= 3751
+
+[SearchItem143]
+
+Name	= "chutney"
+Icon	= ""
+TextId	= 3752
+
+[SearchItem144]
+
+Name	= "ghee"
+Icon	= ""
+TextId	= 3753
+
+[SearchItem145]
+
+Name	= "ghee"
+Icon	= ""
+TextId	= 3753
+
+[SearchItem146]
+
+Name	= "balloon"
+Icon	= ""
+TextId	= 3781
+
+[SearchItem147]
+
+Name	= "makeup"
+Icon	= ""
+TextId	= 3782
+
+[SearchItem148]
+
+Name	= "kazoo"
+Icon	= ""
+TextId	= 3783
+
+[SearchItem149]
+
+Name	= "whiteglove"
+Icon	= ""
+TextId	= 3784
+
+[SearchItem150]
+
+Name	= "multihanky"
+Icon	= ""
+TextId	= 3785
+
+[SearchItem151]
+
+Name	= "notepen"
+Icon	= ""
+TextId	= 3786
+
+[SearchItem152]
+
+Name	= "blueshadow"
+Icon	= ""
+TextId	= 3787
+
+[SearchItem153]
+
+Name	= "greasepaint"
+Icon	= ""
+TextId	= 3788
+
+[SearchItem154]
+
+Name	= "mimedictionary"
+Icon	= ""
+TextId	= 3789
+
+[SearchItem155]
+
+Name	= "mimepetition"
+Icon	= ""
+TextId	= 3790
+
+[SearchItem156]
+
+Name	= "mimebook"
+Icon	= ""
+TextId	= 3791
+
+[SearchItem157]
+
+Name	= "carnation"
+Icon	= ""
+TextId	= 3792
+
+[SearchItem158]
+
+Name	= "sherry"
+Icon	= ""
+TextId	= 3793
+
+[SearchItem159]
+
+Name	= "toupee"
+Icon	= ""
+TextId	= 3794
+
+[SearchItem160]
+
+Name	= "indiatea"
+Icon	= ""
+TextId	= 3761
+
+[SearchItem161]
+
+Name	= "ramayana"
+Icon	= ""
+TextId	= 3762
+
+[SearchItem162]
+
+Name	= "kalidasa"
+Icon	= ""
+TextId	= 3763
+
+[SearchItem163]
+
+Name	= "indiarecord"
+Icon	= ""
+TextId	= 3764
+
+[SearchItem164]
+
+Name	= "biryani"
+Icon	= ""
+TextId	= 3765
+
+[SearchItem165]
+
+Name	= "vindaloo"
+Icon	= ""
+TextId	= 3766
+
+[SearchItem166]
+
+Name	= "indiainvoice"
+Icon	= ""
+TextId	= 3767
+
+[SearchItem167]
+
+Name	= "bhavani"
+Icon	= ""
+TextId	= 3768
+
+[SearchItem168]
+
+Name	= "bankamundi"
+Icon	= ""
+TextId	= 3769
+
+[SearchItem169]
+
+Name	= "mehendibook"
+Icon	= ""
+TextId	= 3770
+
+[SearchItem170]
+
+Name	= "capone"
+Icon	= ""
+TextId	= 3771
+
+[SearchItem171]
+
+Name	= "dilinger"
+Icon	= ""
+TextId	= 3772
+
+[SearchItem172]
+
+Name	= "breadcrumbs"
+Icon	= ""
+TextId	= 3656
+
+
+/************************************************************************
+**
+** SearchSet
+**
+** The SearchSet definitions define all of the attributes associated with
+** a set of items that might be found while searching. 
+**
+**
+** All SearchItem definitions should contain the following properties:
+**
+**  Name (String)
+**
+**      The user friendly name of the search set 
+**
+**  Items (String)
+**
+**		A comma-separated list of SearchItems found in this set
+**
+**	ItemPercent (Integer)
+**
+**		The percent chance that one of the SearchItems specified above will be found.  
+**
+**		NOTE: this must be a number between 0 and 100 so that ItemPercent + AmmoPercent +
+**			  WeaponPercent + GearPercent add up to 100!
+**
+**	Ammo# (String)
+**
+**		Specifies the type of ammo that may be found and the ammount of ammo.
+**		The value of this property (before the comma) MUST correspond to the 
+**		name specified in the AMMO definitions in weapons.txt.  Multiple ammo 
+**		types may be specified but only one of the choices will be randomly 
+**		select.  For example:
+**
+**			Ammo0	= "9mm fmj, 10"
+**			Ammo1	= "9mm dum dum, 30"
+**			...
+**
+**	AmmoPercent	(Integer)
+**
+**		The percent chance that one of the ammo types specified above will be found.  
+**
+**		NOTE: this must be a number between 0 and 100 so that ItemPercent + AmmoPercent +
+**			  WeaponPercent + GearPercent add up to 100!
+**
+**	Weapon# (String)
+**
+**		Specifies the type of weapon that may be found.  The value
+**		of this property MUST correspond to the name specified in the
+**		WEAPON definitions in weapons.txt.  Multiple weapons may be specified
+**		but only one of the choices will be randomly select.  For example:
+**
+**			Weapon0	= "Grenade"
+**			Weapon1	= "StunGrenade"
+**			...
+**
+**	WeaponPercent (Integer)
+**
+**		The percent chance that one of the weapon types specified above will be found.  
+**
+**		NOTE: this must be a number between 0 and 100 so that ItemPercent + AmmoPercent +
+**			  WeaponPercent + GearPercent add up to 100!
+**
+**	Gear# (String)
+**
+**		Specifies the type of gear that may be found.  The value
+**		of this property MUST correspond to the name specified in the
+**		GEAR definitions in weapons.txt.  Multiple gear items may be specified
+**		but only one of the choices will be randomly select.  For example:
+**
+**			Gear0	= "Body Armor"
+**			Gear1	= "Health"
+**			...
+**
+**	GearPercent	(Integer)
+**
+**		The percent chance that one of the gear items specified above will be found.  
+**
+**		NOTE: this must be a number between 0 and 100 so that ItemPercent + AmmoPercent +
+**			  WeaponPercent + GearPercent add up to 100!
+**
+**
+*/
+
+/*
+** SearchSet0 = "Default"
+**	- this set is used when no other set is specified
+**
+*/
+
+[SearchSet0]
+Name			= "Files General"
+Items			= "pencil, mousetrap, paperclips, sandwich, mouse, porn, blankpaper, tissues, hairtonic, lipstick, stockings, gum, eraser, chewedpencil, gin, jammedstapler, supplycatalog, notebook, donut, forks, scissors, tacks, blackpens, aspirin, marker, coin, spearmints, stamp, cheese, photocopies, cream, toothbrush"
+ItemPercent		= 100  // Only items will be found
+Ammo0			= ""
+AmmoPercent		= 0
+Weapon0			= ""
+WeaponPercent	= 0
+Gear0			= ""
+GearPercent		= 0
+
+[SearchSet1]
+Name			= "Bodies General"
+Items			= "mints, chewedgum, lint, yoyo, movieticket, apple, pocketknife, shoppinglist, comb, housekeys, hanky, underware, dice, cards, vitamins, cherrycough, mentholcough, usedtissue, aluminumball, babypic, condom, eyecurler, rubberband, cockroach, tooth, toenails, breadcrumbs"
+ItemPercent		= 25
+Ammo0			= ".32 fmj, 3"
+Ammo1			= ".32 fmj, 3"
+Ammo2			= ".32 fmj, 3"
+Ammo3			= ".32 fmj, 9"
+Ammo4			= ".32 fmj, 9"
+Ammo5			= "9mm fmj, 10"
+Ammo6			= "9mm fmj, 10"
+Ammo7			= "9mm fmj, 10"
+Ammo8			= "9mm fmj, 10"
+Ammo9			= "9mm fmj, 10"
+Ammo10			= "9mm fmj, 30"
+Ammo11			= "9mm fmj, 30"
+Ammo12			= "9mm fmj, 30"
+AmmoPercent		= 25
+Weapon0			= "Grenade"
+Weapon1			= "Grenade"
+Weapon2			= "Grenade"
+Weapon3			= "StunGrenade"
+Weapon4			= "StunGrenade"
+Weapon5			= "StunGrenade"
+Weapon6			= "StunGrenade"
+Weapon7			= "SleepGrenade"
+Weapon8			= "SleepGrenade"
+Weapon9			= "AcidGrenade"
+WeaponPercent	= 25
+Gear0			= "Body Armor Found"
+Gear1			= "Body Armor Found"
+Gear2			= "Body Armor Found"
+Gear3			= "Body Armor Small"
+Gear4			= "Body Armor Small"
+Gear5			= "Body Armor Small"
+Gear6			= "Body Armor"
+Gear7			= "First Aid Found"
+Gear8			= "First Aid Found"
+Gear9			= "First Aid Found"
+Gear10			= "First Aid Small"
+Gear11			= "First Aid Small"
+Gear12			= "First Aid Small"
+Gear13			= "First Aid"
+GearPercent		= 25
+
+[SearchSet2]
+Name			= "Paper General"
+Items			= "taxreturns, loveletters, manual, requisition, vacation, pizza, novel"
+ItemPercent		= 100  // Only items will be found
+Ammo0			= ""
+AmmoPercent		= 0
+Weapon0			= ""
+WeaponPercent	= 0
+Gear0			= ""
+GearPercent		= 0
+
+[SearchSet3]
+Name			= "Files Soviet"
+Items			= "pencil, mousetrap, paperclips, sandwich, mouse, porn, blankpaper, tissues, hairtonic, lipstick, stockings, gum, eraser, chewedpencil, gin, jammedstapler, supplycatalog, notebook, donut, forks, scissors, tacks, blackpens, aspirin, marker, coin, spearmints, stamp, cheese, photocopies, cream, toothbrush, vodka, hockeycards, meattin, russianporn, siberiavacation, deniedstamp, redmitten, russiancigs, lighter, puffin, warandpeace, conductmanual, autograph, deadcat"
+ItemPercent		= 100  // Only items will be found
+Ammo0			= ""
+AmmoPercent		= 0
+Weapon0			= ""
+WeaponPercent	= 0
+Gear0			= ""
+GearPercent		= 0
+
+[SearchSet4]
+Name			= "Bodies Soviet"
+Items			= "mints, chewedgum, lint, yoyo, movieticket, apple, pocketknife, shoppinglist, comb, housekeys, hanky, underware, dice, cards, vitamins, cherrycough, mentholcough, usedtissue, aluminumball, babypic, condom, eyecurler, rubberband, cockroach, tooth, toenails, pinkmitten, fishlips, olgaticket, breadcrumbs"
+ItemPercent		= 50 
+Ammo0			= "7.62x39 fmj, 10"
+Ammo1			= "7.62x39 fmj, 10"
+Ammo2			= "7.62x39 fmj, 10"
+Ammo3			= "7.62x39 fmj, 10"
+Ammo4			= "7.62x39 fmj, 30"
+Ammo5			= "7.62x39 fmj, 30"
+Ammo6			= "7.62x39 phos, 10"
+Ammo7			= "7.62x39 phos, 30"
+Ammo8			= ".32 fmj, 3"
+Ammo9			= ".32 fmj, 3"
+Ammo10			= ".32 fmj, 3"
+Ammo11			= ".32 fmj, 3"
+Ammo12			= ".32 fmj, 6"
+Ammo13			= ".32 fmj, 6"
+Ammo14			= ".32 fmj, 6"
+Ammo15			= ".32 fmj, 9"
+Ammo16			= ".32 fmj, 9"
+Ammo17			= ".308 fmj, 1"
+Ammo18			= ".308 fmj, 1"
+Ammo19			= ".308 fmj, 5"
+Ammo20			= "Tranquilizer, 2"
+Ammo21			= "Tranquilizer, 2"
+Ammo22			= "Tranquilizer, 2"
+Ammo23			= "Tracking Device, 2"
+Ammo24			= "Tracking Device, 2"
+AmmoPercent		= 25
+Weapon0			= "Grenade"
+Weapon1			= "Grenade"
+Weapon2			= "Grenade"
+Weapon3			= "StunGrenade"
+Weapon4			= "StunGrenade"
+Weapon5			= "StunGrenade"
+Weapon6			= "StunGrenade"
+Weapon7			= "SleepGrenade"
+Weapon8			= "SleepGrenade"
+WeaponPercent	= 5
+Gear0			= "Body Armor Found"
+Gear1			= "Body Armor Found"
+Gear2			= "Body Armor Found"
+Gear3			= "Body Armor Small"
+Gear4			= "Body Armor Small"
+Gear5			= "Body Armor Small"
+Gear6			= "Body Armor"
+Gear7			= "First Aid Found"
+Gear8			= "First Aid Found"
+Gear9			= "First Aid Found"
+Gear10			= "First Aid Small"
+Gear11			= "First Aid Small"
+Gear12			= "First Aid Small"
+Gear13			= "First Aid"
+GearPercent		= 20
+
+[SearchSet5]
+Name			= "Paper Soviet"
+Items			= "taxreturns, loveletters, manual, requisition, vacation, pizza, novel, olgaautograph, olgahandbill, chekhov, grocerylist, armyreceipt, aleppo, gogol, eminescu, felineautograph"
+ItemPercent		= 100  // Only items will be found
+Ammo0			= ""
+AmmoPercent		= 0
+Weapon0			= ""
+WeaponPercent	= 0
+Gear0			= ""
+GearPercent		= 0
+
+[SearchSet6]
+Name			= "Bodies Indian"
+Items			= "mints, chewedgum, lint, movieticket, pocketknife, shoppinglist, comb, housekeys, hanky, underware, dice, cards, vitamins, cherrycough, mentholcough, usedtissue, aluminumball, babypic, condom, rubberband, cockroach, tooth, toenails, indiahanky, tobacco, cricket, shastigod, lakshmigod, durgagod, kartikeyagod, gaurigod, angarakagod, cardamom, kaamdhenugod, saraswatigod, batikhanky, tamarind, koorka"
+ItemPercent		= 50 
+Ammo0			= "7.62x39 fmj, 10"
+Ammo1			= "7.62x39 fmj, 10"
+Ammo2			= "7.62x39 fmj, 10"
+Ammo3			= "7.62x39 fmj, 10"
+Ammo4			= "7.62x39 fmj, 30"
+Ammo5			= "7.62x39 fmj, 30"
+Ammo6			= "7.62x39 phos, 10"
+Ammo7			= "7.62x39 phos, 30"
+Ammo8			= ".32 fmj, 3"
+Ammo9			= ".32 fmj, 3"
+Ammo10			= ".32 fmj, 3"
+Ammo11			= ".32 fmj, 3"
+Ammo12			= ".32 fmj, 6"
+Ammo13			= ".32 fmj, 6"
+Ammo14			= ".32 fmj, 6"
+Ammo15			= ".32 fmj, 9"
+Ammo16			= ".32 fmj, 9"
+AmmoPercent		= 25
+Weapon0			= "Grenade"
+Weapon1			= "Grenade"
+Weapon2			= "Grenade"
+Weapon3			= "StunGrenade"
+Weapon4			= "StunGrenade"
+Weapon5			= "StunGrenade"
+Weapon6			= "StunGrenade"
+Weapon7			= "SleepGrenade"
+Weapon8			= "SleepGrenade"
+Weapon9			= "AcidGrenade"
+Weapon10		= "Banana"
+Weapon11		= "Banana"
+Weapon12		= "Banana"
+WeaponPercent	= 5
+Gear0			= "Body Armor Found"
+Gear1			= "Body Armor Found"
+Gear2			= "Body Armor Found"
+Gear3			= "Body Armor Small"
+Gear4			= "Body Armor Small"
+Gear5			= "Body Armor Small"
+Gear6			= "Body Armor"
+Gear7			= "First Aid Found"
+Gear8			= "First Aid Found"
+Gear9			= "First Aid Found"
+Gear10			= "First Aid Small"
+Gear11			= "First Aid Small"
+Gear12			= "First Aid Small"
+Gear13			= "First Aid"
+GearPercent		= 20
+
+[SearchSet7]
+Name			= "Files India"
+Items			= "pencil, mousetrap, paperclips, sandwich, mouse, porn, blankpaper, tissues, hairtonic, stockings, gum, eraser, chewedpencil, jammedstapler, supplycatalog, notebook, forks, scissors, tacks, blackpens, aspirin, marker, coin, spearmints, stamp, cheese, photocopies, toothbrush, nuttela, pathicards, coconutoil, facepowder, loris, henna, mutton, basmati, indiabook, gillisticks, indiaoil, chutney, ghee"
+ItemPercent		= 100 
+Ammo0			= ""
+AmmoPercent		= 0
+Weapon0			= ""
+WeaponPercent	= 0
+Gear0			= ""
+GearPercent		= 0
+
+[SearchSet8]
+Name			= "Bodies Ninja"
+Items			= "mints, chewedgum, lint, apple, shoppinglist, comb, housekeys, hanky, vitamins, usedtissue, babypic, condom, eyecurler, rubberband, cockroach, tooth, go, pocky, shuriken, pinklipstick, barrette, keychain, japanmovie, eyelashes, creditcard, perfume, crackedmirror, woodcharm, lacehanky, goldcharm, silvercharm, japancandy, nigiri, coincase"
+ItemPercent		= 50
+Ammo0			= "Bolt, 1"
+Ammo1			= "Bolt, 1"
+Ammo2			= "Bolt, 1"
+Ammo3			= "Bolt, 1"
+Ammo4			= "Bolt, 1"
+Ammo5			= "Bolt, 2"
+Ammo6			= "Bolt, 2"
+Ammo7			= "Bolt, 2"
+Ammo8			= "Bolt, 3"
+Ammo9			= "Bolt, 3"
+Ammo10			= "Bolt, 5"
+Ammo11			= "Poison Bolt, 1"
+Ammo12			= "Poison Bolt, 2"
+Ammo13			= "Poison Bolt, 3"
+Ammo14			= "Fire Bolt, 1"
+Ammo15			= "Fire Bolt, 2"
+AmmoPercent		= 25
+Weapon0			= "Grenade"
+Weapon1			= "StunGrenade"
+Weapon2			= "StunGrenade"
+Weapon3			= "StunGrenade"
+Weapon4			= "StunGrenade"
+Weapon5			= "SleepGrenade"
+Weapon6			= "SleepGrenade"
+Weapon7			= "Shuriken"
+Weapon8			= "Shuriken"
+WeaponPercent		= 3
+Gear0			= "Body Armor Found"
+Gear1			= "Body Armor Found"
+Gear2			= "Body Armor Found"
+Gear3			= "Body Armor Small"
+Gear4			= "Body Armor Small"
+Gear5			= "Body Armor Small"
+Gear6			= "Body Armor"
+Gear7			= "First Aid Found"
+Gear8			= "First Aid Found"
+Gear9			= "First Aid Found"
+Gear10			= "First Aid Small"
+Gear11			= "First Aid Small"
+Gear12			= "First Aid Small"
+Gear13			= "First Aid"
+GearPercent		= 22
+
+[SearchSet9]
+Name			= "Files Japan"
+Items			= "pencil, mousetrap, paperclips, sandwich, mouse, blankpaper, tissues, lipstick, stockings, gum, eraser, chewedpencil, jammedstapler, supplycatalog, notebook, forks, scissors, tacks, blackpens, aspirin, marker, coin, spearmints, stamp, cheese, photocopies, cream, toothbrush, japancleanser, calligraphypen, sewingkit, japanbread, wasabi, japanbottle"
+ItemPercent		= 100  // Only items will be found
+Ammo0			= ""
+AmmoPercent		= 0
+Weapon0			= ""
+WeaponPercent	= 0
+Gear0			= ""
+GearPercent		= 0
+
+[SearchSet10]
+Name			= "Paper India"
+Items			= "taxreturns, loveletters, vacation, indiatea, ramayana, kalidasa, indiarecord, biryani, vindaloo, indiainvoice, bhavani, bankamundi, mehendibook, capone, dilinger"
+ItemPercent		= 100  // Only items will be found
+Ammo0			= ""
+AmmoPercent		= 0
+Weapon0			= ""
+WeaponPercent	= 0
+Gear0			= ""
+GearPercent		= 0
+
+[SearchSet11]
+Name			= "Bodies Mime"
+Items			= "chewedgum, lint, comb, dice, cards, usedtissue, rubberband, toenails, balloon, makeup, kazoo, whiteglove, multihanky, notepen, blueshadow, greasepaint, mimedictionary, mimepetition, mimebook, carnation, sherry, toupee"
+ItemPercent		= 50  
+Ammo0			= ".45 fmj, 10"
+Ammo1			= ".45 fmj, 10"
+Ammo2			= ".45 fmj, 10"
+Ammo3			= ".45 fmj, 10"
+Ammo4			= ".45 fmj, 25"
+Ammo5			= ".45 fmj, 25"
+Ammo6			= ".45 fmj, 25"
+Ammo7			= ".45 fmj, 50"
+Ammo8			= "9mm fmj, 10"
+Ammo9			= "9mm fmj, 10"
+Ammo10			= "9mm fmj, 10"
+Ammo11			= "9mm fmj, 30"
+Ammo12			= ".32 fmj, 3"
+Ammo13			= ".32 fmj, 3"
+Ammo14			= ".32 fmj, 6"
+Ammo15			= ".32 fmj, 6"
+Ammo16			= ".32 fmj, 9"
+AmmoPercent		= 25
+Weapon0			= "Grenade"
+Weapon1			= "Grenade"
+Weapon2			= "Grenade"
+Weapon3			= "StunGrenade"
+Weapon4			= "StunGrenade"
+Weapon5			= "StunGrenade"
+Weapon6			= "StunGrenade"
+Weapon7			= "SleepGrenade"
+Weapon8			= "SleepGrenade"
+Weapon9			= "AcidGrenade"
+Weapon9			= "LaughingGrenade"
+WeaponPercent	= 5
+Gear0			= "Body Armor Found"
+Gear1			= "Body Armor Found"
+Gear2			= "Body Armor Found"
+Gear3			= "Body Armor Small"
+Gear4			= "Body Armor Small"
+Gear5			= "Body Armor Small"
+Gear6			= "Body Armor"
+Gear7			= "First Aid Found"
+Gear8			= "First Aid Found"
+Gear9			= "First Aid Found"
+Gear10			= "First Aid Small"
+Gear11			= "First Aid Small"
+Gear12			= "First Aid Small"
+Gear13			= "First Aid"
+GearPercent		= 20
+
+[SearchSet12]
+Name			= "None"
+Items			= ""
+ItemPercent		= 100  // Only items will be found
+Ammo0			= ""
+AmmoPercent		= 0
+Weapon0			= ""
+WeaponPercent	= 0
+Gear0			= ""
+GearPercent		= 0

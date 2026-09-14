@@ -1,0 +1,1 @@
+admcustomresource.h

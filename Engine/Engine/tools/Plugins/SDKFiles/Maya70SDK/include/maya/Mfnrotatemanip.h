@@ -1,0 +1,1 @@
+mfnrotatemanip.h

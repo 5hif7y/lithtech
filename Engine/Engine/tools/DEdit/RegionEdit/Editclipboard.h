@@ -1,0 +1,1 @@
+editclipboard.h

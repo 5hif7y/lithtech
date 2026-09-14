@@ -1,0 +1,18 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shape", "Shape.vcproj", "{D55BF362-3AD6-4200-A7D0-B75B718BF343}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{D55BF362-3AD6-4200-A7D0-B75B718BF343}.Debug.ActiveCfg = Debug|Win32
+		{D55BF362-3AD6-4200-A7D0-B75B718BF343}.Debug.Build.0 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

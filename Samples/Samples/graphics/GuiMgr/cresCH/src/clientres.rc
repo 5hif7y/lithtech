@@ -1,0 +1,108 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "ClientRes.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "ClientRes.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+IDC_POINTER             CURSOR  DISCARDABLE     "arrow.cur"
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+	IDS_EMPTY_TEXT			L""
+	IDS_EXIT					L"\x51FA\x53E3"  // Exit
+	IDS_HELP_NONE			L"No Help"
+	IDS_BACK					L"\x540E\x9762"  // Back
+	IDS_NEXT					L"\x5176\x6B21"  //Next
+	IDS_ON					L"\x5728"  //On
+	IDS_OFF					L"\x4E0D"  //Off
+	IDS_OK					L"\x597D" //OK
+END
+
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+	IDS_SCREENONE			L"\x5C4F\x5E55\x4E00\x4E2A"
+	IDS_SCREENTWO			L"\x5C4F\x5E55\x4E8C" 
+	IDS_SCREENTHREE		L"\x5C4F\x5E55\x4E09" 
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+	IDS_SLIDER				L"\x6ED1\x5B50"
+	IDS_COLUMN				L"\x4E13\x680F"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

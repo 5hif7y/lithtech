@@ -1,0 +1,1231 @@
+/************************************************************************
+**
+** G A D G E T  T A R G E T S
+**
+** The GadgetTarget definitions define all of the attributes associated with
+** a particular Gadget Target.  Defining a GadgetTarget in this way allows us to
+** easily make global changes to all the GadgetTargets.
+**
+**
+** All GadgetTarget definitions should contain the following properties:
+**
+**  Name (String)
+**
+**      The user friendly name of the GadgetTarget (what shows up in DEdit). 
+**
+**	Filename (String)
+**
+**		Name of the model file
+**
+**	Skin0-N (String)
+**
+**		Name of the skin file dtx(s).
+**      There can be any number of skins: Skin0, Skin1, ..., SkinN
+** 
+**  RenderStyle0-N (String)
+**
+**		Name of the render style file ltb(s).
+**      There can be any number of render styles: RenderStyle0, RenderStyle1, ..., RenderStyleN
+**
+** DebrisType (String)
+**
+**		What type of debris should this GadgetTarget create when it is destroyed
+**		(NOTE:  This should map directly to the name of a DEBRIS object in the
+**		Attributes\Debris.txt file).
+**	
+**	Scale (Vector)
+**
+**		How the GadgetTarget should be scaled.
+**
+**	ObjectColor (Vector)
+**
+**		The GadgetTarget's color.
+**
+**	Alpha (Float)
+**
+**		The GadgetTarget's alpha value.
+**
+**  HitPoints (Integer)
+**
+**		How many hit points the GadgetTarget has (set to -1 for CanDamage = FALSE)
+**
+**	Solid (Boolean)
+**
+**		Should the GadgetTarget be solid (1=true, 0=false)
+**
+**	Visible (Boolean)
+**
+**		Should the GadgetTarget be visible (1=true, 0=false)
+**
+**	Shadow (Boolean)
+**
+**		Should the GadgetTarget cast a shadow (1=true, 0=false)
+**
+**	MoveToFloor (Boolean)
+**
+**		Should the GadgetTarget be moved to the floor (1=true, 0=false)
+**
+**	DetailTexture (Boolean)
+**
+**		Should the GadgetTarget use detail textures (1=true, 0=false)
+**
+**	Chrome (Boolean)
+**
+**		Should the GadgetTarget use chrome (environment mapping) (1=true, 0=false)
+**
+**	Chromakey (Boolean)
+**
+**		Should the GadgetTarget use chromakey (1=true, 0=false)
+**
+**	Additive (Boolean)
+**
+**		Should the GadgetTarget use additive blending (1=true, 0=false)
+**
+**	Multiply (Boolean)
+**
+**		Should the GadgetTarget use multiplicative blending (1=true, 0=false)
+**
+**	Type (Integer)
+**
+**		Specifies what type of GadgetTarget this is?  This detrimines what gadget will interact
+**		with the target, whether or not the GadgetTarget can be shot at (destroyed) and whether
+**		or not the status bar will appear.  The valid types are:
+**				
+**				Type		Gadget		
+**
+**			1 - KeyPad			Code Breaker		
+**			2 - Card Reader		Code Breaker
+**			3 - Coded Text		Code Breaker
+**			4 - ComboLock		Welder - Can Shoot
+**			5 - PadLock			Lock Pick - Can Shoot
+**			6 - Door Knob		Lock Pick
+**			7 - Telephone		Eavesdrop bug
+**			8 - Photographable	Camera
+**			9 - Bombable		Time Bomb
+**			10 - Invisible Ink	Perfume (Ink Reagent)
+**	
+**	MinTime	(Float) - Overridable in DEdit
+**
+**		The minimum amount of time it takes to disable the GadgetTarget.  This property is also exposed 
+**		in DEdit so each GadgetTarget can override the defaults.
+**
+**	MaxTime	(Float) - Overridable in DEdit
+**
+**		If this is non zero the time to disable the GadgetTarget is randomized between Min and MaxTime.
+**		This property is also exposed in DEdit so each GadgetTarget can override the defaults.
+**
+**	DisablingSound	(String)
+**
+**		Name of the optional .wav file to loop while the GadgetTarget is being hacked.
+**
+**	DisabledSound	(String)
+**
+**		Name of the optional .wav file to play once as soon as the GadgetTarget is disabled.
+**
+**	SoundRadius	(Float)
+**
+**		Radius that the sounds are heard.
+**
+**	CodeID	(Integer) - Overridable in DEdit
+**
+**		This specifies a code to use when disabling a GadgetTarget. For KeyPap GadgetTarget types this is the 
+**		actual digit code that will gradually display as the KeyPad is being disabled.  For Coded Text GadgetTarget
+**		types this is the ID into CRes.dll of the coded text.
+**
+**  RemoveWhenDisabled	(Boolean)
+**
+**		Should the gadget target be removed once it is disabled.
+**
+**  InfiniteDisables (Boolean)
+**
+**		Can the gadget trget be disabled more than once.
+**
+**  InfiniteActivates (Boolean)
+**
+**		Can the gadget target be activated more than once.
+**
+** 	LightType (Integer) (OPTIONAL)
+**
+**		Specifies what type of light to create for this gadget target.  The light is represented
+**		by either two sprites or two models (light 1 and light 2).  If LightType is 1 or 2,
+**		Light 1 will be on until the gadget target is deactivated.  Once deactivated, Light 1
+**		will turn off and Light 2 will turn on.
+**				
+**			Type
+**
+**			  0 -	No light	
+**			  1 -	Light refers to a sprite		
+**			  2 -	Light refers to a model		
+**
+**	Light1Filename (String) (OPTIONAL)
+**
+**		Name of the light 1 sprite / model file
+**
+**	Light1Skin0-N (String) (OPTIONAL)
+**
+**		Name of the light 1 model skin file dtx(s).
+**      There can be any number of skins: Light1Skin0, Light1Skin1, ..., Light1SkinN
+**  
+**  LightRenderStyle0-N (String) (OPTIONAL)
+**
+**		Name of the light 1 and 2 model render style file ltb(s).
+**      There can be any number of render styles: Light1RenderStyle0, Light1RenderStyle1, ..., Light1RenderStyleN
+**
+**	LightScale (Vector) (OPTIONAL)
+**
+**		How the light 1 and 2 sprite / model should be scaled.
+**
+**	Light1Socket (String) (OPTIONAL)
+**
+**		The socket that light 1 is attached to.
+**
+**	Light2Filename (String) (OPTIONAL)
+**
+**		Name of the light 2 sprite / model file
+**
+**	Light2Skin0-N (String) (OPTIONAL)
+**
+**		Name of the light 2 model skin file dtx(s).
+**      There can be any number of skins: LightSkin0, LightSkin1, ..., LightSkinN
+**  
+**	Light2Socket (String) (OPTIONAL)
+**
+**		The socket that light 2 is attached to.
+**
+*/
+
+/*
+** GadgetTarget0 - KeyPad
+*/
+
+[GadgetTarget0]
+
+Name				= "KeyPad01"
+FileName			= "Props\Models\GtKeypad.ltb"
+Skin0				= "Props\Skins\GtKeypad.dtx"
+RenderStyle0		= "RS\default.ltb"
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 1
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 1337
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 1
+LightType			= 2
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= "RS\additive.ltb"
+Light1Filename		= "models\keypadlight.ltb"
+Light1Skin0			= "FX\Test\Flares\CamRed.spr"
+Light1Socket		= "RedLight"
+Light2Filename		= "models\keypadlight.ltb"
+Light2Skin0			= "FX\Test\Flares\CamGreen.spr"
+Light2Socket		= "GreenLight"
+
+/*
+** GadgetTarget1 - CardReader
+*/
+
+[GadgetTarget1]
+
+Name				= "CardReader01"
+FileName			= "Props\Models\GtCardReader.ltb"
+Skin0				= "Props\Skins\GtCardReader.dtx"
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 2
+MinTime				= 10.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 1
+LightType			= 1
+LightScale			= <0.05, 0.05, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= "FX\Test\Flares\CamRed.spr"
+Light1Skin0			= ""
+Light1Socket		= "RedLight"
+Light2Filename		= "FX\Test\Flares\CamGreen.spr"
+Light2Skin0			= ""
+Light2Socket		= "GreenLight"
+
+/*
+** GadgetTarget2 - Coded Text
+*/
+
+[GadgetTarget2]
+
+Name				= "CodedText01"
+FileName			= "Props\Models\IINote.ltb"
+Skin0				= "Props\Skins\IINote3.dtx"
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 3
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 1
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget3 - ComboLock
+*/
+
+[GadgetTarget3]
+
+Name				= "ComboLock01"
+FileName			= "Props\Models\GtComboLock1.ltb"
+Skin0				= "Props\Skins\GtComboLock1.dtx"
+RenderStyle0		= ""
+DebrisType			= "ComboLock1"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 4
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= "guns\snd\lockpick\unlock.WAV"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 1
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget4 - ComboLock
+*/
+
+[GadgetTarget4]
+
+Name				= "ComboLock02"
+FileName			= "Props\Models\GtComboLock2.ltb"
+Skin0				= "Props\Skins\GtComboLock2.dtx"
+RenderStyle0		= ""
+DebrisType			= "ComboLock2"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 4
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= ""
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 1
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget5 - PadLock
+*/
+
+[GadgetTarget5]
+
+Name				= "PadLock01"
+FileName			= "Props\Models\GtPadLock.ltb"
+Skin0				= "Props\Skins\GtPadLock.dtx"
+RenderStyle0		= ""
+DebrisType			= "Padlock1"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= 1
+Solid				= 0
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 5
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\lockpick\fire.wav"
+DisabledSound		= "Guns\Snd\lockpick\unlock.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 1
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget6 - DoorKnob
+*/
+
+[GadgetTarget6]
+
+Name				= "DoorKnob1 Left Bronze"
+FileName			= "Props\Models\GenDorKnob1L.ltb"
+Skin0				= "Props\Skins\GenDorKnob1B.dtx"
+RenderStyle0		= "RS\default.ltb"
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 6
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\lockpick\fire.wav"
+DisabledSound		= "Guns\Snd\lockpick\unlock.wav"
+SoundRadius			= 400.0
+CodeID				= 0 
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget7 - Photo item
+*/
+
+[GadgetTarget7]
+
+Name				= "Photographable01"
+FileName			= "Models\1x1_square.ltb"
+Skin0				= ""
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <32.0, 32.0, 32.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 0
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 8
+MinTime				= 0.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= ""
+SoundRadius			= 0.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget8 - Bombable
+*/
+
+[GadgetTarget8]
+
+Name				= "Bombable01"
+FileName			= "props\models\bombtarget.ltb"
+Skin0				= "props\skins\bombtarget.dtx"
+DebrisType			= ""
+Scale				= <1.0, 1.0, 1.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+RenderStyle0		= "RS\bombtarget2.ltb"
+ObjectColor			= <255.0, 255.0, 255.0>
+Alpha				= 1
+Additive			= 0
+Multiply			= 0
+Type				= 9
+MinTime				= 0.0
+MaxTime				= 0.0
+DisablingSound		= "guns\snd\timebomb\defusing.wav"
+DisabledSound		= "guns\snd\timebomb\defused.wav"
+SoundRadius			= 500.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget9 - DoorKnob
+*/
+
+[GadgetTarget9]
+
+Name				= "DoorKnob2"
+FileName			= "Props\Models\GenDorKnob2L.ltb"
+Skin0				= "Props\Skins\GenDorKnob2B.dtx"
+RenderStyle0		= "RS\default.ltb"
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 6
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\lockpick\fire.wav"
+DisabledSound		= "Guns\Snd\lockpick\unlock.wav"
+SoundRadius			= 400.0
+CodeID				= 0 
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget10 - Hinge
+*/
+
+[GadgetTarget10]
+
+Name				= "Hinge01"
+FileName			= "Props\Models\GtHinge.ltb"
+Skin0				= "Props\Skins\GtHinge2.dtx"
+RenderStyle0		= "RS\default.ltb"
+DebrisType			= "Machinerysmall"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 4
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= "snd\event\elecyloop.wav"
+DisabledSound		= "guns\snd\welder\break.wav"
+SoundRadius			= 600.0
+CodeID				= 0 
+RemoveWhenDisabled	= 1
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget11 - Telephone
+*/
+
+[GadgetTarget11]
+
+Name				= "Telephone01"
+FileName			= "Props\Models\GenPhone.ltb"
+Skin0				= "Props\Skins\GenPhone1.dtx"
+RenderStyle0		= "RS\default.ltb"
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 1
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 7
+MinTime				= 0.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= ""
+SoundRadius			= 400.0
+CodeID				= 0 
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget12 - Invisible ink
+*/
+
+[GadgetTarget12]
+
+Name				= "InvisibleInk01 - unused"
+FileName			= ""
+Skin0				= ""
+RenderStyle0		= ""
+DebrisType			= ""
+Scale				= <0.0, 0.0, 0.0>
+ObjectColor			= <0.0, 0.0, 0.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 0
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 0
+MinTime				= 0.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= ""
+SoundRadius			= 0.0
+CodeID				= 0 
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <0.0, 0.0, 0.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget13 - Invisible photo item
+*/
+
+[GadgetTarget13]
+
+Name				= "Photo_c01s03"
+FileName			= "Props\Models\GenPlate.ltb"
+Skin0				= ""
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <2.0, 2.0, 2.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 0
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 8
+MinTime				= 0.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= ""
+SoundRadius			= 0.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget14 - KeyPadInfinite
+*/
+
+[GadgetTarget14]
+
+Name				= "KeyPadInfinite"
+FileName			= "Props\Models\GtKeypad.ltb"
+Skin0				= "Props\Skins\GtKeypad.dtx"
+RenderStyle0		= "RS\default.ltb"
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 1
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 1337
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 1
+InfiniteActivates	= 1
+LightType			= 2
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= "RS\default.ltb"
+Light1Filename		= "models\1x1_square.ltb"
+Light1Skin0			= "fx\beams\elec_white02.dtx"
+Light1Socket		= "RedLight"
+Light2Filename		= "models\1x1_square.ltb"
+Light2Skin0			= "fx\beams\elec_blue08.dtx"
+Light2Socket		= "GreenLight"
+
+/*
+** GadgetTarget15 - CardReaderInfinite
+*/
+
+[GadgetTarget15]
+
+Name				= "CardReaderInfinite"
+FileName			= "Props\Models\GtCardReader.ltb"
+Skin0				= "Props\Skins\GtCardReader.dtx"
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 2
+MinTime				= 10.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 1
+InfiniteActivates	= 1
+LightType			= 1
+LightScale			= <0.075, 0.075, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= "FX\Test\Flares\CamRed.spr"
+Light1Skin0			= ""
+Light1Socket		= "RedLight"
+Light2Filename		= "FX\Test\Flares\CamGreen.spr"
+Light2Skin0			= ""
+Light2Socket		= "GreenLight"
+
+/*
+** GadgetTarget16 - CardReader02
+*/
+
+[GadgetTarget16]
+
+Name				= "CardReader02"
+FileName			= "Props\Models\GtCardReader.ltb"
+Skin0				= "Props\Skins\UbCardReader.dtx"
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 2
+MinTime				= 10.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 1
+LightType			= 1
+LightScale			= <0.075, 0.075, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= "FX\Test\Flares\CamRed.spr"
+Light1Skin0			= ""
+Light1Socket		= "RedLight"
+Light2Filename		= "FX\Test\Flares\CamGreen.spr"
+Light2Skin0			= ""
+Light2Socket		= "GreenLight"
+
+
+/*
+** GadgetTarget17 - VoiceLock
+*/
+
+[GadgetTarget17]
+
+Name				= "VoiceLock"
+FileName			= "Props\Models\UbVoiceLock.ltb"
+Skin0				= "Props\Skins\UbVoiceLock.dtx"
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 2
+MinTime				= 10.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget18 - Bolt
+*/
+
+[GadgetTarget18]
+
+Name				= "Bolt"
+FileName			= "Props\Models\GtBolt.ltb"
+Skin0				= "Props\Skins\GtBolt.dtx"
+RenderStyle0		= "RS\default.ltb"
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 4
+MinTime				= 8.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= ""
+SoundRadius			= 400.0
+CodeID				= 0 
+RemoveWhenDisabled	= 1
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget19 - CardReader03
+*/
+
+[GadgetTarget19]
+
+Name				= "CardReader03"
+FileName			= "Props\Models\GtCardReader.ltb"
+Skin0				= "Props\Skins\SiCardReader.dtx"
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 2
+MinTime				= 10.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 1
+LightType			= 1
+LightScale			= <0.075, 0.075, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= "FX\Test\Flares\CamRed.spr"
+Light1Skin0			= ""
+Light1Socket		= "RedLight"
+Light2Filename		= "FX\Test\Flares\CamGreen.spr"
+Light2Skin0			= ""
+Light2Socket		= "GreenLight"
+
+
+/*
+** GadgetTarget19 - CardReader03 - Siberia
+*/
+
+[GadgetTarget20]
+
+Name				= "CardReader03Infinite"
+FileName			= "Props\Models\GtCardReader.ltb"
+Skin0				= "Props\Skins\SiCardReader.dtx"
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 2
+MinTime				= 10.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 1
+InfiniteActivates	= 1
+LightType			= 1
+LightScale			= <0.075, 0.075, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= "FX\Test\Flares\CamRed.spr"
+Light1Skin0			= ""
+Light1Socket		= "RedLight"
+Light2Filename		= "FX\Test\Flares\CamGreen.spr"
+Light2Skin0			= ""
+Light2Socket		= "GreenLight"
+
+/*
+** GadgetTarget21 - CardReader04
+*/
+
+[GadgetTarget21]
+
+Name				= "CardReader04"
+FileName			= "Props\Models\GtCardReader.ltb"
+Skin0				= "Props\Skins\AnCardReader.dtx"
+RenderStyle0		= ""
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 2
+MinTime				= 10.0
+MaxTime				= 0.0
+DisablingSound		= "Guns\Snd\Codebreaker\fireloop.wav"
+DisabledSound		= "Guns\Snd\Codebreaker\disabled.wav"
+SoundRadius			= 400.0
+CodeID				= 0
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 1
+LightType			= 1
+LightScale			= <0.075, 0.075, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= "FX\Test\Flares\CamRed.spr"
+Light1Skin0			= ""
+Light1Socket		= "RedLight"
+Light2Filename		= "FX\Test\Flares\CamGreen.spr"
+Light2Skin0			= ""
+Light2Socket		= "GreenLight"
+
+/*
+** GadgetTarget22 - Speaker Phone
+*/
+
+[GadgetTarget22]
+
+Name				= "SpeakerPhone"
+FileName			= "Props\Models\GenSpkrPhone.ltb"
+Skin0				= "Props\Skins\GenSpkrPhone2.dtx"
+RenderStyle0		= "RS\default.ltb"
+DebrisType			= "Charred chunks"
+Scale				= <1.0, 1.0, 1.0>
+ObjectColor			= <255.0, 255.0, 255.0>
+HitPoints			= -1
+Solid				= 1
+Visible				= 1
+Shadow				= 0
+MoveToFloor			= 1
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 7
+MinTime				= 0.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= ""
+SoundRadius			= 400.0
+CodeID				= 0 
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <1.0, 1.0, 1.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+
+/*
+** GadgetTarget23 - Invisible ink letter
+*/
+
+[GadgetTarget23]
+
+Name				= "InvisibleInkLetter - unused"
+FileName			= ""
+Skin0				= ""
+RenderStyle0		= ""
+DebrisType			= ""
+Scale				= <0.0, 0.0, 0.0>
+ObjectColor			= <0.0, 0.0, 0.0>
+HitPoints			= -1
+Solid				= 0
+Visible				= 0
+Shadow				= 0
+MoveToFloor			= 0
+DetailTexture		= 0
+Chrome				= 0
+Chromakey			= 0
+Additive			= 0
+Multiply			= 0
+Type				= 0
+MinTime				= 0.0
+MaxTime				= 0.0
+DisablingSound		= ""
+DisabledSound		= ""
+SoundRadius			= 0.0
+CodeID				= 0 
+RemoveWhenDisabled	= 0
+InfiniteDisables	= 0
+InfiniteActivates	= 0
+LightType			= 0
+LightScale			= <0.0, 0.0, 0.0>
+LightRenderStyle0	= ""
+Light1Filename		= ""
+Light1Skin0			= ""
+Light1Socket		= ""
+Light2Filename		= ""
+Light2Skin0			= ""
+Light2Socket		= ""
+

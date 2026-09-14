@@ -1,0 +1,1 @@
+lightmapdefs.h

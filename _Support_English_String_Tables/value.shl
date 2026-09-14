@@ -1,0 +1,27 @@
+[General]
+Type=STRINGTABLESPECIFIC
+Version=1.00.000
+Language=0009
+
+[Data]
+TITLE_MAIN=Jupiter System Enterprise Edition Build 69
+TITLE_CAPTIONBAR=Jupiter System Setup
+COMPANY_NAME=Touchdown Entertainment
+PRODUCT_NAME=Jupiter System Enterprise Edition
+PRODUCT_KEY=YourApp.exe
+PRODUCT_VERSION=1.00.000
+FOLDER_NAME=Jupiter System
+PRODUCT_FOLDER=Jupiter_Ent
+LITHTECH_NAME=Touchdown Entertainment
+TITLE_RELEASENOTES=Release Notes
+TITLE_LTASCHEMA=LTA Schematics Reference
+TITLE_APICHM=API Reference
+TITLE_JUPHLPCHM=Jupiter System Development Guide
+TITLE_TOOLS_WE=WaveEdit
+TITLE_TOOLS_FXED=FxEd
+TITLE_TOOLS_RSE=RenderStylesEditor
+TITLE_TOOLS_ME=ModelEdit
+TITLE_TOOLS_DEDIT=DEdit
+FOLDER_PRENAME=TouchdownEntertainment
+TITLE_START_HERE=Start Here
+

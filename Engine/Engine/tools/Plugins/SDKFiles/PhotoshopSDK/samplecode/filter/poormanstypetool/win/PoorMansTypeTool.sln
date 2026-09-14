@@ -1,0 +1,18 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PoorMansTypeTool", "PoorMansTypeTool.vcproj", "{CB8FB653-6FFA-40C3-A211-EE811C7156B1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{CB8FB653-6FFA-40C3-A211-EE811C7156B1}.Debug.ActiveCfg = Debug|Win32
+		{CB8FB653-6FFA-40C3-A211-EE811C7156B1}.Debug.Build.0 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

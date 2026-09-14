@@ -1,0 +1,18 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PolygonSelect", "PolygonSelect.vcproj", "{AA3CE14D-7590-4ACC-8C7B-A569F5C1B242}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{AA3CE14D-7590-4ACC-8C7B-A569F5C1B242}.Debug.ActiveCfg = Debug|Win32
+		{AA3CE14D-7590-4ACC-8C7B-A569F5C1B242}.Debug.Build.0 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

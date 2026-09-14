@@ -1,0 +1,654 @@
+/************************************************************************
+**
+** M I S S I O N
+**
+** Mission definitions specify what levels are in the game.  The 
+** ordering of the missions are the same as they appear in this file
+** (Mission0, Mission1, Mission2, etc.)
+**
+** All mission definitions should contain the following properties:
+**
+**	NameId (Integer)
+**
+**		The Id (stored in CRes.dll)	of the text string containing the
+**		name of the mission.
+**
+**	DescId (Integer)
+**
+**		The Id (stored in CRes.dll)	of the text string containing a
+**		brief description of the mission.
+**
+**	ObjectiveIds (String)
+**
+**		A comma separated list of Ids (stored in CRes.dll) of objectives
+**		known at the start of the mission.
+**
+**	LayoutInfo (String)
+**
+**		The layout definition used for this mission if no briefing is defined.
+**
+**	BriefingLayout (String)
+**
+**		The layout definition used for this mission if a briefing is defined.
+**
+**	SelectedWeapon (String)
+**
+**		The weapon the player will have selected when the mission first starts.
+**		The weapon should be a weapon the DefaultWeapons list or the default
+**		("holster") weapon.
+**
+**	DefaultWeapons (String)
+**
+**		A comma separated list of weapon names that should be chosen by default
+**		for the mission. 
+**		(e.g., "P38,AK47" ).
+**
+**	DefaultAmmo (String)
+**
+**		A comma separated list of ammo names that should be chosen by default
+**		for the mission. 
+**		(e.g., "Camera Disabler,Code Breaker" ).
+**
+**	DefaultMods (String)
+**
+**		A comma separated list of ammo names that should be chosen by default
+**		for the mission. 
+**		(e.g., "Camera Disabler,Code Breaker" ).
+**
+**	ResetPlayer (int) (optional, default: true )
+**
+**		Reset the player's health and inventory when entering this mission.
+**
+**	Level0-??? (String)
+**
+**		The file name for each level (scene) file (e.g., Worlds\m01s01).
+**		associated with this mission.  Multiple levels may be specified
+**		(e.g., Level0 = "xxx", Level1 = "yyy", etc.).
+**	
+**		NOTE:  the .dat extension should NOT be included.
+**
+**	Level(x)DefaultWeapons (String)
+**
+**		A comma separated list of weapon names that should be chosen by default
+**		for the level. 
+**		(e.g., "P38,AK47" ).
+**		The (x) should be replaced by the level number 0-???.
+**
+**	Level(x)NameId (Integer)
+**
+**		The Id (stored in CRes.dll)	of the text string containing the
+**		name of the level.
+**
+**	Level(x)BriefingId (Integer)
+**
+**		The Id (stored in CRes.dll)	of the text containing a detailed
+**		explanaation the level.
+**
+**	Level(x)DefaultMods (String)
+**
+**		A comma separated list of mod names that should be chosen by default
+**		for the level. 
+**		(e.g., "Camera Disabler,Code Breaker" ).
+**		The (x) should be replaced by the level number 0-???.
+**
+**	Level(x)DefaultAmmo (String)
+**
+**		A comma separated list of ammo names that should be chosen by default
+**		for the level. 
+**		(e.g., "Camera Disabler,Code Breaker" ).
+**		The (x) should be replaced by the level number 0-???.
+**
+**	Reward0-??? (String)
+**
+**		Specification for the experience rewards available in this mission.
+**		Each specification consists of the reward name, the value, and the id of the
+**		text descripter (stored in CRes.dll) each separated by a comma.
+**		(e.g., Reward0 = "xxx,50,30001", Reward1 = "yyy,10,30001", etc.).
+**	
+*/
+
+
+[Mission0]
+//	Chapter 1 - Cate Archer Must Die! - Japan
+
+NameId			= 2500
+DescId			= 2750
+ObjectiveIds	= "5001"
+LayoutInfo		= "LoadScreenC01x"
+BriefingLayout	= "LoadScreenC01"
+SelectedWeapon	= "Crossbow"
+DefaultWeapons	= "Tazer,Camera,Crossbow,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= ""
+Level0			= "Worlds\RetailSinglePlayer\c01"
+Level0NameId	= 2550
+Level0HelpId	= 3100
+Level1			= "Worlds\RetailSinglePlayer\c01s01"
+Level1NameId	= 2551
+Level1BriefingId = 2700
+Level1HelpId	= 3101
+Level2			= "Worlds\RetailSinglePlayer\c01s02"
+Level2NameId	= 2552
+Level2HelpId	= 3102
+//Reward total is 2,200
+Reward0			= "01Village,100,30002"
+Reward1			= "01Manual,300,30003"
+Reward2			= "02Rendezvous,400,30004"
+Reward3			= "02Discover,400,30005"
+Reward4			= "02Briefcase,300,30006"
+Reward5			= "01SpyManual,200,30009"
+Reward6			= "02SpyManual,200,30009"
+Reward7			= "02Manual,300,30010"
+
+[Mission1]
+//	Chapter 2 - Goodbye, Spy - Japan
+
+NameId			= 2501
+DescId			= 2751
+ObjectiveIds	= "5001"
+LayoutInfo		= "LoadScreenC02x"
+BriefingLayout	= "LoadScreenC02"
+SelectedWeapon	= ""
+DefaultWeapons	= "Tazer,Camera,Crossbow,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= ""
+ResetPlayer		= 0
+Level0			= "Worlds\RetailSinglePlayer\c02s01"
+Level0NameId	= 2553
+Level0BriefingId = 2701
+Level0HelpId	= 3103
+Level1			= "Worlds\RetailSinglePlayer\c02s02"
+Level1NameId	= 2555
+Level1HelpId	= 3104
+//Reward total is 2,700
+Reward0			= "01Estate,400,30021"
+Reward1			= "01Photograph,800,30022"
+Reward2			= "01IsakoInfo,300,30023"
+Reward3			= "01Erase,400,30024"
+Reward4			= "01Escape,600,30025"
+Reward5			= "01SpyManual,200,30009"
+
+[Mission2]
+//	Chapter 3 - Project: Omega - Siberia
+
+NameId			= 2502
+DescId			= 2752
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC03x"
+BriefingLayout	= "LoadScreenC03"
+SelectedWeapon	= "Holster"
+DefaultWeapons	= "Tazer,Lockpick,Beretta,Timebomb"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+Level0			= "Worlds\RetailSinglePlayer\c03"
+Level0NameId	= 2556
+Level0HelpId	= 3105
+Level1			= "Worlds\RetailSinglePlayer\c03s01"
+Level1NameId	= 2557
+Level1BriefingId = 2702
+Level1HelpId	= 3106
+Level2			= "Worlds\RetailSinglePlayer\c03s02"
+Level2NameId	= 2558
+Level2HelpId	= 3107
+Level3			= "Worlds\RetailSinglePlayer\c03s03"
+Level3NameId	= 2559
+Level3HelpId	= 3108
+Level4			= "Worlds\RetailSinglePlayer\c03s04"
+Level4NameId	= 2560
+Level4HelpId	= 3109
+//Reward total is 3,600
+Reward0			= "01Radio,300,30041"
+Reward1			= "01Fuel,100,30042"
+Reward2			= "01Bridge,500,30043"
+Reward3			= "02Power,500,30044"
+Reward4			= "03RadioTower,500,30045"
+Reward5			= "04Cabin,100,30046"
+Reward6			= "03Rescue,500,30047"
+Reward7			= "04Documents,300,30048"
+Reward8			= "01SpyManual,200,30009"
+Reward9			= "02SpyManual,200,30009"
+Reward10		= "03SpyManual,200,30009"
+Reward11		= "04SpyManual,200,30009"
+
+[Mission3]
+//	Chapter 4 - A Spy in H.A.R.M.'s Way - Siberia
+
+NameId			= 2503
+DescId			= 2753
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC04x"
+BriefingLayout	= "LoadScreenC04"
+SelectedWeapon	= ""
+DefaultWeapons	= "Tazer,Lockpick,Beretta,Compact Codebreaker,Keychain,Welder"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+ResetPlayer		= 0
+Level0			= "Worlds\RetailSinglePlayer\c04s01"
+Level0NameId	= 2561
+Level0BriefingId = 2703
+Level0HelpId	= 3110
+Level1			= "Worlds\RetailSinglePlayer\c04s02"
+Level1NameId	= 2562
+Level1HelpId	= 3111
+Level2			= "Worlds\RetailSinglePlayer\c04s03"
+Level2NameId	= 2563
+Level2HelpId	= 3112
+Level3			= "Worlds\RetailSinglePlayer\c04s04"
+Level3NameId	= 2564
+Level3HelpId	= 3113
+Level4			= "Worlds\RetailSinglePlayer\c04s05"
+Level4NameId	= 2565
+Level4HelpId	= 3114
+//Reward total is 5,900
+Reward0			= "01Installation,200,30061"
+Reward1			= "01Gate,400,30062"
+Reward2			= "01Depot,400,30063"
+Reward3			= "02Safe,300,30064"
+Reward4			= "03Index,300,30065"
+Reward5			= "03Propane,400,30066"
+Reward6			= "03MainRecords,500,30067"
+Reward7			= "05Documents,300,30068"
+Reward8			= "05Zhukov,400,30069"
+Reward9			= "05Computer,500,30070"
+Reward10		= "05ProjectOmega,800,30071"
+Reward11		= "01SpyManual,200,30009"
+Reward12		= "02SpyManual,200,30009"
+Reward13		= "03SpyManual,200,30009"
+Reward14		= "04SpyManual,200,30009"
+Reward15		= "05SpyManual,200,30009"
+Reward16		= "02Generator,400,30072"
+
+
+[Mission4]
+//	Chapter 5 - Night Flight - Siberia
+
+NameId			= 2504
+DescId			= 2754
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC05x"
+BriefingLayout	= "LoadScreenC05"
+SelectedWeapon	= ""
+DefaultWeapons	= "Tazer,Beretta"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+ResetPlayer		= 0
+Level0			= "Worlds\RetailSinglePlayer\c05s01"
+Level0NameId	= 2566
+Level0BriefingId = 2704
+Level0HelpId	= 3115
+Level1			= "Worlds\RetailSinglePlayer\c05s02"
+Level1NameId	= 2567
+Level1HelpId	= 3116
+Level2			= "Worlds\RetailSinglePlayer\c05s03"
+Level2NameId	= 2568
+Level2HelpId	= 3117
+Level3			= "Worlds\RetailSinglePlayer\c05s04"
+Level3NameId	= 2569
+Level3HelpId	= 3118
+Level4			= "Worlds\RetailSinglePlayer\c05s05"
+Level4NameId	= 2570
+Level4HelpId	= 3119
+//Reward total is 3,800 (2,900 likely)
+Reward0			= "03Escape,500,30081"
+Reward1			= "05Plane,500,30082"
+Reward2			= "05Coffee,200,30083"
+Reward3			= "05Rescue,500,30084"
+Reward4			= "05Jump,200,30085"
+Reward5			= "01SpyManual,200,30009"
+Reward6			= "02SpyManual,200,30009"
+Reward7			= "03SpyManual,200,30009"
+Reward8			= "04SpyManual,200,30009"
+Reward9			= "05SpyManual,200,30009"
+Reward10		= "03Gate,300,30062"
+Reward11		= "03Depot,300,30063"
+Reward12		= "02Propane,300,30066"
+
+[Mission5]
+//	Chapter 6 - Skeletons in the Closet of a Traitor - Ohio
+
+NameId			= 2505
+DescId			= 2755
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC06x"
+BriefingLayout	= "LoadScreenC06"
+SelectedWeapon	= "Holster"
+DefaultWeapons	= "Beretta,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+Level0			= "Worlds\RetailSinglePlayer\c06"
+Level0NameId	= 2571
+Level0HelpId	= 3120
+Level1			= "Worlds\RetailSinglePlayer\c06s01"
+Level1NameId	= 2572
+Level1BriefingId = 2705
+Level1HelpId	= 3121
+Level2			= "Worlds\RetailSinglePlayer\c06s02"
+Level2NameId	= 2573
+Level2HelpId	= 3122
+Level3			= "Worlds\RetailSinglePlayer\c06s03"
+Level3NameId	= 2574
+Level3HelpId	= 3123
+Level4			= "Worlds\RetailSinglePlayer\c06s04"
+Level4NameId	= 2575
+Level4HelpId	= 3124
+//Reward total is 3,900
+Reward0			= "01ProjectOmega,800,30101"
+Reward1			= "01Recordings,400,30102"
+Reward2			= "01Correspondence,400,30103"
+Reward3			= "01Escape,300,30104"
+Reward4			= "01Battery,100,30105"
+Reward5			= "04Isako,800,30106"
+Reward6			= "01SpyManual,200,30009"
+Reward7			= "02SpyManual,200,30009"
+Reward8			= "03SpyManual,200,30009"
+Reward9			= "04SpyManual,200,30009"
+Reward10		= "02Survive,300,30107"
+
+[Mission6]
+//	Chapter 7 - Double Cross - India
+
+NameId			= 2506
+DescId			= 2756
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC07x"
+BriefingLayout	= "LoadScreenC07"
+SelectedWeapon	= "Holster"
+DefaultWeapons	= "Beretta,Utility Launcher,Lockpick"
+DefaultAmmo		= ""
+DefaultMods		= "Beretta Silencer"
+Level0			= "Worlds\RetailSinglePlayer\c07"
+Level0NameId	= 2577
+Level0HelpId	= 3125
+Level1			= "Worlds\RetailSinglePlayer\c07s01"
+Level1NameId	= 2578
+Level1BriefingId = 2706
+Level1HelpId	= 3126
+Level2			= "Worlds\RetailSinglePlayer\c07s02"
+Level2NameId	= 2579
+Level2HelpId	= 3127
+Level3			= "Worlds\RetailSinglePlayer\c07s03"
+Level3NameId	= 2580
+Level3HelpId	= 3128
+Level4			= "Worlds\RetailSinglePlayer\c07s04"
+Level4NameId	= 2581
+Level4HelpId	= 3151
+//Reward total is 4,100
+Reward0			= "01Kamal,400,30121"
+Reward1			= "01Admittance,500,30122"
+Reward2			= "02Bug,300,30123"
+Reward3			= "01DeadDrop,100,30124"
+Reward4			= "03Posters,300,30125"
+Reward5			= "03EA,200,30126"
+Reward6			= "04Safe,300,30127"
+Reward7			= "04Sabotage,500,30128"
+Reward8			= "04Vault,300,30129"
+Reward9			= "01SpyManual,200,30009"
+Reward10		= "02SpyManual,200,30009"
+Reward11		= "03SpyManual,200,30009"
+Reward12		= "04SpyManual,200,30009"
+Reward13		= "01Password,100,30131"
+Reward14		= "03Kamal,100,30132"
+Reward15		= "03DeadDrop,100,30124"
+Reward16		= "04Explosives,100,30133"
+
+
+[Mission7]
+//	Chapter 8 - The Art of Murder - India
+
+NameId			= 2507
+DescId			= 2757
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC08x"
+BriefingLayout	= "LoadScreenC08"
+SelectedWeapon	= "Holster"
+DefaultWeapons	= "Compact Codebreaker,Welder"
+DefaultAmmo		= ""
+DefaultMods		= ""
+ResetPlayer		= 1
+Level0			= "Worlds\RetailSinglePlayer\c08s01"
+Level0NameId	= 2582
+Level0BriefingId = 2707
+Level0HelpId	= 3130
+Level1			= "Worlds\RetailSinglePlayer\c08s02"
+Level1NameId	= 2583
+Level1HelpId	= 3131
+Level2			= "Worlds\RetailSinglePlayer\c08s03"
+Level2NameId	= 2584
+Level2HelpId	= 3132
+Level3			= "Worlds\RetailSinglePlayer\c08s04"
+Level3NameId	= 2585
+Level3HelpId	= 3133
+//Reward total is 3,700
+Reward0			= "01ProjectOmega,800,30141"
+Reward1			= "01Trap,300,30142"
+Reward2			= "02Survive,300,30143"
+Reward3			= "03Escape,400,30144"
+Reward4			= "03OpenDoor,300,30145"
+Reward5			= "03ProtectArmstrong,300,30146"
+Reward6			= "01SpyManual,200,30009"
+Reward7			= "03SpyManual,200,30009"
+Reward8			= "01Bug,200,30147"
+Reward9			= "04Chase,300,30148"
+Reward10		= "02SpyManual,200,30009"
+Reward11		= "04SpyManual,200,30009"
+
+[Mission8]
+//	Chapter 9 - Ice Station Evil - Antarctica
+
+NameId			= 2508
+DescId			= 2758
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC09x"
+BriefingLayout	= "LoadScreenC09"
+SelectedWeapon	= "Beretta"
+DefaultWeapons	= "Beretta,Compact Codebreaker,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= ""
+Level0			= "Worlds\RetailSinglePlayer\c09"
+Level0NameId	= 2586
+Level0HelpId	= 3134
+Level1			= "Worlds\RetailSinglePlayer\c09s01"
+Level1NameId	= 2587
+Level1BriefingId = 2708
+Level1HelpId	= 3135
+//Reward total is 1,700
+Reward0			= "01Ramp,100,30161"
+Reward1			= "01Fuse,100,30162"
+Reward2			= "01ProjectOmega,800,30163"
+Reward3			= "01Debris,200,30166"
+Reward4			= "01Anders,300,30167"
+Reward5			= "01SpyManual,200,30009"
+
+[Mission9]
+//	Chapter 10 - The Curse of Kali - India
+
+NameId			= 2509
+DescId			= 2759
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC10x"
+BriefingLayout	= "LoadScreenC10"
+SelectedWeapon	= "Sterling"
+DefaultWeapons	= "Sterling,Lockpick,Timebomb,Welder,Tulwar"
+DefaultAmmo		= ""
+DefaultMods		= ""
+Level0			= "Worlds\RetailSinglePlayer\c10s01"
+Level0NameId	= 2589
+Level0BriefingId = 2709
+Level0HelpId	= 3136
+//Reward total is 1,800
+Reward0			= "01Civilian1,400,30181"
+Reward1			= "01Civilian2,400,30182"
+Reward2			= "01Civilian3,400,30183"
+Reward3			= "01Civilian4,400,30183"
+Reward4			= "01SpyManual,200,30009"
+
+
+[Mission10]
+//	Chapter 11 - The Interlopers - UNITY Headquarters
+
+NameId			= 2510
+DescId			= 2760
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC11"
+BriefingLayout	= "LoadScreenC11"
+SelectedWeapon	= "Holster"
+DefaultWeapons	= ""
+DefaultAmmo		= ""
+DefaultMods		= ""
+Level0			= "Worlds\RetailSinglePlayer\c11s01"
+Level0NameId	= 2591
+Level0BriefingId = 2710
+Level0HelpId	= 3137
+//Reward total is 1,800
+Reward0			= "01Glasses,200,30201"
+Reward1			= "01Mimes,500,30202"
+Reward2			= "01Schenker,400,30204"
+Reward3			= "01Disarm,500,30205"
+Reward4			= "01SpyManual,200,30009"
+
+
+[Mission11]
+//	Chapter 12 - Undersea - Sea of Marmara
+
+NameId			= 2511
+DescId			= 2761
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC12x"
+BriefingLayout	= "LoadScreenC12"
+SelectedWeapon	= "Crossbow"
+DefaultWeapons	= "Tazer,Utility Launcher,Crossbow,Welder,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= "Crossbow Scope"
+Level0			= "Worlds\RetailSinglePlayer\c12s01"
+Level0NameId	= 2593
+Level0BriefingId = 2711
+Level0HelpId	= 3138
+Level1			= "Worlds\RetailSinglePlayer\c12s02"
+Level1NameId	= 2594
+Level1HelpId	= 3139
+Level2			= "Worlds\RetailSinglePlayer\c12s03"
+Level2NameId	= 2595
+Level2HelpId	= 3140
+Level3			= "Worlds\RetailSinglePlayer\c12s04"
+Level3NameId	= 2596
+Level3HelpId	= 3141
+//Reward total is 2,350
+Reward0			= "02Command,400,30221"
+Reward1			= "02Locate,500,30222"
+Reward2			= "01Crane,100,30223"
+Reward3			= "02Form,50,30224"
+Reward4			= "02Manual1,50,30225"
+Reward5			= "02Manual2,50,30226"
+Reward6			= "03Recorder,50,30227"
+Reward7			= "04Lab,50,30228"
+Reward8			= "01Mission,300,30229"
+Reward9			= "01SpyManual,200,30009"
+Reward10		= "02SpyManual,200,30009"
+Reward11		= "03SpyManual,200,30009"
+Reward12		= "04SpyManual,200,30009"
+
+[Mission12]
+//	Chapter 13 - Terror in the Deep - Sea of Marmara
+
+NameId			= 2512
+DescId			= 2762
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC13x"
+BriefingLayout	= "LoadScreenC13"
+ResetPlayer		= 0
+SelectedWeapon	= ""
+DefaultWeapons	= "Tazer,Utility Launcher,Crossbow,Welder,Keychain"
+DefaultAmmo		= ""
+DefaultMods		= ""
+Level0			= "Worlds\RetailSinglePlayer\c13s01"
+Level0NameId	= 2597
+Level0HelpId	= 3142
+Level1			= "Worlds\RetailSinglePlayer\c13s02"
+Level1NameId	= 2598
+Level1BriefingId = 2712
+Level1HelpId	= 3143
+Level2			= "Worlds\RetailSinglePlayer\c13s03"
+Level2NameId	= 2599
+Level2HelpId	= 3144
+Level3			= "Worlds\RetailSinglePlayer\c13s04"
+Level3NameId	= 2600
+Level3HelpId	= 3145
+Level4			= "Worlds\RetailSinglePlayer\c13s04Finale"
+Level4NameId	= 2600
+Level4HelpId	= 3146
+//Reward total is 2,700 (2,500 possible)
+Reward0			= "01Pierre,800,30241"
+Reward1			= "04Escape,500,30242"
+Reward2			= "Obstacle1,300,30243"
+Reward3			= "Obstacle2,300,30244"
+Reward4			= "01SpyManual,200,30009"
+Reward5			= "02SpyManual,200,30009"
+Reward6			= "03SpyManual,200,30009"
+Reward7			= "04SpyManual,200,30009"
+
+[Mission13]
+//	Chapter 14 - Endgame - Japan
+
+NameId			= 2513
+DescId			= 2763
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC14x"
+BriefingLayout	= "LoadScreenC14"
+SelectedWeapon	= "Holster"
+DefaultWeapons	= "Tazer"
+DefaultAmmo		= ""
+DefaultMods		= ""
+Level0			= "Worlds\RetailSinglePlayer\c14"
+Level0NameId	= 2601
+Level0HelpId	= 3152
+Level1			= "Worlds\RetailSinglePlayer\c14s01"
+Level1NameId	= 2602
+Level1BriefingId = 2713
+Level1HelpId	= 3147
+Level2			= "Worlds\RetailSinglePlayer\c14s02"
+Level2NameId	= 2603
+Level2HelpId	= 3148
+Level3			= "Worlds\RetailSinglePlayer\c14s03"
+Level3NameId	= 2604
+Level3HelpId	= 3149
+//Reward total is 4,150
+Reward0			= "01Deathtrap,50,30261"
+Reward1			= "01Mainframe,400,30262"
+Reward2			= "01Powerplant,400,30263"
+Reward3			= "01PRPlan,300,30264"
+Reward4			= "02Volkov,800,30266"
+Reward5			= "03Lair,500,30267"
+Reward6			= "03Isako,800,30268"
+Reward7			= "01SpyManual,200,30009"
+Reward8			= "02SpyManual,200,30009"
+Reward9			= "03SpyManual,200,30009"
+Reward10		= "01KhiosPlan,300,30269"
+
+
+[Mission14]
+//	Chapter 15 - Pre-emptive Strike - Khios
+
+NameId			= 2514
+DescId			= 2764
+ObjectiveIds	= ""
+LayoutInfo		= "LoadScreenC15"
+BriefingLayout	= "LoadScreenC15"
+SelectedWeapon	= "Sterling"
+DefaultWeapons	= "Tazer,Sterling,Utility Launcher"
+DefaultAmmo		= ""
+DefaultMods		= ""
+Level0			= "Worlds\RetailSinglePlayer\c15s01"
+Level0NameId	= 2605
+Level0BriefingId = 2714
+Level0HelpId	= 3150
+//Reward total is 1,600
+Reward0			= "01Submarine,600,30281"
+Reward1			= "01SS01,100,30282"
+Reward2			= "01SS02,100,30282"
+Reward3			= "01SS03,100,30282"
+Reward4			= "01SS04,100,30282"
+Reward5			= "01SS05,100,30282"
+Reward6			= "01SS06,100,30282"
+Reward7			= "01SS07,100,30282"
+Reward8			= "01SS08,100,30282"
+Reward9			= "01SpyManual,200,30009"

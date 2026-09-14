@@ -1,0 +1,875 @@
+
+/*
+**
+** Name			the name of the attachable. the name is what will be entered into dedit.
+** Type			the type of the attachable. the valid types are:
+**
+**				0 - prop			a static item with no logic, like a hat, or moustache, etc
+**				1 - object			an item with logic, like a searchlight, etc
+**
+** Properties	a string with any object properties you wish to override (for example "Chrome 1;Gravity 0")
+** 
+** Class		if the type = 1 (object), the class name
+**
+** Model		if the type = 0 (prop), the name of the .ltb file
+**
+** Skin0-N		if the type = 0 (prop), the name of the .dtx file
+**              There can be any number of skins: Skin0, Skin1, ..., SkinN
+**
+** RenderStyle0-N 	if the type = 0 (prop), the name of the .ltb file
+**					There can be any number of render styles: RenderStyle0, RenderStyle1, ..., RenderStyleN
+**
+** DeleteOnDeath    1 if the attachment should be deleted when a character dies.
+**                  0 if the attachment should be carried over to the body.
+**
+** DetachWhenShot   1 if the attachment will be detached when shot at.
+**		    0 if the attachment should remain attached when shot at.
+**
+** DebrisType	a string that is the name of a debris in debris.txt that will play if the attachment is shot
+**		and DetachWhenShot is 1.	
+**
+** Translucent	0 or 1 indicating whether or not the model contains translucent parts that need to be sorted
+**
+*/
+
+
+[Attachment0]
+
+Name			= "SSLeutMask"
+Type			= 0
+Model			= "Attachments\Models\SSLtMask.ltb"
+Skin0			= "Chars\skins\SSLtHead.dtx"
+Skin1			= "Chars\skins\shinyspot.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment1]
+
+Name			= "OLDSSCannon"
+Type			= 0
+Model			= "guns\models_hh\SSCannon.ltb"
+Skin0			= "guns\skins_hh\SSCannon.dtx"
+Skin1			= "Chars\skins\shinyspot.dtx"
+RenderStyle0 		= "RS\envmap.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment2]
+
+Name			= "SovWntrHat"
+Type			= 0
+Model			= "Attachments\Models\sovwntrhat.ltb"
+Skin0			= "Attachments\skins\soldrwntrhat.dtx"
+RenderStyle0		= "RS\NinjaTranslucent.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment3]
+
+Name			= "Lantern"
+Type			= 0
+Model			= "Attachments\Models\lantern.ltb"
+Skin0			= "attachments\skins\lantern.dtx"
+RenderStyle0		= "RS\default.ltb"
+RenderStyle1		= "RS\Glow.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment4]
+
+Name			= "AK47_holster"
+Type			= 0
+Model			= "guns\models_hh\AK47.ltb"
+Skin0			= "guns\skins_pv\AK47.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment5]
+
+Name			= "tommygun_holster"
+Type			= 0
+Model			= "guns\models_hh\tommygun.ltb"
+Skin0			= "guns\skins_pv\tommygun.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment6]
+
+Name			= "sterling_holster"
+Type			= 0
+Model			= "guns\models_hh\sterling.ltb"
+Skin0			= "guns\skins_pv\sterling.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment7]
+
+Name			= "katana_holster"
+Type			= 0
+Model			= "guns\models_hh\katana.ltb"
+Skin0			= "guns\skins_pv\katana.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment8]
+
+Name			= "beretta_holster"
+Type			= 0
+Model			= "guns\models_hh\beretta.ltb"
+Skin0			= "guns\skins_pv\beretta.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment9]
+
+Name			= "crossbow_holster"
+Type			= 0
+Model			= "guns\models_hh\crossbow.ltb"
+Skin0			= "guns\skins_pv\crossbow.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment10]
+
+Name			= "cigarette"
+Type			= 0
+Model			= "Attachments\Models\cigarette.ltb"
+Skin0			= "attachments\skins\cigarette.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 1
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment11]
+
+Name			= "femglasses"
+Type			= 0
+Model			= "Attachments\Models\femglasses.ltb"
+Skin0			= "attachments\skins\femglasses.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment12]
+
+Name			= "sovietcap"
+Type			= 0
+Model			= "Attachments\Models\sovietcap.ltb"
+Skin0			= "attachments\skins\sovietcap.dtx"
+RenderStyle0		= "RS\NinjaTranslucent.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment13]
+
+Name			= "shades"
+Type			= 0
+Model			= "Attachments\Models\shades.ltb"
+Skin0			= "attachments\skins\shades.dtx"
+RenderStyle0 		= "RS\furshell.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+Translucent 		= 1
+
+[Attachment14]
+
+Name			= "schenkglasses"
+Type			= 0
+Model			= "attachments\models\schenkglasses.ltb"
+Skin0			= "attachments\skins\schenkglasses.dtx"
+RenderStyle0 		= "RS\furshell.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+Translucent		= 1
+
+[Attachment15]
+
+Name			= "light"
+Type			= 0
+Model			= "Attachments\Models\light.ltb"
+Skin0			= "attachments\skins\light.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment16]
+
+Name			= "wrench"
+Type			= 0
+Model			= "Attachments\Models\wrench.ltb"
+Skin0			= "attachments\skins\wrench.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment17]
+
+Name			= "harmhelmet"
+Type			= 0
+Model			= "Attachments\Models\harmhelmet.ltb"
+Skin0			= "attachments\skins\HARMhelmet.dtx"
+Skin1			= "texfx\envmapalpha\global005.dtx"
+//Skin1			= "chars\skins\shinyspot.dtx"
+RenderStyle0		= "RS\envmap.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment18]
+
+Name			= "glasses"
+Type			= 0
+Model			= "Attachments\Models\glasses.ltb"
+Skin0			= "attachments\skins\glasses.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment19]
+
+Name			= "fedora"
+Type			= 0
+Model			= "Attachments\Models\fedora.ltb"
+Skin0			= "attachments\skins\fedora.dtx"
+RenderStyle0		= "RS\NinjaTranslucent.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment20]
+
+Name			= "coffeePot"
+Type			= 0
+Model			= "Attachments\Models\coffepot.ltb"
+Skin0			= "attachments\skins\coffeepot.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= "Bottle"
+
+[Attachment21]
+
+Name			= "coffeeCup"
+Type			= 0
+Model			= "Attachments\Models\coffecup.ltb"
+Skin0			= "attachments\skins\coffeecup.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= "Bottle"
+
+[Attachment22]
+
+Name			= "clipboard"
+Type			= 0
+Model			= "Attachments\Models\clipboard.ltb"
+Skin0			= "attachments\skins\clipboard.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment23]
+
+Name			= "beret"
+Type			= 0
+Model			= "Attachments\Models\beret.ltb"
+Skin0			= "chars\skins\mime.dtx"
+RenderStyle0		= "RS\NinjaTranslucent.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment24]
+
+Name			= "umbrellaClosed"
+Type			= 0
+Model			= "Attachments\Models\umbrellaClosed.ltb"
+Skin0			= "Attachments\skins\umbrella.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment25]
+
+Name			= "umbrellaOpen"
+Type			= 0
+Model			= "Attachments\Models\umbrellaOpen.ltb"
+Skin0			= "Attachments\skins\umbrella.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment26]
+
+Name			= "umbrellaAnim"
+Type			= 0
+Model			= "Attachments\Models\umbrellaAnim.ltb"
+Skin0			= "Attachments\skins\umbrella.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment27]
+
+Name			= "IsakoSwordTip"
+Type			= 0
+Model			= "Attachments\Models\IsakoSwordTip.ltb"
+Skin0			= "guns\skins_pv\katana.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment28]
+
+Name			= "IsakoSwordHilt"
+Type			= 0
+Model			= "Attachments\Models\IsakoSwordHilt.ltb"
+Skin0			= "guns\skins_pv\katana.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment29]
+
+Name			= "policecap"
+Type			= 0
+Model			= "Attachments\Models\policecap.ltb"
+Skin0			= "chars\skins\police.dtx"
+RenderStyle0		= "RS\NinjaTranslucent.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment30]
+
+Name			= "turban"
+Type			= 0
+Model			= "Attachments\Models\turban.ltb"
+Skin0			= "Attachments\skins\turban.dtx"
+RenderStyle0		= "RS\NinjaTranslucent.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment31]
+
+Name			= "club_holster"
+Type			= 0
+Model			= "guns\Models_hh\billyclub.ltb"
+Skin0			= "guns\skins_hh\club.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment32]
+
+Name			= "tulwar_holster"
+Type			= 0
+Model			= "guns\Models_hh\tulwar.ltb"
+Skin0			= "guns\skins_pv\tulwar.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment33]
+
+Name			= "cloakFly"
+Type			= 0
+Model			= "Attachments\Models\cloakfly.ltb"
+Skin0			= "chars\skins\MimeKingCoat2.dtx"
+Skin1			= "chars\skins\MimeKingCoat1.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment34]
+
+Name			= "cloakthrown"
+Type			= 0
+Model			= "Attachments\Models\cloakthrown.ltb"
+Skin0			= "chars\skins\MimeKingCoat2.dtx"
+Skin1			= "chars\skins\MimeKingCoat1.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment35]
+
+Name			= "CateSuitcase"
+Type			= 0
+Model			= "Attachments\Models\suitcase.ltb"
+Skin0			= "props\skins\cisuitcase.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment36]
+
+Name			= "CateGlasses"
+Type			= 0
+Model			= "Attachments\Models\CateGlasses.ltb"
+Skin0			= "attachments\skins\sunglasses.dtx"
+Skin1			= "attachments\skins\sunglasslens.dtx"
+RenderStyle0 		= "RS\default.ltb"
+RenderStyle1		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment37]
+
+Name			= "DirBinocular"
+Type			= 0
+Model			= "Attachments\Models\binocular.ltb"
+Skin0			= "props\skins\cibinoculars.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment38]
+
+Name			= "SSLtTank"
+Type			= 0
+Model			= "Attachments\Models\SSLtTank.ltb"
+Skin0			= "chars\skins\SSLtPack.dtx"
+Skin1			= "chars\skins\SSLtHead.dtx"
+Skin2			= "chars\skins\shinyspot.dtx"
+RenderStyle0		= "RS\envmap.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment39]
+
+Name			= "deadSSLtTank"
+Type			= 0
+Model			= "Attachments\Models\deadSSLtTank.ltb"
+Skin0			= "chars\skins\SSLtPack.dtx"
+Skin1			= "chars\skins\SSLtHead.dtx"
+Skin2			= "chars\skins\shinyspot.dtx"
+RenderStyle0		= "RS\envmap.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment40]
+
+Name			= "RogueTank"
+Type			= 0
+Model			= "Attachments\Models\rogueTank.ltb"
+Skin0			= "chars\skins\SSRogueTank.dtx"
+Skin1			= "chars\skins\shinyspot.dtx"
+RenderStyle0		= "RS\envmap.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment41]
+
+Name			= "cigSmoke"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName cigTest;Loop True;SmoothShutDown True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment42]
+
+Name			= "SSLt_Eye"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName SSLt_Eye;Loop True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment43]
+
+Name			= "SS_smoke"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName SS_smoke;Loop True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment44]
+
+Name			= "SSLt_Cans"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName SSLt_Cans;Loop True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment45]
+
+Name			= "cigPuff"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName cigPuff;Loop True;SmoothShutDown True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment46]
+
+Name			= "cigBlowSmoke"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName cigBlowSmoke;Loop True;SmoothShutDown True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment47]
+
+Name			= "MynahEyes"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName Mynah;Loop True"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment48]
+
+Name			= "Flask"
+Type			= 0
+Model			= "Attachments\Models\flask.ltb"
+Skin0			= "props\skins\siflask.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment49]
+
+Name			= "GiantGlass"
+Type			= 0
+Model			= "Attachments\Models\GiantGlass.ltb"
+Skin0			= "Props\skins\CiGiantGlass.dtx"
+RenderStyle0		= "RS\FurShell.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment50]
+
+Name			= "hammer"
+Type			= 0
+Model			= "Attachments\Models\hammer.ltb"
+Skin0			= "props\skins\genhammer.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment51]
+
+Name			= "WantedPoster"
+Type			= 0
+Model			= "Attachments\Models\poster.ltb"
+Skin0			= "props\skins\InWPoster.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment52]
+
+Name			= "PolicePoster"
+Type			= 0
+Model			= "Attachments\Models\policeposter.ltb"
+Skin0			= "props\skins\InWPoster.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment53]
+
+Name			= "shotglassfull"
+Type			= 0
+Model			= "props\models\cishotglass.ltb"
+Skin0			= "props\skins\cishotglass.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment54]
+
+Name			= "shotglassempty"
+Type			= 0
+Model			= "props\models\cishotglass.ltb"
+Skin0			= "props\skins\cishotglass2.dtx"
+RenderStyle0 		= "RS\glass.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment55]
+
+Name			= "Serum"
+Type			= 0
+Model			= "attachments\models\serum.ltb"
+Skin0			= "props\skins\puserum.dtx"
+RenderStyle0 		= "RS\glow.ltb"
+RenderStyle1		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment56]
+
+Name			= "Serum_Schenker"
+Type			= 0
+Model			= "attachments\models\serum_schenk.ltb"
+Skin0			= "props\skins\puserum.dtx"
+RenderStyle0 		= "RS\glow.ltb"
+RenderStyle1		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment57]
+
+Name			= "HARMBucket"
+Type			= 0
+Model			= "props\Models\InBucket.ltb"
+Skin0			= "props\skins\InBucket.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 1
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment58]
+
+Name			= "SakeCup"
+Type			= 0
+Model			= "props\Models\CiSakeCup.ltb"
+Skin0			= "props\skins\CiSakeCup.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment59]
+
+Name			= "AIRifleLight"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName RifleLight;Loop True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment60]
+
+Name			= "zhukcap"
+Type			= 0
+Model			= "Attachments\Models\zhukcap.ltb"
+Skin0			= "attachments\skins\zhukcap.dtx"
+RenderStyle0		= "RS\NinjaTranslucent.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment61]
+
+Name			= "BearTrapped"
+Type			= 0
+Model			= "attachments\Models\BearTrap.ltb"
+Skin0			= "guns\skins_pv\BearTrap.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+
+[Attachment62]
+
+Name			= "Wee"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName Wee;Loop True;SmoothShutDown True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment63]
+
+Name			= "PinkCarnation"
+Type			= 0
+Model			= "Attachments\Models\pinkcarnation.ltb"
+Skin0			= "props\skins\InCarnation1r.dtx"
+RenderStyle0		= "RS\transparent.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+Translucent		= 1
+
+[Attachment64]
+
+Name			= "FileFolder"
+Type			= 0
+Model			= "attachments\Models\file.ltb"
+Skin0			= "props\skins\IIFileFolder1.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment65]
+
+Name			= "JonesHat"
+Type			= 0
+Model			= "attachments\Models\JonesHat.ltb"
+Skin0			= "attachments\skins\JonesHat.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment66]
+
+Name			= "JonesMartini"
+Type			= 0
+Model			= "props\models\GenMartini.ltb"
+Skin0			= "props\skins\GenMartini.dtx"
+RenderStyle0 		= "RS\furshell.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment67]
+
+Name			= "CateSpyManual"
+Type			= 0
+Model			= "attachments\models\CateSpyManual.ltb"
+Skin0			= "props\skins\PuManual.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 1
+DebrisType		= ""
+
+[Attachment68]
+
+Name			= "file_schenker"
+Type			= 0
+Model			= "attachments\Models\file_schenker.ltb"
+Skin0			= "props\skins\IIFileFolder1.dtx"
+RenderStyle0 		= "RS\default.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment69]
+
+Name			= "parachute"
+Type			= 0
+Model			= "attachments\Models\parachute.ltb"
+Skin0			= "props\skins\IsParachute.dtx"
+RenderStyle0		= "RS\TranslucentZBufferedSatNoCull.ltb"
+DeleteOnDeath		= 0
+DetachWhenShot		= 0
+DebrisType		= ""
+
+[Attachment70]
+
+Name			= "Cate_Stab"
+Type			= 1
+Class			= "SpecialFX"
+Properties		= "FxName Cate_Stab;Loop True;SmoothShutDown True"
+DeleteOnDeath		= 1
+DetachWhenShot		= 1
+DebrisType		= ""
+
+/*************************************************************************
+**
+**	Requirement = Required Attachments
+**
+** Model
+**	-	Model for which the attachment is required
+**
+** Style
+**	-	Style for which the attachment is required
+**		(if attachement is required for all styles, leave this blank)
+**
+** Attachment
+**	-	Name of the required attachment
+**
+** Socket
+**	-	Socket to attach to
+**
+*/
+
+
+/**************************************************************************
+**
+** Player-View Attachments
+**
+** Name				User firendly name used to reference a PVAttachment in a model record in modelbutes.txt
+**
+** Model			Filename of the model to attach
+**
+** Skin0-N			Skins for the model
+**
+** Renderstyle0-N	Renderstyles for the model
+**
+** Scale			Scale of the model
+**
+** Translucent		0 or 1 indicating whether or not the model contains translucent parts that need to be sorted
+*/
+
+
+[PVAttachment0]
+
+Name			= "WinterCuff"
+Model			= "guns\models_pv\cuff.ltb"
+Skin0			= "guns\skins_pv\cuff.dtx"
+Skin1			= "Chars\skins\CateWFins2.dtx"
+RenderStyle0	= "RS\default.ltb"
+RenderStyle1	= "RS\FurShell.ltb"
+RenderStyle2	= "RS\FurFins.ltb"
+Scale			= <1.0, 1.0, 1.0>
+Translucent		= 1

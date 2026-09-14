@@ -1,0 +1,1 @@
+translationdlg.h

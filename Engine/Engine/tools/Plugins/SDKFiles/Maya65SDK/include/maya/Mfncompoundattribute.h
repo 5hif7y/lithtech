@@ -1,0 +1,1 @@
+mfncompoundattribute.h

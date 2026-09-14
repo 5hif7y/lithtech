@@ -1,0 +1,1 @@
+selecteffectgroupdlg.h

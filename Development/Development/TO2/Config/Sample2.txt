@@ -1,0 +1,20 @@
+[General]
+Name	= "Sample Config 2"
+
+[Settings]
+SoundFilters	= 0
+TripleBuffer	= 0
+Mirrors			= 1
+LightMap		= 0
+DrawShadows		= 0
+DetailTextures	= 1
+WorldChrome		= 0
+ModelChrome		= 0
+Trilinear		= 1
+MuzzleLight		= 0
+Tracers			= 0
+ShellCasings	= 1
+WeatherFX		= 0
+ImpactFX		= 0
+DebrisFX		= 1
+DetailLevel		= 2

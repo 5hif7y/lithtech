@@ -1,0 +1,1 @@
+spriteeditdlg.h

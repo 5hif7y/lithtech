@@ -1,0 +1,1168 @@
+
+[properties]
+
+// animation properties definitions
+//
+// propertygroup
+// { 
+//		property,
+//		property,
+//		property...
+// }
+//
+// for each group, a property named "Any(groupname)" will be implicitly added.
+// for example, a group named movement will have a property named "AnyMovement" 
+// automatically created which can be used to match any property in that group
+
+Posture
+{ 
+	Crouch 
+	Stand 
+	Sit
+	Ride
+	Prone
+}
+
+WeaponAction 
+{ 
+	Aim 
+	Fire 
+	FireSecondary 
+	Reload 
+
+	Draw
+	Holster
+
+	Throw
+}
+
+WeaponPosition 
+{ 
+	Lower
+	Down 
+	Up 
+}
+
+Movement 
+{ 
+	Swim 
+	Run 
+	Walk 
+	Crawl
+	Pinned
+	ClimbUp
+	ClimbDown
+	ClimbUpFast
+	ClimbDownFast
+	GetOnLadderLeft
+	GetOnLadderRight
+	GetOffLadderLeft
+	GetOffLadderRight
+	BackUp
+
+	JumpDownStart
+	JumpDownFly
+	JumpDownLand
+	JumpDownLandBad
+}
+
+Weapon 
+{ 
+	Weapon1 
+	Weapon2 
+	Weapon3 
+}
+
+Mood 
+{ 
+	Silent 
+	Happy 
+	Angry 
+	Sad 
+	Tense 
+	Agree
+	Disagree
+
+	DamageSleeping
+	DamageStunned
+	DamageTrapped
+	DamageGlued
+	DamageLaughing
+	DamageSlipping
+	DamageBleeding
+	DamageBurning
+	DamageChoking
+	DamagePoisoning
+	DamageElectrocuting
+}
+
+Evasive
+{
+	CornerLeft 
+	CornerRight 
+	RollLeft 
+	RollRight 
+	ShuffleLeft 
+	ShuffleRight 
+	Blind
+	Popup
+}
+
+Awareness
+{
+	Patrol
+	Distress 
+	Investigate 
+	InvestigateDark 
+	Panic
+	Covered
+	Uncovered
+	Covering
+	Uncovering
+	Attracted
+
+	Smoking
+	DeskWork
+	FilingHigh
+	FilingLow
+	Peeing
+	PeeingOutside
+	Drinking
+	Hammering
+	Wrenching
+	LeaningBack
+	LeaningBar
+	LeaningLeft
+	LeaningRight
+	LeaningRail
+	Drowsy
+	Typing
+	Operating
+	Operating2
+	Researching
+	Microscoping
+	Warming
+	Examining
+	Banging
+	Vending
+	WashingHands
+	Dancing
+	Entertaining
+	Menacing
+	Admiring
+	Browsing
+	Struggling
+	
+	OverRailing
+	HidingLeft
+	HidingRight
+
+	AwarenessTest1
+	AwarenessTest2
+	AwarenessTest3
+}
+
+Action
+{
+	CheckPulse 
+	KickBody 
+	DisposeBody 
+	Clipboard 
+	Ticket
+	Dust
+	Sweep
+	Wipe
+	OpenDoor 
+	KickDoor 
+	KnockOnDoor
+	Pickup 
+	CloseDrawer
+	ThrowDown
+	PushButton 
+	Tail 
+	Poster
+	KnockOver
+	Phone
+	DrinkFountain
+
+	Asleep
+	Awake
+	Death
+
+	CatchBreath
+
+	Unconscious
+	Stunned
+
+	Alert
+	LookAround
+	LookLeft
+	LookRight
+	LookUp
+	LookUnder
+	LookOver
+	Flashlight
+	Alarm
+	AlarmBox
+
+	FlipTable
+	FlipDesk
+
+	SwitchOn
+	SwitchOff
+
+	Discover
+
+	Idle
+	Fidget
+	Interrupt
+}
+
+[animations]
+
+// animations are formatted as follows:
+// 
+// animation movement_type { properties }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G, Encode_GB
+//
+
+Base None {}
+		
+//--------------------------------------------------------------------------------
+
+//																										
+// Rifle Animations
+//
+
+1StGd		None { stand down weapon1 }
+1StGuAi		None { stand up weapon1 } 
+
+// draw/holster
+
+draw		None { stand weapon1 draw }
+holster		None { stand weapon1 holster }
+
+// walk
+
+1StWaGdPa	Encode_G { stand walk up weapon1 }
+1StWaGdPa	Encode_G { stand walk down weapon1 }
+1StWaGdPa	Encode_G { stand walk down weapon1 patrol }
+
+// run
+
+1StRuGu		Encode_G { stand run up weapon1 } 
+1StRuGd		Encode_G { stand run down weapon1 } 
+
+// jump
+
+JumpDownStart Encode_NG { stand down weapon1 jumpdownstart }
+JumpDownFly   Fall	    { stand down weapon1 jumpdownfly }
+JumpDownLand  Encode_G  { stand down weapon1 jumpdownland }
+JumpDownBad   Encode_G  { stand down weapon1 jumpdownlandbad }
+JumpDownStart Encode_NG { stand up weapon1 jumpdownstart }
+JumpDownFly   Fall	    { stand up weapon1 jumpdownfly }
+JumpDownLand  Encode_G  { stand up weapon1 jumpdownland }
+JumpDownBad   Encode_G  { stand up weapon1 jumpdownlandbad }
+
+JumpRailStart Encode_NG { stand down weapon1 jumpdownstart overrailing }
+JumpRailFly   Fall	    { stand down weapon1 jumpdownfly overrailing }
+JumpRailLand  Encode_G  { stand down weapon1 jumpdownland overrailing }
+JumpRailBad   Encode_G  { stand down weapon1 jumpdownlandbad overrailing }
+JumpRailStart Encode_NG { stand up weapon1 jumpdownstart overrailing }
+JumpRailFly   Fall	    { stand up weapon1 jumpdownfly overrailing }
+JumpRailLand  Encode_G  { stand up weapon1 jumpdownland overrailing }
+JumpRailBad   Encode_G  { stand up weapon1 jumpdownlandbad overrailing }
+
+// investigate/search
+
+1StGuAl1	None { stand weapon1 alert }
+1StGuAl1	None { stand down weapon1 alert }
+//1StGuAl2	None { stand down weapon1 alert }
+1StGuIn		None { stand down weapon1 alert }
+LookUp		None { stand up weapon1 lookup }
+StGuLu		None { stand up weapon1 lookunder }
+StGuLo		None { stand up weapon1 lookover }
+Knock		None { stand up weapon1 knockondoor }
+StGuFl		None { stand up weapon1 flashlight }
+Stretch		None { stand anyweaponposition weapon1 fidget }
+SwingArms	None { stand anyweaponposition weapon1 fidget }
+Shift		None { stand anyweaponposition weapon1 fidget }
+Cough		None { stand anyweaponposition weapon1 fidget }
+ScratchHead	None { stand anyweaponposition weapon1 fidget }
+ScratchButt	None { stand anyweaponposition weapon1 fidget }
+LookAround	None { stand anyweaponposition weapon1 lookaround }
+1StGdLl		None { stand anyweaponposition weapon1 lookleft }
+1StGdLr		None { stand anyweaponposition weapon1 lookright }
+1StWaGuIn	Encode_G { stand walk up weapon1 investigate }
+1StWaGuIn	Encode_G { stand walk down weapon1 investigate }
+1StRuGu		Encode_G  { stand run up weapon1 investigate }
+1StGuIn		None { stand up weapon1 investigate }
+switch_on   None { stand up weapon1 investigate switchon }
+switch_off  None { stand up weapon1 investigate switchoff }
+switch_on   None { stand up weapon1 switchon }
+switch_off  None { stand up weapon1 switchoff }
+switch_off  None { stand down weapon1 switchoff }
+
+// darkness
+
+1StGuIn		None { stand up weapon1 investigatedark }
+StGuLu		None { stand up weapon1 lookunder investigatedark }
+StGuLo		None { stand up weapon1 lookover investigatedark }
+LookUp		None { stand up weapon1 lookup investigatedark }
+Knock		None { stand up weapon1 knockondoor investigatedark }
+StGuFl		None { stand up weapon1 flashlight investigatedark }
+1StGuAl1	None { stand anyweaponposition weapon1 fidget investigatedark }
+1StGuAl1	None { stand anyweaponposition weapon1 lookaround investigatedark }
+1StGdLl		None { stand anyweaponposition weapon1 lookleft investigatedark }
+1StGdLr		None { stand anyweaponposition weapon1 lookright investigatedark }
+1StWaGuIn	Encode_G { stand walk up weapon1 investigatedark }
+1StRuGu		Encode_G  { stand run up weapon1 investigatedark }
+1StGuAl1	None { stand down weapon1 alert investigatedark }
+//1StGuAl2	None { stand down weapon1 alert investigatedark }
+1StGuIn		None { stand down weapon1 alert investigatedark }
+
+// combat
+
+1StGuAi		None { stand up weapon1 aim } 
+aim1		None { stand up weapon1 aim } 
+aim2		None { stand up weapon1 aim } 
+1StGuFi		None { stand up weapon1 fire } 
+fire1		None { stand up weapon1 fire } 
+fire2		None { stand up weapon1 fire } 
+RifleButt   None { stand up weapon1 firesecondary } 
+1StGuRe		None { stand up weapon1 reload }
+1StRuGuAi	Encode_G { stand run up weapon1 aim } 
+1StRuGuFi	Encode_G { stand run up weapon1 fire } 
+RunBack		Encode_GB { stand backup up weapon1 } 
+RunBack		Encode_GB { stand backup up weapon1 fire } 
+RunBack		Encode_GB { stand backup up weapon1 aim } 
+WornOut		None { stand up weapon1 catchbreath }
+
+// dodge
+
+1StGuRoR	Encode_G { crouch weapon1 up rollright }
+1StGuRoL	Encode_G { crouch weapon1 up rollleft }
+1StGuShR	Encode_G { stand weapon1 up shuffleright }
+1StGuShL	Encode_G { stand weapon1 up shuffleleft }
+
+// crouch
+
+1CrGd		None { crouch down weapon1 }
+1CrGuAi		None { crouch up weapon1 } 
+1CrGuAi		None { crouch up weapon1 aim } 
+1CrGuFi		None { crouch up weapon1 fire } 
+1CrGuRe		None { crouch up weapon1 reload }
+
+// prone
+
+prone_aim		None { prone up weapon1 aim } 
+prone_fire		None { prone up weapon1 fire } 
+prone_aim		None { prone up weapon1 reload }
+prone_die		None { prone weapon1 death }
+prone_asleep	None { prone weapon3 lower damagesleeping idle }  // intentionally weapon3
+
+// cover
+
+FlipTable	None { stand lower weapon1 fliptable }
+FlipDesk	None { stand lower weapon1 flipdesk }
+KnockOverFast   None { stand lower weapon1 KnockOver }
+
+1StGuCv		None { stand up covered weapon1 }
+1CrGuAiOv	None { crouch up weapon1 blind }
+1CrGuAiOv	None { crouch up weapon1 aim blind }
+1CrGuFiOv	None { crouch up weapon1 fire blind }
+1StGuAiPo	None { stand up weapon1 popup }
+1StGuAiPo	None { stand up weapon1 aim popup }
+1StGuFiPo	None { stand up weapon1 fire popup }
+1StRuGuCv	Encode_G { stand run up weapon1 covered }
+
+1StGuCv		None { stand up weapon1 aim covered } 
+1StGuFi		None { stand up weapon1 fire covered } 
+1StGuRe		None { stand up weapon1 reload covered }
+
+1StGuCv     None     { stand up weapon1 uncovered cornerright }
+1StGuCv     None     { stand up weapon1 uncovered cornerleft }
+1StGuCv     None     { stand up weapon1 aim uncovered cornerright }
+1StGuCv     None     { stand up weapon1 aim uncovered cornerleft }
+CoverFireR1       Encode_G { stand up weapon1 fire uncovered cornerright }
+CoverFireR2 	  Encode_G { stand up weapon1 fire uncovered cornerright }
+CoverFireR3	  Encode_G { stand up weapon1 fire uncovered cornerright }
+CoverFireL1       Encode_G { stand up weapon1 fire uncovered cornerleft }
+CoverFireL2       Encode_G { stand up weapon1 fire uncovered cornerleft }
+CoverFireL3       Encode_G { stand up weapon1 fire uncovered cornerleft }
+
+
+// doors
+
+1StDo		Encode_NG { stand lower weapon1 opendoor }
+kickdoor	Encode_NG { stand lower weapon1 kickdoor }
+knock		None { stand lower weapon1 knockondoor }
+1StDo		Encode_NG { stand lower weapon1 opendoor investigate }
+kickdoor	Encode_NG { stand lower weapon1 kickdoor investigate }
+knock		None { stand lower weapon1 knockondoor investigate }
+1StDo		Encode_NG { stand lower weapon1 opendoor investigatedark }
+kickdoor	Encode_NG { stand lower weapon1 kickdoor investigatedark }
+knock		None { stand lower weapon1 knockondoor investigatedark }
+
+// Special Damage Types
+
+KnockOut_idle	None { stand weapon1 lower damagesleeping idle }
+KnockOut_idle	None { stand weapon1 lower damagesleeping death }
+Stun_idle		None { stand weapon1 lower damagestunned idle }
+BearTrap_idle	None { stand weapon1 lower damagetrapped idle }
+BearTrap_1		None { stand weapon1 lower damagetrapped fidget }
+BearTrap_2		None { stand weapon1 lower damagetrapped fidget }
+BearTrap_idle		None { stand weapon1 lower damageglued idle }
+Glue_1			None { stand weapon1 lower damageglued fidget }
+Glue_2			None { stand weapon1 lower damageglued fidget }
+Laugh_idle		None { stand weapon1 lower damagelaughing idle }
+Laugh_1			None { stand weapon1 lower damagelaughing fidget }
+Laugh_2			None { stand weapon1 lower damagelaughing fidget }
+banana_idle		None { stand weapon1 lower damageslipping idle }
+banana_idle		None { stand weapon1 lower damageslipping death }
+
+// Progressive Damage Types
+
+Bleed			None { stand weapon1 lower damagebleeding idle }
+Bleed			None { stand weapon1 down damagebleeding }
+WalkBleed		Encode_G { stand walk down weapon1 damagebleeding }
+DFire			None { stand weapon1 lower damageburning death }
+Bleed			None { stand weapon1 lower damageburning idle }
+Bleed			None { stand weapon1 down damageburning }
+StRuPn			Encode_G { stand walk down weapon1 damageburning }
+Bleed			None { stand weapon1 lower damagechoking idle }
+Bleed			None { stand weapon1 down damagechoking }
+WalkBleed		Encode_G { stand walk down weapon1 damagechoking }
+Bleed			None { stand weapon1 lower damagepoisoning idle }
+Bleed			None { stand weapon1 down damagepoisoning }
+WalkBleed		Encode_G { stand walk down weapon1 damagepoisoning }
+Shocked			None { stand weapon1 lower damageelectrocuting idle }
+Shocked			None { stand weapon1 down damageelectrocuting }
+ShockWalk		Encode_G { stand walk down weapon1 damageelectrocuting }
+
+// kitty
+seekitty		None { stand weapon1 down discover }
+3StWaGuIn		Encode_G { stand walk down weapon1 attracted }
+
+//--------------------------------------------------------------------------------
+
+//
+// Tulwar Animations
+//
+
+tulwar_idle		None { stand up weapon2 } 
+tulwar_idle		None { stand down weapon2 }
+
+// draw/holster
+
+tulwar_draw		None { stand weapon2 draw }
+tulwar_holster	None { stand weapon2 holster }
+
+// run
+
+tulwar_charge	Encode_G { stand run up weapon2 } 
+tulwar_charge	Encode_G { stand run down weapon2 } 
+tulwar_charge	Encode_G { stand walk down weapon2 }
+tulwar_charge	Encode_G { stand walk down weapon2 patrol }
+
+// jump
+
+JumpDownStart Encode_NG { stand down weapon2 jumpdownstart }
+JumpDownFly   Fall      { stand down weapon2 jumpdownfly }
+JumpDownLand  Encode_G  { stand down weapon2 jumpdownland }
+JumpDownBad   Encode_G  { stand down weapon2 jumpdownlandbad }
+JumpDownStart Encode_NG { stand up weapon2 jumpdownstart }
+JumpDownFly   Fall      { stand up weapon2 jumpdownfly }
+JumpDownLand  Encode_G  { stand up weapon2 jumpdownland }
+JumpDownBad   Encode_G  { stand up weapon2 jumpdownlandbad }
+
+JumpRailStart Encode_NG { stand down weapon2 jumpdownstart overrailing }
+JumpRailFly   Fall      { stand down weapon2 jumpdownfly overrailing }
+JumpRailLand  Encode_G  { stand down weapon2 jumpdownland overrailing }
+JumpRailBad   Encode_G  { stand down weapon2 jumpdownlandbad overrailing }
+JumpRailStart Encode_NG { stand up weapon2 jumpdownstart overrailing }
+JumpRailFly   Fall      { stand up weapon2 jumpdownfly overrailing }
+JumpRailLand  Encode_G  { stand up weapon2 jumpdownland overrailing }
+JumpRailBad   Encode_G  { stand up weapon2 jumpdownlandbad overrailing }
+
+// combat
+
+tulwar_idle		None { stand up weapon2 aim } 
+tulwar_attack	None { stand up weapon2 fire } 
+tulwar_attack2	None { stand up weapon2 fire } 
+tulwar_charge	Encode_G { stand run up weapon2 aim } 
+Throw           None     { stand up weapon2 firesecondary } 
+WornOut		    None { stand up weapon2 catchbreath }
+
+// dodge
+
+cartWheelR	Encode_G { stand weapon2 up rollright }
+cartWheelL	Encode_G { stand weapon2 up rollleft }
+SpinShuffleR	Encode_G { stand weapon2 up shuffleright }
+SpinShuffleL	Encode_G { stand weapon2 up shuffleleft }
+
+// investigate/search
+
+3StGuAl			None { stand weapon2 alert }
+3StGuAl			None { stand down weapon2 alert }
+LookUp			None { stand up weapon2 lookup }
+StGuLu			None { stand up weapon2 lookunder }
+StGuLo			None { stand up weapon2 lookover }
+Knock			None { stand up weapon2 knockondoor }
+StGuFl			None { stand up weapon2 flashlight }
+2StGdLl			None { stand anyweaponposition weapon2 lookleft }
+2StGdLr			None { stand anyweaponposition weapon2 lookright }
+LookAround		None { stand anyweaponposition weapon2 lookaround }
+Stretch			None { stand anyweaponposition weapon2 fidget }
+SwingArms		None { stand anyweaponposition weapon2 fidget }
+Shift			None { stand anyweaponposition weapon2 fidget }
+Cough			None { stand anyweaponposition weapon2 fidget }
+ScratchHead		None { stand anyweaponposition weapon2 fidget }
+ScratchButt		None { stand anyweaponposition weapon2 fidget }
+3StWaGuIn		Encode_G { stand walk up weapon2 investigate }
+tulwar_charge	Encode_G { stand run up weapon2 investigate } 
+3StGuIn			None { stand up weapon2 investigate }
+switch_on       None { stand up weapon2 investigate switchon }
+switch_off      None { stand up weapon2 investigate switchoff }
+switch_on       None { stand up weapon2 switchon }
+switch_off      None { stand up weapon2 switchoff }
+switch_off		None { stand down weapon2 switchoff }
+
+// darkness
+
+LookUp			None { stand up weapon2 lookup investigatedark }
+StGuLu			None { stand up weapon2 lookunder investigatedark }
+StGuLo			None { stand up weapon2 lookover investigatedark }
+Knock			None { stand up weapon2 knockondoor investigatedark }
+StGuFl			None { stand up weapon2 flashlight investigatedark }
+2StGdLl			None { stand anyweaponposition weapon2 lookleft investigatedark }
+2StGdLr			None { stand anyweaponposition weapon2 lookright investigatedark }
+3StGuAl			None { stand anyweaponposition weapon2 lookaround investigatedark }
+3StGuAl			None { stand anyweaponposition weapon2 fidget investigatedark }
+3StWaGuIn		Encode_G { stand walk up weapon2 investigatedark }
+tulwar_charge	Encode_G { stand run up weapon2 investigatedark } 
+3StGuIn			None { stand up weapon2 investigatedark }
+3StGuAl			None { stand down weapon2 alert investigatedark }
+
+// doors
+
+3StDo		Encode_NG { stand lower weapon2 opendoor }
+kickdoor	Encode_NG { stand lower weapon2 kickdoor }
+knock		None { stand lower weapon2 knockondoor }
+3StDo		Encode_NG { stand lower weapon2 opendoor investigate }
+kickdoor	Encode_NG { stand lower weapon2 kickdoor investigate }
+knock		None { stand lower weapon2 knockondoor investigate }
+3StDo		Encode_NG { stand lower weapon2 opendoor investigatedark }
+kickdoor	Encode_NG { stand lower weapon2 kickdoor investigatedark }
+knock		None { stand lower weapon2 knockondoor investigatedark }
+
+// Special Damage Types
+
+KnockOut_idle	None { stand weapon2 lower damagesleeping idle }
+KnockOut_idle	None { stand weapon2 lower damagesleeping death }
+Stun_idle		None { stand weapon2 lower damagestunned idle }
+BearTrap_idle	None { stand weapon2 lower damagetrapped idle }
+BearTrap_1		None { stand weapon2 lower damagetrapped fidget }
+BearTrap_2		None { stand weapon2 lower damagetrapped fidget }
+BearTrap_idle	None { stand weapon2 lower damageglued idle }
+Glue_1			None { stand weapon2 lower damageglued fidget }
+Glue_2			None { stand weapon2 lower damageglued fidget }
+Laugh_idle		None { stand weapon2 lower damagelaughing idle }
+Laugh_1			None { stand weapon2 lower damagelaughing fidget }
+Laugh_2			None { stand weapon2 lower damagelaughing fidget }
+banana_idle		None { stand weapon2 lower damageslipping idle }
+banana_idle		None { stand weapon2 lower damageslipping death }
+
+// Progressive Damage Types
+
+Bleed			None { stand weapon2 lower damagebleeding idle }
+Bleed			None { stand weapon2 down damagebleeding }
+WalkBleed		Encode_G { stand walk down weapon2 damagebleeding }
+DFire			None { stand weapon2 lower damageburning death }
+Bleed			None { stand weapon2 lower damageburning idle }
+Bleed			None { stand weapon2 down damageburning }
+StRuPn			Encode_G { stand walk down weapon2 damageburning }
+Bleed			None { stand weapon2 lower damagechoking idle }
+Bleed			None { stand weapon2 down damagechoking }
+WalkBleed		Encode_G { stand walk down weapon2 damagechoking }
+Bleed			None { stand weapon2 lower damagepoisoning idle }
+Bleed			None { stand weapon2 down damagepoisoning }
+WalkBleed		Encode_G { stand walk down damagepoisoning }
+Shocked			None { stand weapon2 lower damageelectrocuting idle }
+Shocked			None { stand weapon2 down damageelectrocuting }
+ShockWalk		Encode_G { stand walk down weapon2 damageelectrocuting }
+
+
+// kitty
+seekitty		None { stand weapon2 down discover }
+3StWaGuIn		Encode_G { stand walk down weapon2 attracted }
+
+//--------------------------------------------------------------------------------
+
+//
+// Fists Animations
+//
+
+3StGd		None { stand anyweaponposition weapon3 }
+3StGd		None { stand anyweaponposition weapon3 idle }
+ 
+// walk
+
+3StWaGd		Encode_G { stand walk anyweaponposition weapon3 } 
+3StWaGd2	Encode_G { stand walk anyweaponposition weapon3 } 
+3StWaGd3	Encode_G { stand walk anyweaponposition weapon3 } 
+3StWaGd 	Encode_G { stand walk down weapon3 patrol }
+3StWaGd2 	Encode_G { stand walk down weapon3 patrol }
+3StWaGd3 	Encode_G { stand walk down weapon3 patrol }
+
+// run
+
+3StRuGd	Encode_G { stand run anyweaponposition weapon3 } 
+3StRuGd2	Encode_G { stand run anyweaponposition weapon3 } 
+WornOut		None { stand up weapon3 catchbreath }
+
+// jump
+
+JumpDownStart Encode_NG { stand down weapon3 jumpdownstart }
+JumpDownFly   Fall      { stand down weapon3 jumpdownfly }
+JumpDownLand  Encode_G  { stand down weapon3 jumpdownland }
+JumpDownBad   Encode_G  { stand down weapon3 jumpdownlandbad }
+JumpDownStart Encode_NG { stand up weapon3 jumpdownstart }
+JumpDownFly   Fall      { stand up weapon3 jumpdownfly }
+JumpDownLand  Encode_G  { stand up weapon3 jumpdownland }
+JumpDownBad   Encode_G  { stand up weapon3 jumpdownlandbad }
+
+JumpRailStart Encode_NG { stand down weapon3 jumpdownstart overrailing }
+JumpRailFly   Fall      { stand down weapon3 jumpdownfly overrailing }
+JumpRailLand  Encode_G  { stand down weapon3 jumpdownland overrailing }
+JumpRailBad   Encode_G  { stand down weapon3 jumpdownlandbad overrailing }
+JumpRailStart Encode_NG { stand up weapon3 jumpdownstart overrailing }
+JumpRailFly   Fall      { stand up weapon3 jumpdownfly overrailing }
+JumpRailLand  Encode_G  { stand up weapon3 jumpdownland overrailing }
+JumpRailBad   Encode_G  { stand up weapon3 jumpdownlandbad overrailing }
+JumpRailStart Encode_NG { stand weapon3 jumpdownstart overrailing }
+JumpRailFly   Fall      { stand weapon3 jumpdownfly overrailing }
+JumpRailLand  Encode_G  { stand weapon3 jumpdownland overrailing }
+JumpRailBad   Encode_G  { stand weapon3 jumpdownlandbad overrailing }
+
+// investigate/search
+
+3StGuAl		None { stand weapon3 alert }
+3StGuAl		None { stand down weapon3 alert }
+LookUp		None { stand down weapon3 lookup }
+StGuLu		None { stand down weapon3 lookunder }
+StGuLo		None { stand down weapon3 lookover }
+Knock		None { stand down weapon3 knockondoor }
+StGuFl		None { stand down weapon3 flashlight }
+2StGdLl		None { stand anyweaponposition weapon3 lookleft }
+2StGdLr		None { stand anyweaponposition weapon3 lookright }
+LookAround	None { stand anyweaponposition weapon3 lookaround }
+Stretch		None { stand anyweaponposition weapon3 fidget }
+SwingArms	None { stand anyweaponposition weapon3 fidget }
+Shift		None { stand anyweaponposition weapon3 fidget }
+Cough		None { stand anyweaponposition weapon3 fidget }
+//Flask		None { stand anyweaponposition weapon3 fidget }
+ScratchHead	None { stand anyweaponposition weapon3 fidget }
+ScratchButt	None { stand anyweaponposition weapon3 fidget }
+3StWaGuIn	Encode_G { stand walk up weapon3 investigate }
+3StWaGuIn	Encode_G { stand walk down weapon3 investigate }
+3StGuIn		None { stand down weapon3 investigate }
+switch_on   None { stand down weapon3 investigate switchon }
+switch_off  None { stand down weapon3 investigate switchoff }
+switch_on   None { stand down weapon3 switchon }
+switch_off  None { stand down weapon3 switchoff }
+switch_on   None { stand up weapon3 investigate switchon }
+switch_off  None { stand up weapon3 investigate switchoff }
+switch_on   None { stand up weapon3 switchon }
+switch_off  None { stand up weapon3 switchoff }
+
+// darkness
+
+3StGuAl		None { stand down weapon3 alert investigatedark }
+LookUp		None { stand down weapon3 lookup investigatedark }
+StGuLu		None { stand down weapon3 lookunder investigatedark }
+StGuLo		None { stand down weapon3 lookover investigatedark }
+Knock		None { stand down weapon3 knockondoor investigatedark }
+StGuFl		None { stand down weapon3 flashlight investigatedark }
+2StGdLl		None { stand anyweaponposition weapon3 lookleft investigatedark }
+2StGdLr		None { stand anyweaponposition weapon3 lookright investigatedark }
+3StGuAl		None { stand anyweaponposition weapon3 lookaround investigatedark }
+3StGuAl		None { stand anyweaponposition weapon3 fidget investigatedark }
+3StWaGuIn	Encode_G { stand walk up weapon3 investigatedark }
+3StWaGuIn	Encode_G { stand walk down weapon3 investigatedark }
+3StGuIn		None { stand up weapon3 investigatedark }
+
+// doors
+
+3StDo		Encode_NG { stand lower weapon3 opendoor }
+kickdoor	Encode_NG { stand lower weapon3 kickdoor }
+knock		None { stand lower weapon3 knockondoor }
+3StDo		Encode_NG { stand lower weapon3 opendoor investigate }
+kickdoor	Encode_NG { stand lower weapon3 kickdoor investigate }
+knock		None { stand lower weapon3 knockondoor investigate }
+3StDo		Encode_NG { stand lower weapon3 opendoor investigatedark }
+kickdoor	Encode_NG { stand lower weapon3 kickdoor investigatedark }
+knock		None { stand lower weapon3 knockondoor investigatedark }
+
+
+// Special Damage Types
+
+KnockOut_idle	None { stand weapon3 lower damagesleeping idle }
+KnockOut_idle	None { stand weapon3 lower damagesleeping death }
+
+SleepDesk	Encode_NG { sit weapon3 lower deskwork damagesleeping idle }
+SleepDesk	Encode_NG { sit weapon3 lower deskwork damagesleeping death }
+SleepDesk	Encode_NG { sit weapon3 lower typing damagesleeping idle }
+SleepDesk	Encode_NG { sit weapon3 lower typing damagesleeping death }
+bed_sleep	Encode_NG { crouch weapon3 lower drowsy damagesleeping idle }
+bed_sleep	Encode_NG { crouch weapon3 lower drowsy damagesleeping death }
+
+Stun_idle		None { stand weapon3 lower damagestunned idle }
+
+BearTrap_idle	None { stand weapon3 lower damagetrapped idle }
+BearTrap_1		None { stand weapon3 lower damagetrapped fidget }
+BearTrap_2		None { stand weapon3 lower damagetrapped fidget }
+BearTrap_idle	None { stand weapon3 lower damageglued idle }
+
+Glue_1			None { stand weapon3 lower damageglued fidget }
+Glue_2			None { stand weapon3 lower damageglued fidget }
+
+Laugh_idle		None { stand weapon3 lower damagelaughing idle }
+Laugh_1			None { stand weapon3 lower damagelaughing fidget }
+Laugh_2			None { stand weapon3 lower damagelaughing fidget }
+banana_idle		None { stand weapon3 lower damageslipping idle }
+banana_idle		None { stand weapon3 lower damageslipping death }
+
+// Progressive Damage Types
+
+Bleed			None { stand weapon3 lower damagebleeding idle }
+Bleed			None { stand weapon3 down damagebleeding }
+WalkBleed		Encode_G { stand walk down weapon3 damagebleeding }
+DFire			None { stand weapon3 lower damageburning death }
+Bleed			None { stand weapon3 lower damageburning idle }
+Bleed			None { stand weapon3 down damageburning }
+StRuPn			Encode_G { stand walk down weapon3 damageburning }
+Bleed			None { stand weapon3 lower damagechoking idle }
+Bleed			None { stand weapon3 down damagechoking }
+WalkBleed		Encode_G { stand walk down weapon3 damagechoking }
+Bleed			None { stand weapon3 lower damagepoisoning idle }
+Bleed			None { stand weapon3 down damagepoisoning }
+WalkBleed		Encode_G { stand walk down weapon3 damagepoisoning }
+Shocked			None { stand weapon3 lower damageelectrocuting idle }
+Shocked			None { stand weapon3 down damageelectrocuting }
+ShockWalk		Encode_G { stand walk down weapon3 damageelectrocuting }
+
+// kitty
+
+seekitty		None { stand weapon3 down discover }
+3StWaGuIn		Encode_G { stand walk down weapon3 attracted }
+
+// Work Goal (UseObjectNode) stuff.
+
+throwdown               None { stand weapon3 throwdown }
+cig_idle                None { stand weapon3 lower smoking idle }
+cig_sm1                 None { stand weapon3 lower smoking fidget }
+cig_sm2                 None { stand weapon3 lower smoking fidget }
+cig_lookLR              None { stand weapon3 lower smoking fidget }
+//cig_sm3               None { stand weapon3 lower smoking fidget }
+cig_throwdown           None { stand weapon3 lower smoking interrupt }
+
+file64_Loop             None { stand weapon3 lower filinglow idle }
+file76_Loop             None { stand weapon3 lower filinghigh idle }
+file76_Interrupt	None { stand weapon3 lower filinghigh interrupt }
+
+si                      Encode_NG { sit weapon3 lower idle }
+si_1                    Encode_NG { sit weapon3 lower fidget }
+si_2                    Encode_NG { sit weapon3 lower fidget }
+si_flask                Encode_NG { sit weapon3 lower fidget }
+si_Interrupt            Encode_NG { sit weapon3 lower interrupt }
+DSit                    None { sit weapon3 lower death }
+
+sidesk_Idle             Encode_NG { sit weapon3 lower deskwork idle }
+sidesk_idle1			Encode_NG { sit weapon3 lower deskwork fidget }
+sidesk_idle2			Encode_NG { sit weapon3 lower deskwork fidget }
+sidesk_flask			Encode_NG { sit weapon3 lower deskwork fidget }
+sidesk_Interrupt        Encode_NG { sit weapon3 lower deskwork interrupt }
+DDesk                   None { sit weapon3 lower deskwork death }
+
+pee                     None { stand weapon3 lower peeing idle }
+
+coffee_Idle             None { stand weapon3 lower drinking idle }
+coffee_Sip1             None { stand weapon3 lower drinking fidget }
+coffee_Sip2             None { stand weapon3 lower drinking fidget }
+coffee_lookLR           None { stand weapon3 lower drinking fidget }
+coffee_interrupt               None { stand weapon3 lower drinking interrupt }
+
+hammerCr_Loop           None { crouch weapon3 lower hammering idle }
+throwdown               None { crouch weapon3 lower hammering interrupt }
+
+hammerSt_Loop           None { stand weapon3 lower hammering idle }
+throwdown               None { stand weapon3 lower hammering interrupt }
+
+wrenchCr_Loop           None { crouch weapon3 lower wrenching idle }
+throwdown               None { crouch weapon3 lower wrenching interrupt }
+
+wrenchSt_Loop           None { stand weapon3 lower wrenching idle }
+throwdown               None { stand weapon3 lower wrenching interrupt }
+
+leanB_Idle              None { stand weapon3 lower leaningback idle }
+leanB_scratch           None { stand weapon3 lower leaningback fidget }
+leanB_flask             None { stand weapon3 lower leaningback fidget }
+leanB_int               None { stand weapon3 lower leaningback interrupt }
+leanB_die               None { stand weapon3 lower leaningback death }
+leanBar_Idle            None { stand weapon3 lower leaningbar idle }
+
+leanL_Idle              None { stand weapon3 lower leaningleft idle }
+leanR_Idle              None { stand weapon3 lower leaningright idle }
+
+leanRail_Idle           None { stand weapon3 lower leaningrail idle }
+leanRail_1              None { stand weapon3 lower leaningrail fidget }
+leanRail_int            None { stand weapon3 lower leaningrail interrupt }
+
+reClpBrd_Poke		None { stand weapon3 lower researching idle }
+reClpBrd_Aha		None { stand weapon3 lower researching fidget }
+reMcrscp_Loop		None { stand weapon3 lower microscoping idle }
+
+warmHands_Idle		None { stand weapon3 lower warming idle }
+warmHands_rub		None { stand weapon3 lower warming fidget }
+warmHands_flask		None { stand weapon3 lower warming fidget }
+warmHands_int  		None { stand weapon3 lower warming interrupt }
+
+stsleep_idle            None { stand weapon3 lower drowsy idle }
+stsleep_stir            None { stand weapon3 lower drowsy fidget }
+stsleep_interrupt       None { stand weapon3 lower drowsy interrupt }
+stsleep_die             None { stand weapon3 lower drowsy death }
+
+sitsleep_idle           Encode_NG { sit weapon3 lower drowsy idle }
+sitsleep_stir           Encode_NG { sit weapon3 lower drowsy fidget }
+sitsleep_out            Encode_NG { sit weapon3 lower drowsy interrupt }
+DSit                    None { sit weapon3 lower drowsy death }
+
+bed_sleep               Encode_NG { crouch weapon3 lower drowsy idle }
+bed_kick                Encode_NG { crouch weapon3 lower drowsy fidget }
+bed_Interrupt           Encode_NG { crouch weapon3 lower drowsy interrupt }
+bed_sleep               Encode_NG { crouch weapon3 lower drowsy death }
+
+poster                  None { stand weapon3 lower poster }
+
+KnockOver               None { stand weapon3 lower KnockOver }
+
+poster_idle             None { stand weapon3 lower examining idle }
+poster_fidget			None { stand weapon3 lower examining fidget }
+
+Dance                   None { stand weapon3 lower entertaining idle }
+Dance_Int               None { stand weapon3 lower entertaining interrupt }
+Dance                   None { stand weapon3 lower dancing idle }
+
+vend_idle               None { stand weapon3 lower vending idle }
+vend_1                  None { stand weapon3 lower vending fidget }
+vend_2                  None { stand weapon3 lower vending fidget }
+vend_3                  None { stand weapon3 lower vending fidget }
+
+admire_idle             None { stand weapon3 lower admiring idle }
+admire_flask            None { stand weapon3 lower admiring fidget }
+admire_lookLR           None { stand weapon3 lower admiring fidget }
+admire_scratch          None { stand weapon3 lower admiring fidget }
+admire_back             None { stand weapon3 lower admiring fidget }
+admire_int              None { stand weapon3 lower admiring interrupt }
+
+hitwall_idle            None { stand weapon3 lower banging idle }
+hitwall_1               None { stand weapon3 lower banging fidget }
+
+peeoutside_idle         None { stand weapon3 lower peeingoutside idle }
+peeoutside_int         None { stand weapon3 lower peeingoutside interrupt }
+
+wash_idle               None { stand weapon3 lower washinghands idle }
+wash_fidget             None { stand weapon3 lower washinghands fidget }
+
+stcntrl_idle            None { stand weapon3 lower operating idle }
+stcntrl_1               None { stand weapon3 lower operating fidget }
+stcntrl_2               None { stand weapon3 lower operating fidget }
+
+sitsmoke_idle           Encode_NG { sit weapon3 lower smoking idle }
+sitsmoke_1              Encode_NG { sit weapon3 lower smoking fidget }
+sitsmoke_2              Encode_NG { sit weapon3 lower smoking fidget }
+sitsmoke_3              Encode_NG { sit weapon3 lower smoking fidget }
+sitsmoke_interrupt      Encode_NG { sit weapon3 lower smoking interrupt }
+DSit                    None { sit weapon3 lower smoking death }
+
+sitcntrl_idle           Encode_NG { sit weapon3 lower operating idle }
+sitcntrl_1              Encode_NG { sit weapon3 lower operating fidget }
+sitcntrl_2              Encode_NG { sit weapon3 lower operating fidget }
+sitcntrl_3              Encode_NG { sit weapon3 lower operating fidget }
+sitcntrl_interrupt      Encode_NG { sit weapon3 lower operating interrupt }
+DDesk                   None { sit weapon3 lower operating death }
+
+type_idle               Encode_NG { sit weapon3 lower typing idle }
+type_1                  Encode_NG { sit weapon3 lower typing fidget }
+type_flask              Encode_NG { sit weapon3 lower typing fidget }
+type_interrupt          Encode_NG { sit weapon3 lower typing interrupt }
+DDesk                   None { sit weapon3 lower typing death }
+
+phone                   None { stand weapon3 lower phone }
+menace                  Encode_G { stand weapon1 lower menacing idle }
+browse                  None { stand weapon3 lower browsing idle }
+drink                   None { stand weapon3 lower drinkfountain }
+
+Hide                    None { stand weapon3 lower hidingleft idle }
+HideCrouch              None { crouch weapon3 lower hidingleft idle }
+HideCrouch_Out          None { crouch weapon3 lower hidingleft interrupt }
+
+struggle_idle		None { stand weapon3 lower struggling idle }
+struggle_die		None { stand weapon3 lower struggling death }
+
+Oh_no			None { stand weapon3 lower dust }
+
+//--------------------------------------------------------------------------------
+
+//
+// Non-Weapon Animations
+// 
+
+// climbing
+
+ClU			Encode_V { stand climbup anyweaponposition anyweapon } 
+ClD			Encode_V { stand climbdown anyweaponposition anyweapon } 
+ClUfast		Encode_V { stand climbupfast anyweaponposition anyweapon } 
+ClDfast		Encode_V { stand climbdownfast anyweaponposition anyweapon } 
+LadderOnL	Encode_NG { stand getonladderleft anyweaponposition anyweapon } 
+LadderOnR	Encode_NG { stand getonladderright anyweaponposition anyweapon } 
+
+LadderOffL	Encode_NG { stand getoffladderleft anyweaponposition anyweapon } 
+LadderOffR	Encode_NG { stand getoffladderright anyweaponposition anyweapon } 
+
+// grenade
+
+StGrTh		None { stand throw anyweapon }
+
+StRuPn		Run { stand run anyweapon panic }
+StPn		None { stand anyweapon panic }
+CrPn		None { crouch anyweapon panic }
+SiPn		None { sit anyweapon panic }
+
+StDs		None { stand anyweapon distress }
+
+SiDs		None { sit anyweapon distress }
+
+StCb		None { stand lower anyweapon clipboard }
+
+Sweep		None { stand lower anyweapon sweep }
+
+Wipe		None { stand lower anyweapon wipe }
+
+StCb		None { stand lower anyweapon ticket } // todo: placeholder
+
+StPb		None { stand lower anyweapon pushbutton }
+StAl		None { stand lower anyweapon alarm }
+AlarmBox	None { stand lower anyweapon alarmbox }
+
+StPi		None { stand lower anyweapon pickup }
+CloseDrawer	None { stand lower anyweapon closedrawer }
+
+CheckPulse	None { stand anyweapon checkpulse }
+KickBody	None { stand anyweapon kickbody }
+DisposeBody	None { stand anyweapon disposebody }
+
+StTa		None { stand lower anyweapon tail }
+
+3StGd		None { stand anyweapon lower silent }
+3StGd		None { stand anyweapon lower happy }
+3StGd		None { stand anyweapon lower angry }
+3StGd		None { stand anyweapon lower sad }
+3StGd		None { stand anyweapon lower tense }
+3StGd		None { stand anyweapon lower agree }
+3StGd		None { stand anyweapon lower disagree }
+
+3StGd		None { sit anyweapon lower silent }
+3StGd		None { sit anyweapon lower happy }
+3StGd		None { sit anyweapon lower angry }
+3StGd		None { sit anyweapon lower sad }
+3StGd		None { sit anyweapon lower tense }
+3StGd		None { sit anyweapon lower agree }
+3StGd		None { sit anyweapon lower disagree }
+
+StSt		None { stand stunned anyweapon }
+
+Si			None { sit anyweapon anyweaponposition }
+SiDrAs		None { sit drowsy asleep anyweapon anyweaponposition }
+SiDrAw		None { sit drowsy awake anyweapon anyweaponposition }
+
+//--------------------------------------------------------------------------------
+
+[transitions]
+
+// transitions are formatted as follows:
+//
+// "animation name" movement_type { initial set }  +{ add set }  ~{ remove set }  ={ constant set }  !{ not set }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G
+//
+// to go from a set of props F to a set of props T, via the transition, the following
+// conditions must be met:
+//
+// F must contain all elements of "initial set"
+// F must have none of "add set"
+// T must have all of "add set"
+// F must have all of "remove set"
+// T must not have "remove set"
+// both F and T must have all of "constant set"
+// both F and T must not have anything in "not set"
+//
+// more specific transitions must be specified later (see 1StGd-1StGuAiIn vs. 1StGd-1StGuAi)
+
+//1StGd-1StGuAi	    None { stand weapon1 down }				+{ up }					~{ down }				={ stand weapon1 }				!{ swim }
+//1StGuAi-1StGd	    None { stand weapon1 up }				+{ down }				~{ up }					={ stand weapon1 }				!{ swim }
+//1CrGd-1CrGuAi	    None { crouch weapon1 down }				+{ up }					~{ down }				={ crouch weapon1 }			!{ swim }
+//1CrGuAi-1CrGd	    None { crouch weapon1 up }				+{ down }				~{ up }					={ crouch weapon1 }				!{ swim }
+//1StGuCv-1StGuAi		None { stand weapon1 up covered }		+{ aim }				~{ }					={ stand weapon1 up covered }	!{ swim fire reload }
+//1StGuCv-1StGuAi		None { stand weapon1 up covered }		+{ fire }				~{ }					={ stand weapon1 up covered }	!{ swim aim reload }
+//1StGuAi-1StGuCv		None { stand weapon1 up covered aim }	+{ }					~{ aim }				={ stand weapon1 up covered }	!{ swim fire reload }
+//1StGuAi-1StGuCv		None { stand weapon1 up covered fire }	+{ }					~{ fire }				={ stand weapon1 up covered }	!{ swim aim reload }
+																										
+RunStart		Encode_G { stand weapon1 }			+{ run }				~{ }					={ stand weapon1 }				!{ swim opendoor kickdoor backup }
+3RunStart		Encode_G { stand weapon2 }			+{ run }				~{ }					={ stand weapon2 }				!{ swim opendoor kickdoor backup }
+3RunStart		Encode_G { stand weapon3 }			+{ run }				~{ }					={ stand weapon3 }				!{ swim opendoor kickdoor backup }
+//WalkStart		Encode_G { stand weapon1 }			+{ walk }				~{ }					={ stand weapon1 }				!{ swim opendoor kickdoor}
+//WalkStart		Encode_G { stand weapon3 }			+{ walk }				~{ }					={ stand weapon3 }			 	!{ swim opendoor kickdoor}
+																										
+1CrGu-1StGu		None { crouch weapon1 }					+{ stand }				~{ crouch }				={ weapon1 }					!{ swim }
+1StGu-1CrGu		None { stand weapon1 }					+{ crouch }				~{ stand }				={ weapon1 }					!{ swim }
+																										
+1CrGd-1CrGuAiOv		None { crouch weapon1 }					+{ blind }				~{ }					={ crouch weapon1 }				!{ swim }
+1CrGuAiOv-1CrGd		None { crouch weapon1 blind }			+{ }					~{ blind }				={ crouch weapon1 }				!{ swim }
+																										
+1CrGd-1StGuPo		None { crouch weapon1 }					+{ stand popup }		~{ crouch }				={ weapon1 }					!{ swim }
+1StGuPo-1CrGd		None { stand weapon1 popup }				+{ crouch }				~{ stand popup }		={ weapon1 }				!{ swim }
+
+prone_out		Encode_G { prone weapon1 }					+{ stand }				~{ prone }				={ weapon1 }					!{ swim }
+prone_in		Encode_G { stand weapon1 }					+{ prone }				~{ stand }				={ weapon1 }					!{ swim }
+																																																																														
+St-CrPn				None { stand }							+{ panic crouch }		~{ stand }				={ }							!{ swim }
+St-CrPn				None { stand panic }						+{ crouch }				~{ stand }			={ panic }					!{ swim }
+CrPn-St				None { crouch panic }					+{ stand }				~{ crouch panic }		={ }							!{ swim }
+																																																																																																								
+St-StSt				None { stand }							+{ stunned }			~{ }					={ stand }						!{ swim }
+StSt-St				None { stand stunned }					+{ }					~{ stunned }			={ stand }						!{ swim }
+
+// Work Goal (UseObjectNode) transitions.
+
+cig_In				None { }								+{ smoking }			~{ }					={ }							!{ }
+cig_Out				None { smoking }						+{  }					~{ smoking }			={ }							!{ }
+
+file64_In			None { }								+{ filinglow }			~{ }					={ }							!{ }
+file64_Out			None { filinglow }						+{  }					~{ filinglow }			={ }							!{ }
+file76_In			None { }								+{ filinghigh }			~{ }					={ }							!{ }
+file76_Out			None { filinghigh }						+{  }					~{ filinghigh }			={ }							!{ }
+
+si_In				Encode_NG { }								+{ sit }				~{ }					={ }							!{ }
+si_Out				Encode_NG { sit }							+{  }					~{ sit }				={ }							!{ }
+sidesk_In			Encode_NG { }								+{ sit deskwork }		~{ }					={ }							!{ }
+sidesk_Out			Encode_NG { sit deskwork }					+{  }					~{ sit deskwork }		={ }							!{ }
+
+pee_In				None { }								+{ peeing }				~{ }					={ }							!{ }
+pee_Out				None { peeing }							+{  }					~{ peeing }				={ }							!{ }
+
+coffee_In			None { }								+{ drinking }			~{ }					={ }							!{ }
+coffee_Out			None { drinking }						+{  }					~{ drinking }			={ }							!{ }
+
+hammerSt_In			None { }								+{ hammering }			~{ }					={ }							!{ }
+hammerSt_Out			None { hammering }						+{  }					~{ hammering }			={ }							!{ }
+hammerCr_In			Encode_G { }								+{ crouch hammering }	~{ }					={ }							!{ }
+hammerCr_Out			Encode_G { crouch hammering }				+{  }					~{ crouch hammering }	={ }							!{ }
+
+wrenchSt_In			None { }								+{ wrenching }			~{ }					={ }							!{ }
+wrenchSt_Out			None { wrenching }						+{  }					~{ wrenching }			={ }							!{ }
+wrenchCr_In			Encode_G { }								+{ crouch wrenching }	~{ }					={ }							!{ }
+wrenchCr_Out			Encode_G { crouch wrenching }				+{  }					~{ crouch wrenching }	={ }							!{ }
+
+leanB_In			None { }								+{ leaningback }		~{ }					={ }							!{ }
+leanB_Out			None { leaningback }					+{  }					~{ leaningback }		={ }							!{ }
+leanBar_In			None { }								+{ leaningbar }			~{ }					={ }							!{ }
+leanBar_Out			None { leaningbar }						+{  }					~{ leaningbar }			={ }							!{ }
+leanL_In			None { }								+{ leaningleft }		~{ }					={ }							!{ }
+leanL_Out			None { leaningleft }					+{  }					~{ leaningleft }		={ }							!{ }
+leanR_In			None { }								+{ leaningright }		~{ }					={ }							!{ }
+leanR_Out			None { leaningright }					+{  }					~{ leaningright }		={ }							!{ }
+leanRail_In			None { }								+{ leaningrail }		~{ }					={ }							!{ }
+leanRail_Out			None { leaningrail }					+{  }					~{ leaningrail }		={ }							!{ }
+
+reClpBrd_In			None { }								+{ researching }		~{ }					={ }							!{ }
+reClpBrd_Out		None { researching }					+{  }					~{ researching }		={ }							!{ }
+reMcrscp_In			None { }								+{ microscoping }		~{ }					={ }							!{ }
+reMcrscp_Out		None { microscoping }					+{  }					~{ microscoping }		={ }							!{ }
+
+warmHands_In		None { }								+{ warming }			~{ }					={ }							!{ }
+warmHands_Out		None { warming }						+{  }					~{ warming }			={ }							!{ }
+
+stsleep_in			None { stand }								+{ drowsy }	~{ }					={ }							!{ }
+stsleep_out			None { stand drowsy }				+{  }					~{  drowsy }	={ }							!{ }
+sitsleep_in			Encode_NG { }								+{ sit drowsy }	~{ }					={ }							!{ }
+sitsleep_out		Encode_NG { sit drowsy }				+{  }					~{ sit drowsy }	={ }							!{ }
+bed_In				Encode_NG { }								+{ crouch drowsy }	~{ }					={ }							!{ }
+bed_Out				Encode_NG { crouch drowsy }				+{  }					~{ crouch drowsy }	={ }							!{ }
+
+struggle_in			Encode_G { }								+{ struggling }			~{ }					={ }							!{ }
+
+Dance_In			None { }								+{ entertaining }			~{ }					={ }							!{ }
+Dance_Out			None { entertaining }							+{  }					~{ entertaining }				={ }							!{ }
+
+admire_in			None { }								+{ admiring }			~{ }					={ }							!{ }
+admire_out			None { admiring }							+{  }					~{ admiring }				={ }							!{ }
+
+HideCrouch_In			Encode_NG { }								+{ crouch hidingleft }	~{ }					={ }							!{ }
+HideCrouch_Out			Encode_NG { crouch hidingleft }				+{  }					~{ crouch hidingleft }	={ }							!{ }
+
+poster_out			None { examining }							+{  }					~{ examining }				={ }							!{ }
+
+vend_in				None { }								+{ vending }			~{ }					={ }							!{ }
+vend_out			Encode_G { vending }							+{  }					~{ vending }				={ }							!{ }
+hitwall_in			None { }								+{ banging }			~{ }					={ }							!{ }
+peeoutside_in		None { }								+{ peeingoutside }			~{ }					={ }							!{ }
+peeoutside_out		None { peeingoutside }							+{  }					~{ peeingoutside }				={ }							!{ }
+wash_in				None { }								+{ washinghands }			~{ }					={ }							!{ }
+wash_out			None { washinghands }							+{  }					~{ washinghands }				={ }							!{ }
+
+stcntrl_in			None { stand }								+{ operating }			~{ }					={  }							!{ }
+stcntrl_out			None { stand operating }							+{  }					~{ operating }				={ }							!{ }
+
+sitsmoke_in			Encode_NG { }								+{ sit smoking }			~{ }					={ }							!{ }
+sitsmoke_out		Encode_NG { sit smoking }							+{  }					~{ sit smoking }				={ }							!{ }
+sitcntrl_in			Encode_NG { }								+{ sit operating }			~{ }					={ }							!{ }
+sitcntrl_out		Encode_NG { sit operating }							+{  }					~{ sit operating }				={ }							!{ }
+type_in				Encode_NG {  }								+{ sit typing }			~{ }					={ }							!{ }
+type_out			Encode_NG { sit typing }							+{  }					~{ sit typing }				={ }							!{ }
+
+
+// Special Damage Types
+
+KnockOut_In			None { }								+{ damagesleeping }		~{ }					={ }							!{ }
+KnockOut_Out		None { damagesleeping }					+{  }					~{ damagesleeping }		={ }							!{ }
+
+DDesk				Encode_NG { }								+{ damagesleeping }		~{ }							={ typing }			!{ }
+type_Interrupt		Encode_NG { damagesleeping }			+{  }					~{ typing damagesleeping }	={ }			!{ }
+
+DDesk				Encode_NG { }								+{ damagesleeping }		~{ }							={ deskwork }			!{ }
+sidesk_Interrupt	Encode_NG { damagesleeping }			+{  }					~{ deskwork damagesleeping }	={ }			!{ }
+
+bed_sleep			Encode_NG {  }								+{ damagesleeping }		~{ }							={ drowsy }			!{ }
+bed_out				Encode_NG { damagesleeping }			+{  }					~{ drowsy damagesleeping }	={ }			!{ }
+
+prone_asleep		Encode_NG {  }							+{ damagesleeping }		~{ }						={ prone }		!{ }
+prone_out			Encode_NG { damagesleeping }			+{  }					~{ prone damagesleeping }	={ }			!{ }
+
+banana_In			None { }								+{ damageslipping }		~{ }					={ }							!{ }
+banana_Out			None { damageslipping }					+{  }					~{ damageslipping }		={ }							!{ }
+
+Stun_In				None { }								+{ damagestunned }		~{ }					={ }							!{ }
+Stun_Out			None { damagestunned }					+{  }					~{ damagestunned }		={ }							!{ }
+
+BearTrap_In			None { }								+{ damagetrapped }		~{ }					={ }							!{ }
+BearTrap_Out		None { damagetrapped }					+{  }					~{ damagetrapped }		={ }							!{ }
+
+Glue_In				None { }								+{ damageglued }		~{ }					={ }							!{ }
+Glue_Out			None { damageglued }					+{  }					~{ damageglued }		={ }							!{ }
+
+Laugh_In			None { }								+{ damagelaughing }		~{ }					={ }							!{ }
+Laugh_Out			None { damagelaughing }					+{  }					~{ damagelaughing }		={ }							!{ }
+

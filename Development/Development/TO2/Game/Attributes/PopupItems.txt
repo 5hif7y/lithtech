@@ -1,0 +1,536 @@
+/*
+** Popup for Unity Messages
+*/
+
+[PopupItem0]
+Frame               = "Interface\Menu\Sprtex\paper1.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for HARM messages
+*/
+
+[PopupItem1]
+Frame               = "Interface\Menu\Sprtex\paper2.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,70)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for the coded text display
+*/
+
+[PopupItem2]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for the keypad display
+*/
+
+[PopupItem3]
+Frame               = "interface\menu\sprtex\frameCode.dtx"
+Font				= 2
+FontSize			= 16
+Size				= (96,24)
+TextOffset			= (6,5)
+TextWidth			= 120
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for the Invisible Ink display
+*/
+
+[PopupItem4]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 32.0>
+
+/*
+** Popup for Soviet Messages
+*/
+
+[PopupItem5]
+Frame               = "Interface\Menu\Sprtex\paper3.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,73)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Generic Handwritten Messages
+*/
+
+[PopupItem6]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 3
+FontSize			= 15
+Size				= (278,370)
+TextOffset			= (25,30)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+
+/*
+** Popup for Generic Typed Messages
+*/
+
+[PopupItem7]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photo of Kamal c07s01
+*/
+
+[PopupItem8]
+Frame               = "Interface\Menu\Sprtex\kamal.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (320,240) // 682x512
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photo of Balaji c07s01
+*/
+
+[PopupItem9]
+Frame               = "Interface\Menu\Sprtex\balaji.dtx"
+Font				= 2
+FontSize			= 13 
+Size				= (370,320) // 591x512
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Map of Harm entrance and dead drop c07s01
+*/
+
+[PopupItem10]
+Frame               = "Interface\Menu\Sprtex\HARMDDrop.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,370)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for aerial phototos of the Soviet Installation 
+*/
+
+[PopupItem11]
+Frame               = "Interface\Menu\Sprtex\SibArialPhotos.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,370)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Hub of Confusion Map c03s01
+*/
+
+[PopupItem12]
+Frame               = "Interface\Menu\Sprtex\Sibhubmap.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,370)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for New Records Blueprint basement 
+*/
+
+[PopupItem13]
+Frame               = "Interface\Menu\Sprtex\SibBlueP1.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,324) //original = 512x448
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Mobile Home AD c06s03
+*/
+
+[PopupItem14]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Project STOBOR brocure c12s01
+*/
+
+[PopupItem15]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for EA messages c07s04
+*/
+
+[PopupItem16]
+Frame               = "Interface\Menu\Sprtex\EvilAlliance.dtx" //originally 384 x 512
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,80)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photo of mine field c03s02
+*/
+
+[PopupItem17]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Shark schematic c11s01
+*/
+
+[PopupItem18]
+Frame               = "Interface\Menu\Sprtex\SharkSchematic.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,185)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photo of Volkov c04s04
+*/
+
+[PopupItem19]
+Frame               = "Interface\Menu\Sprtex\volkovpic.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,282) //original = 512x390
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+
+/*
+** Popup for Blue print of new records building c04s04
+*/
+
+[PopupItem20]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photograph of General Zhukov with someone from H.A.R.M.
+*/
+
+[PopupItem21]
+Frame               = "Interface\Menu\Sprtex\slogginspic.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,282) //original = 512x390
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Plane ticket c04s04
+*/
+
+[PopupItem22]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Diagrams of the twenty new records facilities c04s06
+*/
+
+[PopupItem23]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photo of Cate c08s03
+*/
+
+[PopupItem24]
+Frame               = "Interface\Menu\Sprtex\catepic.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,305) // 620x512
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photo of Armstrong c08s03
+*/
+
+[PopupItem25]
+Frame               = "Interface\Menu\Sprtex\armstrong.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,268) // 707x512
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for propaganda brochure c09s01
+*/
+
+[PopupItem26]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Invoice for Super Soldiers c09s01
+*/
+
+[PopupItem27]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Blueprints for Super Soldiers
+*/
+
+[PopupItem28]
+Frame               = "Interface\Menu\Sprtex\SSblueprint.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,237)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Brochure for the Bahamas c11s01
+*/
+
+[PopupItem29]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Blueprint for HCC c14s01
+*/
+
+[PopupItem30]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photo of Super Sub c12s03
+*/
+
+[PopupItem31]
+Frame               = "Interface\Menu\Sprtex\supersub.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (320,278) // 682x512
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Tape labeled kittens at play c12s03
+*/
+
+[PopupItem32]
+Frame               = "Interface\Menu\Sprtex\paper4.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Unity Field Manual
+*/
+
+[PopupItem33]
+Frame               = "Interface\Menu\Sprtex\UnityFieldManual.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+
+/*
+** Popup for Spy Training Manual
+*/
+
+[PopupItem34]
+Frame               = "Interface\Menu\Sprtex\paper1.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (278,370)
+TextOffset			= (25,50)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Photo of Rogue's daughter
+*/
+
+[PopupItem35]
+Frame               = "Interface\Menu\Sprtex\abigail.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,262) // 720x512
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Ninja Clan Official Letterheard
+*/
+
+[PopupItem36]
+Frame               = "Interface\Menu\Sprtex\NinjaLetter.dtx"
+Font				= 3
+FontSize			= 15
+Size				= (259,370)
+TextOffset			= (25,65)
+TextWidth			= 230
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Map of Movie Theater indicating timebomb targets
+*/
+
+[PopupItem37]
+Frame               = "Interface\Menu\Sprtex\BollyMap.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,370)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Map of the Japanese Estate grounds
+*/
+
+[PopupItem38]
+Frame               = "Interface\Menu\Sprtex\JpEstate.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,326)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Siberia blueprint New Records building 1st floor
+*/
+
+[PopupItem39]
+Frame               = "Interface\Menu\Sprtex\SibBlueP2.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,316)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+
+/*
+** Popup for Siberia blueprint New Records building 2nd floor
+*/
+
+[PopupItem40]
+Frame               = "Interface\Menu\Sprtex\SibBlueP3.dtx"
+Font				= 2
+FontSize			= 13
+Size				= (370,316)
+TextOffset			= (60,50)
+TextWidth			= 210
+TextColor			= <0.0, 0.0, 0.0>
+

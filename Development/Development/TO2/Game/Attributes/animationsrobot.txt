@@ -1,0 +1,527 @@
+
+[properties]
+
+// animation properties definitions
+//
+// propertygroup
+// { 
+//		property,
+//		property,
+//		property...
+// }
+//
+// for each group, a property named "Any(groupname)" will be implicitly added.
+// for example, a group named movement will have a property named "AnyMovement" 
+// automatically created which can be used to match any property in that group
+
+Posture
+{ 
+	Crouch 
+	Stand 
+	Sit
+	Ride
+	Prone
+}
+
+WeaponAction 
+{ 
+	Aim 
+	Fire 
+	Reload 
+
+	Draw
+	Holster
+
+	Throw
+}
+
+WeaponPosition 
+{ 
+	Lower
+	Down 
+	Up 
+}
+
+Movement 
+{ 
+	Swim 
+	Run 
+	Walk 
+	Crawl
+	Pinned
+	ClimbUp
+	ClimbDown
+
+	JumpDownStart
+	JumpDownFly
+	JumpDownLand
+}
+
+Weapon 
+{ 
+	Weapon1 
+	Weapon2 
+	Weapon3 
+}
+
+Mood 
+{ 
+	Silent 
+	Happy 
+	Angry 
+	Sad 
+	Tense 
+	Agree
+	Disagree
+
+	DamageBurning
+	DamageElectrocuting
+
+	DamageSleeping
+	DamageStunned
+	DamageGlued	
+	DamageTrapped
+	DamageLaughing
+	DamageSlipping
+	DamageBleeding
+	DamageChoking
+	DamagePoisoning
+
+}
+
+Evasive
+{
+	CornerLeft 
+	CornerRight 
+	RollLeft 
+	RollRight 
+	ShuffleLeft 
+	ShuffleRight 
+	Blind
+	Popup
+}
+
+Awareness
+{
+	Patrol
+	Distress 
+	Investigate 
+	InvestigateDark 
+	Panic
+	Drowsy
+	Covered
+	Uncovered
+	Covering
+	Uncovering
+	Attracted
+
+	Smoking
+	DeskWork
+	FilingHigh
+	FilingLow
+	Peeing
+	Drinking
+	Hammering
+	Wrenching
+	LeaningBack
+	LeaningBar
+	LeaningLeft
+	LeaningRight
+	Typing
+	Researching
+	Microscoping
+	Warming
+
+	AwarenessTest1
+	AwarenessTest2
+	AwarenessTest3
+}
+
+Action
+{
+	CheckPulse 
+	KickBody 
+	DisposeBody 
+	Ticket
+	Dust
+	Sweep
+	Wipe
+	OpenDoor 
+	KickDoor 
+	KnockOnDoor
+	Pickup 
+	CloseDrawer
+	ThrowDown
+	PushButton 
+	Tail 
+
+	Asleep
+	Awake
+
+	Unconscious
+	Stunned
+
+	Alert
+	LookAround
+	LookLeft
+	LookRight
+	LookUnder
+	LookOver
+	Flashlight
+	Alarm
+
+	Discover
+	Death
+
+	SwitchOn
+	SwitchOff
+
+	Idle
+	Fidget
+}
+
+[animations]
+
+// animations are formatted as follows:
+// 
+// animation movement_type { properties }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G
+//
+
+Base None {}
+		
+//--------------------------------------------------------------------------------
+
+//																										
+// Rifle Animations
+//
+
+3StGd		None { stand down weapon1 }
+aim		None { stand up weapon1 } 
+
+// draw/holster
+
+draw		None { stand weapon1 draw }
+holster		None { stand weapon1 holster }
+
+// walk
+
+patrol		Encode_G { stand walk down weapon1 }
+patrol		Encode_G { stand walk down weapon1 patrol }
+
+// run
+
+run		Encode_G { stand run up weapon1 } 
+patrol		Encode_G { stand run down weapon1 } 
+
+// jump
+
+// investigate/search
+
+aim		None { stand down weapon1 alert }
+aim		None { stand down weapon1 alert }
+aim		None { stand down weapon1 alert }
+aim		None { stand up weapon1 lookunder }
+aim		None { stand up weapon1 lookover }
+aim		None { stand up weapon1 flashlight }
+aim		None { stand anyweaponposition weapon1 lookaround }
+aim		None { stand anyweaponposition weapon1 lookleft }
+aim		None { stand anyweaponposition weapon1 lookright }
+run		Encode_G { stand walk up weapon1 investigate }
+run		Encode_G  { stand run up weapon1 investigate }
+aim		None { stand up weapon1 investigate }
+
+// darkness
+
+aim		None { stand up weapon1 investigatedark }
+aim		None { stand up weapon1 lookunder investigatedark }
+aim		None { stand up weapon1 lookover investigatedark }
+aim		None { stand up weapon1 flashlight investigatedark }
+aim		None { stand anyweaponposition weapon1 lookleft investigatedark }
+aim		None { stand anyweaponposition weapon1 lookright investigatedark }
+run		Encode_G  { stand walk up weapon1 investigatedark }
+run		Encode_G  { stand run up weapon1 investigatedark }
+aim		None { stand down weapon1 alert investigatedark }
+aim		None { stand down weapon1 alert investigatedark }
+aim		None { stand down weapon1 alert investigatedark }
+
+// combat
+
+aim		None { stand up weapon1 aim } 
+fire		Encode_G { stand up weapon1 fire } 
+aim		None { stand up weapon1 reload }
+aim		None { stand up weapon1 aim covered } 
+fire		Encode_G { stand up weapon1 fire covered } 
+aim		None { stand up weapon1 reload covered }
+run		Encode_G { stand run up weapon1 aim } 
+runfire		Encode_G { stand run up weapon1 fire } 
+
+// dodge
+
+aim		None { crouch weapon1 up rollright }
+aim		None { crouch weapon1 up rollleft }
+aim		None { stand weapon1 up shuffleright }
+aim		None { stand weapon1 up shuffleleft }
+
+// crouch
+
+3StGd		None { crouch down weapon1 }
+aim		None { crouch up weapon1 } 
+aim		None { crouch up weapon1 aim } 
+fire		None { crouch up weapon1 fire } 
+aim		None { crouch up weapon1 reload }
+
+// cover
+
+
+// kitty
+
+aim				None { stand weapon1 down discover }
+run				Encode_G { stand walk down weapon1 attracted }
+
+
+fancydeath	Encode_NG  { stand down weapon1 death }
+fancydeath	Encode_NG  { stand up weapon1 death }
+
+// Progressive Damage Types
+
+Death1		None { stand weapon1 lower damageburning idle }
+Death1		None { stand weapon1 down damageburning }
+patrol		Encode_G { stand walk down weapon1 damageburning }
+Death1		None { stand weapon1 lower damageelectrocuting idle }
+Death1		None { stand weapon1 down damageelectrocuting }
+patrol		Encode_G { stand walk down weapon1 damageelectrocuting }
+
+//--------------------------------------------------------------------------------
+
+//
+// Tulwar Animations
+//
+
+aim		None { stand up weapon2 } 
+aim		None { stand down weapon2 }
+
+// draw/holster
+
+aim		None { stand weapon2 draw }
+aim	None { stand weapon2 holster }
+
+// run
+run	Encode_G { stand run up weapon2 } 
+run	Encode_G { stand run down weapon2 } 
+
+// walk
+patrol		Encode_G { stand walk down weapon2 }
+patrol		Encode_G { stand walk down weapon2 patrol }
+
+// jump
+
+// investigate/search
+
+aim		None { stand weapon2 alert }
+aim		None { stand down weapon2 alert }
+aim		None { stand down weapon2 alert }
+aim		None { stand down weapon2 alert }
+aim		None { stand up weapon2 lookunder }
+aim		None { stand up weapon2 lookover }
+aim		None { stand up weapon2 flashlight }
+aim		None { stand anyweaponposition weapon2 lookaround }
+aim		None { stand anyweaponposition weapon2 lookleft }
+aim		None { stand anyweaponposition weapon2 lookright }
+run		Encode_G { stand walk up weapon2 investigate }
+run		Encode_G  { stand run up weapon2 investigate }
+aim		None { stand up weapon2 investigate }
+
+aim		None { stand weapon2 checkpulse }
+aim		None { stand weapon2 kickbody }
+aim		None { stand weapon2 disposebody }
+
+// combat
+
+aim		None { stand up weapon2 aim } 
+fire		None { stand up weapon2 fire } 
+fire2		None { stand up weapon2 fire } 
+runfire		Encode_G { stand run up weapon2 aim } 
+
+// investigate/search
+
+aim		None { stand lower weapon2 fidget } 
+
+// darkness
+
+// Special Damage Types
+
+sleep		None { stand weapon2 lower damagesleeping idle }
+sleep		None { stand weapon2 lower damagesleeping death }
+aim		None { stand weapon2 lower damagestunned idle }
+aim		None { stand weapon2 lower damagetrapped idle }
+aim		None { stand weapon2 lower damagetrapped fidget }
+aim		None { stand weapon2 lower damageglued idle }
+aim		None { stand weapon2 lower damageglued fidget }
+aim		None { stand weapon2 lower damagelaughing idle }
+aim		None { stand weapon2 lower damagelaughing fidget }
+banana_idle	None { stand weapon2 lower damageslipping idle }
+banana_idle	None { stand weapon2 lower damageslipping death }
+
+// Progressive Damage Types
+
+aim		None { stand weapon2 lower damagebleeding idle }
+aim		None { stand weapon2 down damagebleeding }
+patrol		Encode_G { stand walk down weapon2 damagebleeding }
+aim		None { stand weapon2 lower damageburning idle }
+aim		None { stand weapon2 down damageburning }
+patrol		Encode_G { stand walk down weapon2 damageburning }
+aim		None { stand weapon2 lower damagechoking idle }
+aim		None { stand weapon2 down damagechoking }
+patrol		Encode_G { stand walk down weapon2 damagechoking }
+aim		None { stand weapon2 lower damagepoisoning idle }
+aim		None { stand weapon2 down damagepoisoning }
+patrol		Encode_G { stand walk down weapon2 damagepoisoning }
+aim		None { stand weapon2 lower damageelectrocuting idle }
+aim		None { stand weapon2 down damageelectrocuting }
+patrol		Encode_G { stand walk down weapon2 damageelectrocuting }
+
+// kitty
+
+aim				None { stand weapon2 down discover }
+run				Encode_G { stand walk down weapon2 attracted }
+
+//--------------------------------------------------------------------------------
+
+//
+// Fists Animations
+//
+
+3StGd		None { stand anyweaponposition weapon3 }
+ 
+// walk
+
+patrol		Encode_G { stand walk anyweaponposition weapon3 } 
+patrol 	Encode_G { stand walk down weapon3 patrol }
+
+// run
+
+run		Encode_G { stand run anyweaponposition weapon3 } 
+
+// jump
+
+
+// investigate/search
+
+aim		None { stand down weapon3 alert }
+aim		None { stand down weapon3 alert }
+aim		None { stand down weapon3 alert }
+aim		None { stand up weapon3 lookunder }
+aim		None { stand up weapon3 lookover }
+aim		None { stand up weapon3 flashlight }
+aim		None { stand anyweaponposition weapon3 lookaround }
+aim		None { stand anyweaponposition weapon3 lookleft }
+aim		None { stand anyweaponposition weapon3 lookright }
+run		Encode_G { stand walk up weapon3 investigate }
+run		Encode_G  { stand run up weapon3 investigate }
+aim		None { stand up weapon3 investigate }
+
+
+// darkness
+
+
+// Special Damage Types
+
+sleep		None { stand weapon3 lower damagesleeping idle }
+sleep		None { stand weapon3 lower damagesleeping death }
+aim		None { stand weapon3 lower damagestunned idle }
+aim		None { stand weapon3 lower damagetrapped idle }
+aim		None { stand weapon3 lower damagetrapped fidget }
+aim		None { stand weapon3 lower damageglued idle }
+aim		None { stand weapon3 lower damageglued fidget }
+aim		None { stand weapon3 lower damagelaughing idle }
+aim		None { stand weapon3 lower damagelaughing fidget }
+banana_idle	None { stand weapon3 lower damageslipping idle }
+banana_idle	None { stand weapon3 lower damageslipping death }
+
+// Progressive Damage Types
+
+aim		None { stand weapon3 lower damagebleeding idle }
+aim		None { stand weapon3 down damagebleeding }
+patrol		Encode_G { stand walk down weapon3 damagebleeding }
+//aim		None { stand weapon3 lower damageburning idle }
+//aim		None { stand weapon3 down damageburning }
+//patrol		Encode_G { stand walk down weapon3 damageburning }
+aim		None { stand weapon3 lower damagechoking idle }
+aim		None { stand weapon3 down damagechoking }
+patrol		Encode_G { stand walk down weapon3 damagechoking }
+aim		None { stand weapon3 lower damagepoisoning idle }
+aim		None { stand weapon3 down damagepoisoning }
+patrol		Encode_G { stand walk down weapon3 damagepoisoning }
+//aim		None { stand weapon3 lower damageelectrocuting idle }
+//aim		None { stand weapon3 down damageelectrocuting }
+//patrol		Encode_G { stand walk down weapon3 damageelectrocuting }
+
+// kitty
+
+aim			None { stand weapon3 down discover }
+patrol		Encode_G { stand walk down weapon3 attracted }
+
+
+// Progressive Damage Types
+
+Death1			None { stand weapon3 lower damageburning idle }
+Death1			None { stand weapon3 down damageburning }
+patrol		Encode_G { stand walk down weapon3 damageburning }
+Death1			None { stand weapon3 lower damageelectrocuting idle }
+Death1			None { stand weapon3 down damageelectrocuting }
+patrol		Encode_G { stand walk down weapon3 damageelectrocuting }
+
+//--------------------------------------------------------------------------------
+
+//
+// Non-Weapon Animations
+// 
+
+
+
+//--------------------------------------------------------------------------------
+
+[transitions]
+
+// transitions are formatted as follows:
+//
+// "animation name" movement_type { initial set }  +{ add set }  ~{ remove set }  ={ constant set }  !{ not set }
+//
+// movement_type is one of: None, Walk, Run, Swim, Climb, Encode_NG, Encode_G
+//
+// to go from a set of props F to a set of props T, via the transition, the following
+// conditions must be met:
+//
+// F must contain all elements of "initial set"
+// F must have none of "add set"
+// T must have all of "add set"
+// F must have all of "remove set"
+// T must not have "remove set"
+// both F and T must have all of "constant set"
+// both F and T must not have anything in "not set"
+//
+// more specific transitions must be specified later (see 1StGd-1StGuAiIn vs. 1StGd-1StGuAi)
+
+draw		    	None { stand weapon1 down }				+{ up }					~{ down }				={ stand weapon1 }				!{ swim }
+holster	  		None { stand weapon1 up }				+{ down }				~{ up }					={ stand weapon1 }				!{ swim }
+																										
+draw		   	None { crouch weapon1 down }				+{ up }					~{ down }				={ crouch weapon1 }			!{ swim }
+holster	   	None { crouch weapon1 up }				+{ down }				~{ up }					={ crouch weapon1 }				!{ swim }
+																										
+aim		None { crouch weapon1 }					+{ stand }				~{ crouch }				={ weapon1 }					!{ swim }
+aim		None { stand weapon1 }					+{ crouch }				~{ stand }				={ weapon1 }					!{ swim }
+
+patrol_start		Encode_G { stand  }			+{ walk }				~{ }					={ stand weapon1 }				!{  }
+patrol_stop		None { stand walk }			+{  }				~{ walk }					={ stand weapon1 }				!{  }
+run_start		Encode_G { stand  }			+{ run }				~{ }					={ stand weapon1 }				!{  }
+run_stop		None { stand run }			+{  }				~{ walk }					={ stand weapon1 }				!{  }
+//3RunStart		Encode_G { stand weapon2 }			+{ run }				~{ }					={ stand weapon2 }				!{ swim opendoor kickdoor backup }
+//3RunStart		Encode_G { stand weapon3 }			+{ run }				~{ }					={ stand weapon3 }				!{ swim opendoor kickdoor backup }
+																										
+																										
+// Work Goal (UseObjectNode) transitions.
+
+banana_In			None { }								+{ damageslipping }		~{ }					={ }							!{ }
+banana_Out			None { damageslipping }					+{  }					~{ damageslipping }		={ }							!{ }

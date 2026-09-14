@@ -1,0 +1,1 @@
+mswatchrenderregister.h

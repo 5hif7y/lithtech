@@ -1,0 +1,418 @@
+/************************************************************************
+**
+** R A N K S
+**
+** Ranks definitions specify the names and minimum scores for each rank
+**
+**	Rank<X> (String)
+**
+**		The Rank string consists of two numbers separated by a comma.
+**
+**		The first number is the Id (stored in CRes.dll)	of the text string
+**		containing the name of the Rank.
+**
+**		The second number is the minimum number of skill points needed to 
+**		achieve this rank.
+**	
+**		The Ranks should be listed in ascending skill point order.
+*/
+
+[Ranks]
+Rank0	= "2800,0"
+Rank1	= "2801,25000"
+Rank2	= "2802,30000"
+Rank3	= "2803,35000"
+Rank4	= "2804,40000"
+Rank5	= "2805,45000"
+Rank6	= "2806,50000"
+
+
+/************************************************************************
+**
+** C O S T
+**
+** Each entry under the [Cost] section specifies the costs to upgrade a
+** particular skill
+*/
+[Cost]
+Stealth		= "1000,2000,3000,4000"
+Stamina		= "1000,2000,3000,4000"
+Aim			= "1000,2000,3000,4000"
+Carry		= "1000,2000,3000,4000"
+Armor		= "1000,2000,3000,4000"
+Weapon		= "1000,2000,3000,4000"
+Gadget		= "1000,2000,3000,4000"
+Search		= "1000,2000,3000,4000"
+
+
+/************************************************************************
+**
+** B O N U S
+**
+** Each entry under the [Bonus] section specifies the amount of skill points
+** awarded for a particular type of bonus
+*/
+[Bonus]
+Intel		= 20
+
+
+
+/************************************************************************
+**
+** S T E A L T H
+**
+** The [Stealth<X>] entries define the effects of having a Stealth skill
+**	of <X>. The effects are:
+**
+**	Radius (float)
+**		Multiplier to the sound radii for footsteps, weapon reload, etc.
+**		As the skill level increases, this value decreases.
+**
+**	HideTime (float)
+**		Multiplier for how quickly player disappears into shadows
+**		As the skill level increases, this value decreases.
+**
+**	Evasion (float)
+**		Multiplier for how effectively player ditches pursuers
+**		Values TBD
+**
+*/
+
+[Stealth0]
+Radius		= 1.0
+HideTime	= 1.0
+Evasion		= 1.0
+
+[Stealth1]
+Radius		= 0.8
+HideTime	= 0.8
+Evasion		= 0.85
+
+[Stealth2]
+Radius		= 0.6
+HideTime	= 0.6
+Evasion		= 0.7
+
+[Stealth3]
+Radius		= 0.25
+HideTime	= 0.25
+Evasion		= 0.55
+
+[Stealth4]
+Radius		= 0.1
+HideTime	= 0.1
+Evasion		= 0.4
+
+
+/************************************************************************
+**
+** S T A M I N A
+**
+** The [Stamina<X>] entries define the effects of having a Stamina skill
+**	of <X>. The effects are:
+**
+**	MaxHealth
+**		Multiplier to the maximum amount of health the player may have.
+**
+**	MoveDamage
+**		Multiplier for how much player movement is affected by damage
+**
+**	Resistance	
+**		Multiplier to certain status effects (i.e. poison, burn damage, bleeding, etc.)
+**
+**	HealthPickup
+**		Multiplier for how many health points the player gets from a health pickup
+**
+**	Damage
+**		Multiplier for how much damage you take
+**
+*/
+
+[Stamina0]
+MaxHealth		= 1.0
+MoveDamage		= 1.0
+Resistance		= 1.0
+HealthPickup	= 1.0
+Damage			= 2.0
+
+[Stamina1]
+MaxHealth		= 1.4
+MoveDamage		= 0.85
+Resistance		= 0.85
+HealthPickup	= 1.25
+Damage			= 1.75
+
+[Stamina2]
+MaxHealth		= 1.7
+MoveDamage		= 0.7
+Resistance		= 0.7
+HealthPickup	= 1.75
+Damage			= 1.5
+
+[Stamina3]
+MaxHealth		= 2.2
+MoveDamage		= 0.55
+Resistance		= 0.55
+HealthPickup	= 2.75
+Damage			= 1.25
+
+[Stamina4]
+MaxHealth		= 3.0
+MoveDamage		= 0.4
+Resistance		= 0.4
+HealthPickup	= 4.0
+Damage			= 1.0
+
+
+/************************************************************************
+**
+** A I M
+**
+** The [Aim<X>] entries define the effects of having a Marksmanship skill
+**	of <X>. The effects are:
+**
+**	Accuracy
+**		Multiplier to the amount of weapon perturb. (the lower the better)
+**
+**	ZoomSway
+**		Multiplier for how much player's view swims when zoomed in
+**
+**	Correction
+**		Multiplier for how quickly player's perturb recovers after moving.
+**
+*/
+
+[Aim0]
+Accuracy	= 1.0
+ZoomSway	= 1.0
+Correction	= 1.0
+
+[Aim1]
+Accuracy	= 0.8
+ZoomSway	= 0.8
+Correction	= 2.0
+
+[Aim2]
+Accuracy	= 0.6
+ZoomSway	= 0.6
+Correction	= 3.5
+
+[Aim3]
+Accuracy	= 0.25
+ZoomSway	= 0.25
+Correction	= 7.0
+
+[Aim4]
+Accuracy	= 0.1
+ZoomSway	= 0.1
+Correction	= 10.0
+
+
+/************************************************************************
+**
+** C A R R Y
+**
+** The [Carry<X>] entries define the effects of having a Carry skill
+**	of <X>. The effects are:
+**
+**	MaxAmmo
+**		Multiplier for how much ammunition the player can carry
+**
+**	CarryBodyMovement
+**		Multiplier for movement modifiers for carrying bodies
+**
+*/
+
+[Carry0]
+MaxAmmo				= 1.0
+CarryBodyMovement	= 1.0
+
+[Carry1]
+MaxAmmo				= 1.25
+CarryBodyMovement	= 0.8
+
+[Carry2]
+MaxAmmo				= 1.75
+CarryBodyMovement	= 0.6
+
+[Carry3]
+MaxAmmo				= 2.75
+CarryBodyMovement	= 0.25
+
+[Carry4]
+MaxAmmo				= 4.0
+CarryBodyMovement	= 0.1
+
+
+/************************************************************************
+**
+** A R M O R
+**
+** The [Armor<X>] entries define the effects of having a Armor skill
+**	of <X>. The effects are:
+**
+**	MaxArmor
+**		Multiplier to the maximum amount of armor the player may have.
+**
+**	ArmorPickup
+**		Multiplier for how many armor points the player gets from an armor pickup
+**
+*/
+
+[Armor0]
+MaxArmor	= 1.0
+ArmorPickup	= 1.0
+
+[Armor1]
+MaxArmor	= 1.3
+ArmorPickup	= 1.3
+
+[Armor2]
+MaxArmor	= 1.7
+ArmorPickup	= 1.7
+
+[Armor3]
+MaxArmor	= 2.3
+ArmorPickup	= 2.3
+
+[Armor4]
+MaxArmor	= 3.0
+ArmorPickup	= 3.0
+
+
+
+
+/************************************************************************
+**
+** W E A P O N
+**
+** The [Weapon<X>] entries define the effects of having a Weapon skill
+**	of <X>. The effects are:
+**
+**	Damage
+**		Multiplier to the amount of damage caused by a weapon
+**
+**	Reload
+**		Multiplier for weapon reload and select speeds
+**
+*/
+
+[Weapon0]
+Damage	= 1.0
+Reload	= 1.0
+
+[Weapon1]
+Damage	= 1.25
+Reload	= 1.2
+
+[Weapon2]
+Damage	= 1.5
+Reload	= 1.4
+
+[Weapon3]
+Damage	= 1.75
+Reload	= 1.7
+
+[Weapon4]
+Damage	= 2.0
+Reload	= 2.0
+
+
+
+/************************************************************************
+**
+** G A D G E T
+**
+** The [Gadget<X>] entries define the effects of having a Gadget skill
+**	of <X>. The effects are:
+**
+**	Effect
+**		Multiplier to the effectiveness of gadgets
+**
+**	Select
+**		Multiplier for gadget select speeds
+**
+*/
+
+[Gadget0]
+Effect	= 1.0
+Select	= 1.0
+
+[Gadget1]
+Effect	= 1.25
+Select	= 1.2
+
+[Gadget2]
+Effect	= 1.75
+Select	= 1.4
+
+[Gadget3]
+Effect	= 2.75
+Select	= 1.7
+
+[Gadget4]
+Effect	= 4.0
+Select	= 2.0
+
+
+/************************************************************************
+**
+** S E A R C H
+**
+** The [Search<X>] entries define the effects of having a Search skill
+**	of <X>. The effects are:
+**
+**	SearchSpeed (float)
+**		Multiplier for how quickly player completely searches
+**		As the skill level increases, this value increases.
+**
+**	FindJunk (float)
+**		Multiplier for the chance of finding worthless items when searching
+**		As the skill level increases, this value decreases.
+**
+*/
+
+[Search0]
+SearchSpeed	= 1.0
+FindJunk	= 1.0
+
+[Search1]
+SearchSpeed	= 1.25
+FindJunk	= 0.8
+
+[Search2]
+SearchSpeed	= 1.75
+FindJunk	= 0.6
+
+[Search3]
+SearchSpeed	= 2.75
+FindJunk	= 0.25
+
+[Search4]
+SearchSpeed	= 4.0
+FindJunk	= 0.1
+
+
+/************************************************************************
+**
+** M U L T I P L A Y E R
+**
+** Each entry under the [Muiltiplayer] section specifies the default 
+** level of the skill to be used in multiplayer games
+**
+**	Novice = 0
+**	Amateur = 1
+**	Skilled = 2
+**	Expert = 3
+**	Master = 4
+**
+*/
+[Multiplayer]
+Stealth		= 1
+Stamina		= 1
+Aim			= 2
+Carry		= 2
+Armor		= 1
+Weapon		= 2
+Gadget		= 2
+Search		= 1

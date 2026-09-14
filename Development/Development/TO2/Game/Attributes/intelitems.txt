@@ -1,0 +1,204 @@
+/************************************************************************
+**
+**		No One Lives Forever Intel Items Attributes file
+**
+** This file contains the following Prop Type related definitions:
+**
+**  Intel
+**
+**
+** NOTES:  
+**
+**  1) All definition properties (i.e., [Intel0]) ARE case sensitive.
+**	   If you are adding a new definition, it is best to start with a 
+**     copy of an existing (working) definition.
+**  2) The Float type is the same as Real (i.e., 1.0 or 1.5)
+**  3) The valid range of all RGB color properties is between
+**     0 and 255 (e.g., (0, 255, 0) would be green).
+**
+*/
+
+
+/************************************************************************
+**
+** I N T E L
+**
+** The Intel definitions define all of the attributes associated with
+** a particular intelligence item.  Defining the Intelligence items in 
+** this way allows us to easily make global changes to all the items.
+**
+**
+** All Intel definitions should contain the following properties:
+**
+**  Name (String)
+**
+**      The user friendly name of the intelligence item 
+**		(what shows up in DEdit).  NOTE:  This is NOT the same as the object
+**		name in DEdit!
+**
+**	Filename (String)
+**
+**		Name of the model file
+**
+**	Skin (String)
+**
+**		Name of the skin file.
+**
+**	DefaultTextId (Integer)
+**
+**		The default text id used for this intelligence item (corresponds to
+**		a string id in CRes.dll).  This string is used if not overwritten in
+**		the intelligence item.
+**
+**	Chrome (Boolean)
+**
+**		Should the model use chrome (environment mapping) (1=true, 0=false)
+**
+**	Chromakey (Integer)
+**
+**		Set to 1 if the model using chromakeying.
+**
+**	DefaultPopupId (Integer)
+**
+**		The default id used for displaying this intelligence item.
+**		This corresponds to an entry in the Popups.txt bute file.
+**		Intelligence items may override this value.
+**
+**	PickupSound (String)
+**
+**		The name of a SoundBute or path of a sound file to be played when InteItem
+**		is picked up.  If empty the default	sound will be used.
+**
+**	RespawnSound (String)
+**
+**		The name of a SoundBute or path of a sound file to be played when IntelItem
+**		is respawned.  If empty the default sound will be used.
+**
+*/
+
+/*
+**  Intel0 - Letter
+*/
+
+[Intel0]
+	
+Name			= "Letter"
+Filename		= "Props\Models\IILetter1.ltb"
+Skin			= "Props\Skins\IILetter1.dtx"
+Chrome			= 0
+Chromakey		= 0
+DefaultTextId	= 8000
+DefaultPopupId	= 6
+PickupSound		= "props\snd\pu_paper.wav"
+RespawnSound	= ""
+
+/*
+**  Intel1 - Briefcase
+*/
+
+[Intel1]
+	
+Name			= "Briefcase"
+Filename		= "Props\Models\IIBriefcase.ltb"
+Skin			= "Props\Skins\IIBriefcase.dtx"
+Chrome			= 0
+Chromakey		= 1
+DefaultTextId	= 8003
+DefaultPopupId	= 6
+PickupSound		= "props\snd\pu_briefcase.wav"
+RespawnSound	= ""
+
+/*
+**  Intel2 - Dossier
+*/
+
+[Intel2]
+	
+Name			= "Dossier"
+Filename		= "Props\Models\IIDossier.ltb"
+Skin			= "Props\Skins\IIDossier.dtx"
+Chrome			= 0
+Chromakey		= 0
+DefaultTextId	= 8004
+DefaultPopupId	= 6
+PickupSound		= "props\snd\pu_paper.wav"
+RespawnSound	= ""
+
+/*
+**  Intel3 - Loose Files	
+*/
+
+[Intel3]
+	
+Name			= "Loose Files"
+Filename		= "Props\Models\IIFileFolder1.ltb"
+Skin			= "Props\Skins\IIFileFolder1.dtx"
+Chrome			= 0
+Chromakey		= 0
+DefaultTextId	= 8005
+DefaultPopupId	= 6
+PickupSound		= "props\snd\pu_paper.wav"
+RespawnSound	= ""
+
+/*
+**  Intel4 - Note
+*/
+
+[Intel4]
+	
+Name			= "Note"
+Filename		= "Props\Models\IINote.ltb"
+Skin			= "Props\Skins\IINote2.dtx"
+Chrome			= 0
+Chromakey		= 0
+DefaultTextId	= 8011
+DefaultPopupId	= 6
+PickupSound		= "props\snd\pu_paper.wav"
+
+/*
+**  Intel5 - MEnvelope
+*/
+
+[Intel5]
+	
+Name			= "MEnvelope"
+Filename		= "Props\Models\MEnvelope.ltb"
+Skin			= "Props\Skins\MEnvelope.dtx"
+Chrome			= 0
+Chromakey		= 0
+DefaultTextId	= 8012
+DefaultPopupId	= 6
+PickupSound		= "props\snd\pu_paper.wav"
+RespawnSound	= ""
+
+/*
+**  Intel6 - SpyManual
+*/
+
+[Intel6]
+	
+Name			= "SpyManual"
+Filename		= "Props\Models\UbCManual.ltb"
+Skin			= "Props\Skins\PuManual.dtx"
+Chrome			= 0
+Chromakey		= 0
+DefaultTextId	= 8013
+DefaultPopupId	= 6
+PickupSound		= "props\snd\pu_paper.wav"
+RespawnSound	= ""
+
+/*
+**  Intel7 - Paper
+*/
+
+[Intel7]
+	
+Name			= "Paper"
+Filename		= "Props\Models\UbRequest.ltb"
+Skin			= "Props\Skins\IIPaper.dtx"
+Chrome			= 0
+Chromakey		= 0
+DefaultTextId	= 8014
+DefaultPopupId	= 6
+PickupSound		= "props\snd\pu_paper.wav"
+RespawnSound	= ""

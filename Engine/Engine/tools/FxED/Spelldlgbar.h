@@ -1,0 +1,1 @@
+spelldlgbar.h

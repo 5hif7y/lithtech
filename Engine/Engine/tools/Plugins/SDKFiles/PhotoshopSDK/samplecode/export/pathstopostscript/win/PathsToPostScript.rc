@@ -1,0 +1,130 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "PathsToPostScript-sym.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+EXPORTPARAMO DIALOG DISCARDABLE  35, 28, 217, 23
+STYLE DS_3DLOOK | DS_CONTROL | WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN
+FONT 8, "Helv"
+BEGIN
+    LTEXT           "&Write:",12,6,3,36,9
+    COMBOBOX        13,53,1,156,60,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+END
+
+EXPORTPARAM DIALOG DISCARDABLE  10, 24, 264, 134
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Export Paths to File:"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "File &Name:",1090,6,6,76,9
+    EDITTEXT        1152,6,16,92,12,ES_AUTOHSCROLL | ES_OEMCONVERT
+    LISTBOX         1120,6,32,92,68,LBS_SORT | LBS_OWNERDRAWFIXED | 
+                    LBS_HASSTRINGS | LBS_DISABLENOSCROLL | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "&Directories:",-1,110,6,92,9
+    LTEXT           "",1088,110,18,92,9,SS_NOPREFIX
+    LISTBOX         1121,110,32,92,68,LBS_SORT | LBS_OWNERDRAWFIXED | 
+                    LBS_HASSTRINGS | LBS_DISABLENOSCROLL | WS_VSCROLL | 
+                    WS_TABSTOP
+    COMBOBOX        1136,6,114,92,60,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | 
+                    NOT WS_VISIBLE | WS_BORDER | WS_VSCROLL
+    LTEXT           "Dri&ves:",1091,110,104,92,9
+    COMBOBOX        1137,110,114,92,68,CBS_DROPDOWNLIST | CBS_OWNERDRAWFIXED | 
+                    CBS_AUTOHSCROLL | CBS_SORT | CBS_HASSTRINGS | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,208,6,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",IDCANCEL,208,24,50,14,WS_GROUP
+    PUSHBUTTON      "&Help",1038,208,46,50,14,WS_GROUP
+    LTEXT           "&Write:",1089,6,104,100,9
+    COMBOBOX        13,6,114,92,72,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | 
+                    WS_BORDER | WS_VSCROLL | WS_TABSTOP
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "PathsToPostScript-sym.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+	"#include ""PathsToPostScript.pipl""\r\n"
+	"#include ""About.rc""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    "EXPORTPARAMO", DIALOG
+    BEGIN
+        RIGHTMARGIN, 209
+        BOTTOMMARGIN, 19
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "PathsToPostScript.pipl"
+#include "About.rc"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

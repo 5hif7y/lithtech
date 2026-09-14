@@ -1,0 +1,1632 @@
+/************************************************************************
+**
+**		No One Lives Forever Debris Attributes file
+**
+** This file contains the following debris related definitions:
+**
+**  Debris
+**
+**
+** NOTES:  
+**
+**  1) All definition properties (i.e., [Debris0]) ARE case sensitive.
+**	   If you are adding a new definition, it is best to start with a 
+**     copy of an existing (working) definition.
+**	2) Name properties are NOT case sensitive (i.e., Name = "Joe" is the same
+**	   as Name = "JOE")
+**  3) All time is specified in seconds (unless otherwise noted)
+**  4) The Float type is the same as Real (i.e., 1.0 or 1.5)
+**  5) The valid range of all RGB color properties is between
+**     0 and 255 (e.g., (0, 255, 0) would be green).
+**
+*/
+
+
+/************************************************************************
+**
+** DEBRIS
+**
+** The Debris definitions define all of the attributes associated with
+** a particular debris type.  These definitions *usually* map directly to 
+** a particular surface type (see Surface.txt).  However, there may be
+** multiple debris types that map to the same surface (e.g., light wood,
+** heavy wood, etc.)
+**
+**
+** All debris definitions should contain the following properties:
+**
+**  Name (String)
+**
+**      The user friendly name of the debris type (what shows up in DEdit). 
+**
+**	SurfaceId (Integer)
+**
+**		This should map directly to a surface id (specified in Surface.txt).
+**		For example, SurfaceId = 0 maps to ST_UNKNOWN.
+**
+**	MinScale (Float)
+**
+**		A random value between MinScale and MaxScale is used to scale the 
+**		debris models.
+**
+**	MaxScale (Float)
+**
+**		A random value between MinScale and MaxScale is used to scale the 
+**		debris models.
+**
+**	MinVel (Vector)
+**
+**		The minimum velocity of the debris.  The x/z components should be the
+**		same value, the y component is along the forward vector of the direction
+**		the debris will move (a positive value is away from the direction of 
+**		damage).  A random value between MinVel and MaxVel is used for the 
+**		velocity of each debris piece.
+**
+**	MinDebrisOffset (Vector)
+**
+**		The minimum offset (from the origin of the debris) where each 
+**		debris item is created.  A random value between MinDebrisOffset
+**		and MinDebrisOffset is assigned to each debris.  NOTE:  The offsets
+**		are in world coordinates, so the x and z components of the vector
+**		should always be the same (unless you want the fx to always align 
+**		to a world axis).
+**
+**	MaxDebrisOffset (Vector)
+**
+**		The minimum offset (from the origin of the debris) where each 
+**		debris item is created.  A random value between MinDebrisOffset
+**		and MinDebrisOffset is assigned to each debris.  NOTE:  The offsets
+**		are in world coordinates, so the x and z components of the vector
+**		should always be the same (unless you want the fx to always align 
+**		to a world axis).
+**
+**	MaxVel (Vector)
+**
+**		The maximum velocity of the debris.  The x/z components should be the
+**		same value, the y component is along the forward vector of the direction
+**		the debris will move (a positive value is away from the direction of 
+**		damage).  A random value between MinVel and MaxVel is used for the 
+**		velocity of each debris piece.
+**
+**	MinLifetime (Float)
+**
+**		Each debris model lives for a random time between MinLifetime and 
+**		MaxLifetime + Fadetime. 
+**			Lifetime = Random(MinLifetime, MaxLifetime) + Fadetime). 
+**
+**	MaxLifetime (Float)
+**
+**		Each debris model lives for a random time between MinLifetime and 
+**		MaxLifetime + Fadetime.
+**			Lifetime = Random(MinLifetime, MaxLifetime) + Fadetime). 
+**
+**	Fadetime (Float)
+**
+**		How long it takes the debris to fade away.
+**			Lifetime = Random(MinLifetime, MaxLifetime) + Fadetime). 
+**
+**	Number (Integer)
+**
+**		The number of debris pieces.  NOTE:  You can't have more than 20 debris
+**		pieces.
+**
+**	Rotate (Integer)
+**
+**		Should the debris rotate as it flies through the air (0=false, 1=true).
+**
+**	MinBounce (Integer)
+**
+**		Minimum number of times that each debris piece will bounce (a random
+**		value between MinBounce and MaxBounce will be used for each piece).
+**
+**	MaxBounce (Integer)
+**
+**		Maximum number of times that each debris piece will bounce (a random
+**		value between MinBounce and MaxBounce will be used for each piece).
+**
+**	GravityScale (Float)
+**
+**		How much the current gravity value (normal or underwater) affects the
+**		debris (1.0 is normal 0.5 is half gravity, etc.)
+**
+**	Alpha (Float)
+**
+**		The alpha value for the debris models (0.0 - 1.0)
+**
+**	Model1-5 (String)
+**
+**		Specifies the name of the debris model(s) to create.  Up to 5 models
+**		may be specified (Only 1 model is necessary).  For example:
+**
+**			Model1	= "SFX\Debris\Models\generic1.abc"
+**			Model2	= "SFX\Debris\Models\generic2.abc"
+**		
+**  Skin0-N (String)
+**
+**		The name of the model(s) skin(s).  All the models must use the same skins.
+**      There can be any number of skins: Skin0, Skin1, ..., SkinN
+**
+**  RenderStyle0-N (String)
+**
+**		The name of the model(s) render style(s).  All the models must use the same render styles.
+**      There can be any number of render styles: RenderStyle0, RenderStyle1, ..., RenderStyleN
+**
+**	BounceSnd1-2 (String) (OPTIONAL)
+**
+**		Name of the optional debris bounce sounds (sound played when the debris 
+**		hits a surface).  Up to 2 sounds may be specified.
+**
+**	ExplodeSnd1-2 (String) (OPTIONAL)
+**
+**		Name of the optional debris explode sounds (sound played when the debris
+**		is first created).  Up to 2 sounds may be specified.
+**
+**
+**  MinWorldVel (Vector) (OPTIONAL)
+**  MaxWorldVel (Vector) (OPTIONAL)
+**
+**		When these are specified, it will add a random velocity between the minimum and
+**		maximum values to be added to the debris in world space. This can be useful for
+**		such things as making debris pop up into the air, which could be done like:
+**		MinWorldVel = 0, 50, 0, and MaxWorldVel = 0, 100, 0
+**
+**	WorldSpaceFX (String) (OPTIONAL)
+**
+**		This can be used to name a client FX that will be played at the debris location in
+**		world space. This allows for playing of effects that need to be independant of the
+**		direction that the object was shot from (such as flour spraying into the air)
+**
+**	ImpactSpaceFX (String) (OPTIONAL)
+**
+**		This can be used to name a client FX that will be played at the debris location with
+**		the orientation aligned to the impact that created the debris. This can be used to
+**		do things like create effects that explode out in the direction that the object was
+**		shot. 
+**		
+*/
+
+/****************************************************************************
+**
+**  SUMMARY OF DEBRIS NAMES
+**
+**
+**	None
+**	Window Pane
+**	Window
+**	Bolt
+**	Generic
+**	Wood
+**	VehicleSlow
+**	VehicleMedium
+**	VehicleFast
+**	Foliage
+**	Fabric
+**	Boards
+**  
+**
+*/
+
+/*
+**  Debris0 - None
+*/
+
+[Debris0]
+
+Name			= "None"
+SurfaceId		= 0
+MinScale		= 1.0
+MaxScale		= 1.0
+MinVel			= <0.0, 0.0, 0.0>
+MaxVel			= <0.0, 0.0, 0.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 0.0
+MaxLifetime		= 0.0
+Fadetime		= 0.0
+Number			= 0
+Rotate			= 0
+MinBounce		= 0
+MaxBounce		= 0
+GravityScale	= 1.0
+Alpha			= 1.0
+
+/*
+**  Debris1 - Glass (window)
+*/
+
+[Debris1]
+
+Name			= "Window Pane"
+SurfaceId		= 40
+MinScale		= 0.2
+MaxScale		= 1.0
+MinVel			= <-400.0, -250.0, -400.0>
+MaxVel			= <400.0, 400.0, 400.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 0.3
+Model1			= "FX\Debris\Models\glass_01a.ltb"
+Model2			= "FX\Debris\Models\glass_01b.ltb"
+Model3			= "FX\Debris\Models\glass_01c.ltb"
+Model4			= "FX\Debris\Models\glass_01d.ltb"
+Model5			= "FX\Debris\Models\glass_01e.ltb"
+Skin0			= "FX\Debris\Skins\glass_01.dtx"
+RenderStyle0	= "RS\translucent.ltb"
+BounceSnd1		= "FX\Debris\Snd\Smallglass\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\Smallglass\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\Smallglass\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Smallglass\explode_2.wav"
+
+/*
+**  Debris2 - Window - For larger windows - More quantity debris.
+*/
+
+[Debris2]
+
+Name			= "Window"
+SurfaceId		= 40
+MinScale		= 0.5
+MaxScale		= 1.5
+MinVel			= <-400.0, -250.0, -400.0>
+MaxVel			= <400.0, 400.0, 400.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 0.3
+Model1			= "FX\Debris\Models\glass_02a.ltb"
+Model2			= "FX\Debris\Models\glass_02b.ltb"
+Model3			= "FX\Debris\Models\glass_02c.ltb"
+Model4			= "FX\Debris\Models\glass_02d.ltb"
+Model5			= "FX\Debris\Models\glass_02e.ltb"
+Skin0			= "FX\Debris\Skins\glass_01.dtx"
+RenderStyle0	= "RS\translucent.ltb"
+//RenderStyle0	= "RS\glass.ltb"
+BounceSnd1		= "FX\Debris\Snd\BigGlass\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\BigGlass\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\BigGlass\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\BigGlass\explode_2.wav"
+
+/*
+**  Debris3 - Crossbow Bolt (when a bolt breaks on a hard surface)
+*/
+
+[Debris3]
+
+Name			= "Bolt"	// Must map to ammo name
+SurfaceId		= 0			// Not used
+MinScale		= 1.2
+MaxScale		= 1.2
+MinVel			= <-300.0, -250.0, -300.0>
+MaxVel			= <300.0, 300.0, 300.0>
+MinDebrisOffset	= <1.0, 1.0, 1.0>
+MaxDebrisOffset	= <1.0, 1.0, 1.0>
+MinLifetime		= 5.0
+MaxLifetime		= 10.0
+Fadetime		= 3.0
+Number			= 2
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 3
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\Bolt1.ltb"
+Model2			= "FX\Debris\Models\Bolt2.ltb"
+Skin0			= "Guns\Projectiles\Skins\Bolt.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\bolt\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\bolt\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\bolt\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\bolt\explode_2.wav"
+
+/*
+**  Debris4 - generic burnt debris
+*/
+
+[Debris4]
+
+Name			= "genericsmall"
+SurfaceId		= 54
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <-200.0, -50.0, -200.0>
+MaxVel			= <200.0, 300.0, 200.0>
+MinWorldVel             = <-50.0, 100.0, -50.0>
+MaxWorldVel             = <50.0, 300.0, 50.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 1.00
+MaxLifetime		= 1.00
+Fadetime		= 0.5
+Number			= 8
+Rotate			= 1
+MinBounce		= 5
+MaxBounce		= 8
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\chunk1.ltb"
+Model2			= "FX\Debris\Models\chunk2.ltb"
+Model3			= "FX\Debris\Models\chunk3.ltb"
+Model4			= "FX\Debris\Models\chunk4.ltb"
+Skin0			= "FX\Debris\Skins\genericsmall.dtx"
+RenderStyle0	        = "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\smallmetal\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\smallmetal\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\smallmetal\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\smallmetal\explode_2.wav"
+
+/*
+**  Debris5 - generic burnt debris
+*/
+
+[Debris5]
+
+Name			= "genericmedium"
+SurfaceId		= 54
+MinScale		= 1
+MaxScale		= 2
+MinVel			= <-200.0, -50.0, -200.0>
+MaxVel			= <200.0, 300.0, 200.0>
+MinWorldVel             = <-50.0, 100.0, -50.0>
+MaxWorldVel             = <50.0, 300.0, 50.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 1.00
+MaxLifetime		= 1.00
+Fadetime		= 0.5
+Number			= 8
+Rotate			= 1
+MinBounce		= 5
+MaxBounce		= 8
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\chunk1.ltb"
+Model2			= "FX\Debris\Models\chunk2.ltb"
+Model3			= "FX\Debris\Models\chunk3.ltb"
+Model4			= "FX\Debris\Models\chunk4.ltb"
+Skin0			= "FX\Debris\Skins\genericsmall.dtx"
+RenderStyle0	        = "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\smallmetal\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\smallmetal\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\smallmetal\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\smallmetal\explode_2.wav"
+
+/*
+**  Debris6 - Large Burnt Wood - splintered wood debris
+*/
+
+[Debris6]
+
+Name			= "bigWood"
+SurfaceId		= 30
+MinScale		= 20
+MaxScale		= 25
+MinVel			= <-250.0, -250.0, -250.0>
+MaxVel			= <250.0, 250.0, 250.0>
+MinWorldVel             = <-350.0, 150.0, -350.0>
+MaxWorldVel             = <350.0, 350.0, 350.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 15
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 3
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\bw1.ltb"
+Model2			= "FX\Debris\Models\bw2.ltb"
+Model3			= "FX\Debris\Models\wood1c.ltb"
+Model4			= "FX\Debris\Models\wood1d.ltb"
+Model4			= "FX\Debris\Models\wood1e.ltb"
+Skin0			= "FX\Debris\Skins\shard.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\Wood\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\Wood\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\Wood\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Wood\explode_2.wav"
+
+
+/*
+**  Debris7 - Wood - splintered wood debris
+*/
+
+[Debris7]
+
+Name			= "Wood"
+SurfaceId		= 30
+MinScale		= 3
+MaxScale		= 4
+MinVel			= <-250.0, -250.0, -250.0>
+MaxVel			= <250.0, 250.0, 250.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 15
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\wood1a.ltb"
+Model2			= "FX\Debris\Models\wood1c.ltb"
+Model3			= "FX\Debris\Models\wood1d.ltb"
+Model4			= "FX\Debris\Models\wood1e.ltb"
+Skin0			= "FX\Debris\Skins\wood.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= "FX\Debris\Snd\Wood\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\Wood\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\Wood\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Wood\explode_2.wav"
+
+
+/*
+**  Debris8 - Foliage
+*/
+
+[Debris8]
+
+Name			= "Foliage"
+SurfaceId		= 77
+MinScale		= 0.5
+MaxScale		= 1.5
+MinVel			= <-400.0, -250.0, -400.0>
+MaxVel			= <400.0, 400.0, 400.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "SFX\Debris\Models\leaf1.abc"
+Model2			= "SFX\Debris\Models\leaf2.abc"
+Model3			= "SFX\Debris\Models\leaf3.abc"
+Skin0			= "SFX\Debris\Skins\vase.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= "FX\Debris\Snd\Foliage\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\Foliage\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\Foliage\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Foliage\explode_2.wav"
+
+
+/*
+**  Debris9 - MachinerySmall
+*/
+
+[Debris9]
+
+Name			= "Machinerysmall"
+SurfaceId		= 20
+MinScale		= 3
+MaxScale		= 4
+MinVel			= <-250.0, -250.0, -250.0>
+MaxVel			= <250.0, 250.0, 250.0>
+MinWorldVel             = <-50.0, 50.0, -50.0>
+MaxWorldVel             = <50.0, 100.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 6
+Rotate			= 1
+MinBounce		= 0
+MaxBounce		= 3
+GravityScale	= 1.0
+Alpha			= 0.9
+Model1			= "FX\Debris\Models\machinery_01a.ltb"
+Model2			= "FX\Debris\Models\machinery_01b.ltb"
+Model3			= "FX\Debris\Models\machinery_01c.ltb"
+Model4			= "FX\Debris\Models\machinery_01d.ltb"
+Model5			= "FX\Debris\Models\machinery_01e.ltb"
+Skin0			= "FX\Debris\Skins\metal.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\Machinery\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\Machinery\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\Machinery\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Machinery\explode_2.wav"
+ImpactSpaceFX           = ""
+WorldSpaceFX            = "machinerysmokemedium"
+
+/*
+**  Debris10 - MachineryMedium
+*/
+
+[Debris10]
+
+Name			= "MachineryMedium"
+SurfaceId		= 20
+MinScale		= 5
+MaxScale		= 8
+MinVel			= <-400.0, -250.0, -400.0>
+MaxVel			= <400.0, 400.0, 400.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 250.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 12
+Rotate			= 1
+MinBounce		= 0
+MaxBounce		= 3
+GravityScale	= 1.0
+Alpha			= 0.9
+Model1			= "FX\Debris\Models\machinery_01a.ltb"
+Model2			= "FX\Debris\Models\machinery_01b.ltb"
+Model3			= "FX\Debris\Models\machinery_01c.ltb"
+Model4			= "FX\Debris\Models\machinery_01d.ltb"
+Model5			= "FX\Debris\Models\machinery_01e.ltb"
+Skin0			= "FX\Debris\Skins\metal.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\Machinery\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\Machinery\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\Machinery\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Machinery\explode_2.wav"
+ImpactSpaceFX           = ""
+WorldSpaceFX            = "machinerysmokemedium"
+
+
+/*
+**  Debris11 - Cobwebs
+*/
+
+[Debris11]
+
+Name			= "cobwebs"
+SurfaceId		= 0
+MinScale		= 1
+MaxScale		= 2
+MinVel			= <-100.0, -150.0, -100.0>
+MaxVel			= <100.0, 250.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 0
+Rotate			= 1
+MinBounce		= 0
+MaxBounce		= 0
+GravityScale	= 0.5
+Alpha			= 0.9
+Model1			= ""
+Skin0			= ""
+RenderStyle0	= ""
+ImpactSpaceFX           = "debris_cobwebs"
+
+
+
+/*
+** Debris 12 - Porcelain White
+*/
+
+[Debris12]
+
+Name			= "Porcelain White"
+SurfaceId		= 30
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <-300.0, -250.0, -300.0>
+MaxVel			= <300.0, 300.0, 300.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\Porcelain1.ltb"
+Model2			= "FX\Debris\Models\Porcelain2.ltb"
+Model3			= "FX\Debris\Models\Porcelain3.ltb"
+Skin0			= "FX\Debris\Skins\Porcelain.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\porcelain\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\porcelain\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\porcelain\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\porcelain\explode_2.wav"
+
+
+/*
+**  Debris13 - Padlock1
+*/
+
+[Debris13]
+
+Name			= "Padlock1"
+SurfaceId		= 20
+MinScale		= 1.0
+MaxScale		= 1.0
+MinVel			= <-5.0, -5.0, -5.0>
+MaxVel			= <5.0, 5.0, 5.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 0
+MaxBounce		= 1
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "props\models\gtpadlock2b.ltb"
+Skin0			= "props\skins\gtpadlock.dtx"
+BounceSnd1		= "FX\Debris\Snd\lock\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock\explode_2.wav"
+
+/*
+**  Debris14 - ComboLock1
+*/
+
+[Debris14]
+
+Name			= "ComboLock1"
+SurfaceId		= 20
+MinScale		= 1.0
+MaxScale		= 1.0
+MinVel			= <-5.0, -5.0, -5.0>
+MaxVel			= <5.0, 5.0, 5.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 0
+MaxBounce		= 1
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "props\models\gtcombolock1b.ltb"
+Skin0			= "props\skins\gtcombolock1.dtx"
+BounceSnd1		= "FX\Debris\Snd\lock2\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock2\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock2\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock2\explode_2.wav"
+
+/*
+**  Debris15 - ComboLock2
+*/
+
+[Debris15]
+
+Name			= "ComboLock2"
+SurfaceId		= 20
+MinScale		= 1.0
+MaxScale		= 1.0
+MinVel			= <-5.0, -5.0, -5.0>
+MaxVel			= <5.0, 5.0, 5.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 0
+MaxBounce		= 1
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "props\models\gtcombolock2b.ltb"
+Skin0			= "props\skins\gtcombolock2.dtx"
+BounceSnd1		= "FX\Debris\Snd\lock\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock\explode_2.wav"
+
+/*
+**  Debris16 - Glass bottle (siberia)
+*/
+
+[Debris16]
+
+Name			= "Bottle"
+SurfaceId		= 40
+MinScale		= 0.10
+MaxScale		= 0.40
+MinVel			= <-200.0, -50.0, -200.0>
+MaxVel			= <200.0, 300.0, 200.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 3
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 3
+GravityScale	= 1.0
+Alpha			= 0.9
+Model1			= "FX\Debris\Models\DUrianl1b.ltb"
+Skin0			= "props\skins\SiBottle1.dtx"
+RenderStyle0	= "RS\translucent.ltb"
+BounceSnd1		= "FX\Debris\Snd\smallglass\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\smallglass\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\smallglass\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\smallglass\explode_2.wav"
+
+/*
+**  Debris17 - Small Glass (props)
+*/
+
+[Debris17]
+
+Name			= "smallglass"
+SurfaceId		= 40
+MinScale		= 3
+MaxScale		= 5
+MinVel			= <-200.0, -50.0, -200.0>
+MaxVel			= <200.0, 300.0, 200.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 0.4
+Model1			= "FX\Debris\Models\smallglassa.ltb"
+Model2			= "FX\Debris\Models\smallglassb.ltb"
+Model3			= "FX\Debris\Models\smallglassc.ltb"
+Model4			= "FX\Debris\Models\smallglassd.ltb"
+Model5			= "FX\Debris\Models\smallglasse.ltb"
+Skin0			= "FX\Debris\Skins\glass_01.dtx"
+RenderStyle0	= "RS\translucent.ltb"
+BounceSnd1		= "FX\Debris\Snd\Smallglass\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\Smallglass\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\Smallglass\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Smallglass\explode_2.wav"
+
+/*
+** Debris 18 - Porcelain Small Generic 
+*/
+
+[Debris18]
+
+Name			= "porcelainsmall"
+SurfaceId		= 13
+MinScale		= 2
+MaxScale		= 4
+MinVel			= <-300.0, -250.0, -300.0>
+MaxVel			= <300.0, 300.0, 300.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\smallglassb.ltb"
+Model2			= "FX\Debris\Models\smallglassc.ltb"
+Model3			= "FX\Debris\Models\smallglassd.ltb"
+Model4			= "FX\Debris\Models\smallglasse.ltb"
+Skin0			= "FX\Debris\Skins\Porcelain2.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\porcelain\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\porcelain\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\porcelain\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\porcelain\explode_2.wav"
+
+/*
+** Debris 19 - vase large 
+*/
+
+[Debris19]
+
+Name			= "vaselarge"
+SurfaceId		= 13
+MinScale		= 4
+MaxScale		= 7
+MinVel			= <-300.0, -250.0, -300.0>
+MaxVel			= <300.0, 350.0, 300.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\vasea.ltb"
+Model2			= "FX\Debris\Models\vaseb.ltb"
+Model3			= "FX\Debris\Models\vasec.ltb"
+Model4			= "FX\Debris\Models\smallglassd.ltb"
+Model5			= "FX\Debris\Models\smallglasse.ltb"
+Skin0			= "FX\Debris\Skins\vase.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\porcelain\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\porcelain\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\porcelain\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\porcelain\explode_2.wav"
+
+/*
+** Debris 20 - vase small
+*/
+
+[Debris20]
+
+Name			= "vasesmall"
+SurfaceId		= 13
+MinScale		= 4
+MaxScale		= 5
+MinVel			= <-300.0, -250.0, -300.0>
+MaxVel			= <300.0, 300.0, 300.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 6
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\vasesmall.ltb"
+Model2			= "FX\Debris\Models\vaseb.ltb"
+Model3			= "FX\Debris\Models\vasec.ltb"
+Model4			= "FX\Debris\Models\smallglassd.ltb"
+Model5			= "FX\Debris\Models\smallglasse.ltb"
+Skin0			= "FX\Debris\Skins\vase.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\porcelain\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\porcelain\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\porcelain\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\porcelain\explode_2.wav"
+
+/*
+** Debris 21 - Porcelain stacked plates
+*/
+
+[Debris21]
+
+Name			= "porcelainstacked"
+SurfaceId		= 12
+MinScale		= 2
+MaxScale		= 4
+MinVel			= <-300.0, -250.0, -300.0>
+MaxVel			= <300.0, 300.0, 300.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 20
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\smallglassb.ltb"
+Model2			= "FX\Debris\Models\smallglassc.ltb"
+Model3			= "FX\Debris\Models\smallglassd.ltb"
+Model4			= "FX\Debris\Models\smallglasse.ltb"
+Skin0			= "FX\Debris\Skins\Porcelain2.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\porcelain\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\porcelain\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\porcelain\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\porcelain\explode_2.wav"
+
+/*
+** Debris 22 - tin can
+*/
+
+[Debris22]
+
+Name			= "tincan"
+SurfaceId		= 20
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <150.0, 250.0, 300.0>
+MaxVel			= <350.0, 600.0, 600.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 400.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 1.0
+MaxLifetime		= 2.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 5
+MaxBounce		= 8
+GravityScale	= 1
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\Can.ltb"
+Skin0			= "Props\skins\GenCan3.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\lock\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock\explode_2.wav"
+
+/*
+**  Debris23 - Flour
+*/
+
+[Debris23]
+
+Name			= "Flour"	// Must map to ammo name
+SurfaceId		= 71			// Not used
+MinScale		= 1.0
+MaxScale		= 3.0
+MinVel			= <-50.0, -50.0, -50.0>
+MaxVel			= <50.0, 50.0, 50.0>
+MinWorldVel             = <-50.0, 75.0, -50.0>
+MaxWorldVel             = <50.0, 100.0, 50.0>
+MinDebrisOffset	= <1.0, 1.0, 1.0>
+MaxDebrisOffset	= <1.0, 1.0, 1.0>
+MinLifetime		= 5.0
+MaxLifetime		= 10.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 3
+GravityScale	= 0.3
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\paper1.ltb"
+Model1			= "FX\Debris\Models\paper2.ltb"
+Skin0			= "fx\debris\skins\paper.dtx"
+RenderStyle0	        = "RS\transparent.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+ImpactSpaceFX           = ""
+WorldSpaceFX           = "Debris_Flour"
+
+
+
+/*
+** Debris24 - tin can2
+*/
+
+[Debris24]
+
+Name			= "tincan2"
+SurfaceId		= 20
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <250.0, 0.0, 250.0>
+MaxVel			= <500.0, 200.0, 500.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 400.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 1.0
+MaxLifetime		= 2.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 5
+MaxBounce		= 8
+GravityScale	= 1
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\Can2.ltb"
+Skin0			= "Props\skins\SiCan3.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\lock\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock\explode_2.wav"
+
+/*
+** Debris 25 - pottedplant
+*/
+
+[Debris25]
+
+Name			= "pottedplant"
+SurfaceId		= 77
+MinScale		= 4
+MaxScale		= 5
+MinVel			= <0.0, 0.0, -50.0>
+MaxVel			= <0.0, 0.0, 50.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 250.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 13
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 0.8
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\leaf1.ltb"
+Model2			= "FX\Debris\Models\vasec.ltb"
+Model3			= "FX\Debris\Models\leaf3.ltb"
+Model4			= "FX\Debris\Models\leaf2.ltb"
+Skin0			= "FX\Debris\Skins\vase.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= "FX\Debris\Snd\porcelain\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\porcelain\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\porcelain\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\porcelain\explode_2.wav"
+ImpactSpaceFX           = "Gen_PlantDirt"
+WorldSpaceFX           = "Impact_Foliage_Dense"
+
+/*
+** Debris 26 - Spice (India spice bowls, bags, etc.)
+*/
+
+[Debris26]
+
+Name			= "spices"
+SurfaceId		= 50
+MinScale		= 7
+MaxScale		= 8
+MinVel			= <0.0, 0.0, -50.0>
+MaxVel			= <0.0, 0.0, 50.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 250.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 0.8
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\basket1.ltb"
+Model2			= "FX\Debris\Models\basket2.ltb"
+Model3			= "FX\Debris\Models\machinery_01d.ltb"
+Model4			= "FX\Debris\Models\machinery_01e.ltb"
+Skin0			= "FX\Debris\Skins\basket.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= "FX\Debris\Snd\porcelain\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\porcelain\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\porcelain\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\porcelain\explode_2.wav"
+ImpactSpaceFX           = "Debris_RedSpice"
+WorldSpaceFX            = ""
+
+/*
+** Debris 27 - Sake Jug
+*/
+
+[Debris27]
+
+Name			= "sake"
+SurfaceId		= 51
+MinScale		= 10
+MaxScale		= 14
+MinVel			= <0.0, 0.0, -50.0>
+MaxVel			= <0.0, 0.0, 50.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 250.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 6
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 0.8
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\basket1.ltb"
+Model2			= "FX\Debris\Models\basket2.ltb"
+Model3			= "FX\Debris\Models\machinery_01d.ltb"
+Model4			= "FX\Debris\Models\machinery_01e.ltb"
+Skin0			= "FX\Debris\Skins\sake.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= "FX\Debris\Snd\Wood\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\Wood\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\Wood\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Wood\explode_2.wav"
+ImpactSpaceFX           = ""
+WorldSpaceFX            = "Debris_WaterSplash"
+
+/*
+** Debris28 - fork
+*/
+
+[Debris28]
+
+Name			= "fork"
+SurfaceId		= 20
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <-200.0, -200.0, 250.0>
+MaxVel			= <200.0, 200.0, 500.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 400.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 1.0
+MaxLifetime		= 2.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 5
+MaxBounce		= 8
+GravityScale	= 1
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\fork.ltb"
+Skin0			= "Props\skins\GenFlatware.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\lock\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock\explode_2.wav"
+
+/*
+** Debris29 - spoon
+*/
+
+[Debris29]
+
+Name			= "spoon"
+SurfaceId		= 20
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <-200.0, -200.0, 250.0>
+MaxVel			= <200.0, 200.0, 500.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 400.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 1.0
+MaxLifetime		= 2.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 5
+MaxBounce		= 8
+GravityScale	= 1
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\spoon.ltb"
+Skin0			= "Props\skins\GenFlatware.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\lock\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock\explode_2.wav"
+
+/*
+** Debris30 - knife
+*/
+
+[Debris30]
+
+Name			= "knife"
+SurfaceId		= 20
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <-200.0, -200.0, 250.0>
+MaxVel			= <200.0, 200.0, 500.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 400.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 1.0
+MaxLifetime		= 2.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 5
+MaxBounce		= 8
+GravityScale	= 1
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\knife.ltb"
+Skin0			= "Props\skins\GenFlatware.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\lock\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock\explode_2.wav"
+
+/*
+** Debris31 - flatware
+*/
+
+[Debris31]
+
+Name			= "flatware"
+SurfaceId		= 20
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <-200.0, -200.0, 250.0>
+MaxVel			= <200.0, 200.0, 500.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 400.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 1.0
+MaxLifetime		= 2.0
+Fadetime		= 3.0
+Number			= 3
+Rotate			= 1
+MinBounce		= 5
+MaxBounce		= 8
+GravityScale	= 1
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\knife.ltb"
+Model2			= "FX\Debris\Models\spoon.ltb"
+Model3			= "FX\Debris\Models\fork.ltb"
+Skin0			= "Props\skins\GenFlatware.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= "FX\Debris\Snd\lock\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\lock\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\lock\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\lock\explode_2.wav"
+
+/*
+**  Debris32 - paper 
+*/
+
+[Debris32]
+
+Name			= "paper"
+SurfaceId		= 53
+MinScale		= 0.5
+MaxScale		= 2
+MinVel			= <-200.0, -50.0, -200.0>
+MaxVel			= <200.0, 300.0, 200.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 200.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 2.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\paper1.ltb"
+Model2			= "FX\Debris\Models\paper2.ltb"
+Model3			= "FX\Debris\Models\paper3.ltb"
+Skin0			= "FX\Debris\Skins\paper.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+ImpactSpaceFX           = ""
+WorldSpaceFX           = "Debris_Paper"
+
+/*
+**  Debris33 - Siberia Lamp
+*/
+
+[Debris33]
+
+Name			= "SiLamp"
+SurfaceId		= 40
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <-100.0, -50.0, -100.0>
+MaxVel			= <200.0, 200.0, 200.0>
+MinWorldVel             = <0.0, 100.0, 0.0>
+MaxWorldVel             = <0.0, 250.0, 0.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 2.0
+Number			= 4
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\SiLamp1D1.ltb"
+Model2			= "FX\Debris\Models\SiLamp1D2.ltb"
+Model3			= "FX\Debris\Models\SiLamp1D3.ltb"
+Model4			= "FX\Debris\Models\SiLamp1D4.ltb"
+Skin0			= "props\skins\SiLamp1off.dtx"
+RenderStyle0	= "RS\glass.ltb"
+BounceSnd1		= "FX\Debris\Snd\smallglass\gib_1.wav"
+BounceSnd2		= "FX\Debris\Snd\smallglass\gib_2.wav"
+ExplodeSnd1		= "FX\Debris\Snd\smallglass\explode_1.wav"
+ExplodeSnd2		= "FX\Debris\Snd\Smallglass\explode_2.wav"
+
+/*
+**  Debris34 - Trashbag
+*/
+
+[Debris34]
+
+Name			= "trashbag"	// Must map to ammo name
+SurfaceId		= 52			// Not used
+MinScale		= 3.0
+MaxScale		= 5.0
+MinVel			= <-50.0, -50.0, -50.0>
+MaxVel			= <50.0, 50.0, 50.0>
+MinWorldVel             = <-200.0, 100.0, -200.0>
+MaxWorldVel             = <200.0, 200.0, 200.0>
+MinDebrisOffset	= <1.0, 1.0, 1.0>
+MaxDebrisOffset	= <1.0, 1.0, 1.0>
+MinLifetime		= 5.0
+MaxLifetime		= 10.0
+Fadetime		= 3.0
+Number			= 3
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 3
+GravityScale	= 0.5
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\paper1.ltb"
+Model1			= "FX\Debris\Models\paper2.ltb"
+Skin0			= "fx\debris\skins\trashbag.dtx"
+RenderStyle0	        = "RS\transparent.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+ImpactSpaceFX           = ""
+WorldSpaceFX           = "Debris_Trashbag"
+
+/*
+** Debris 35 - bigcheese
+*/
+
+[Debris35]
+
+Name			= "bigcheese"
+SurfaceId		= 91
+MinScale		= 2
+MaxScale		= 3
+MinVel			= <0.0, 0.0, -50.0>
+MaxVel			= <0.0, 0.0, 50.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 250.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 8
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 0.8
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\chunk1.ltb"
+Model2			= "FX\Debris\Models\chunk2.ltb"
+Model3			= "FX\Debris\Models\chunk3.ltb"
+Model4			= "FX\Debris\Models\chunk4.ltb"
+Skin0			= "FX\Debris\Skins\cheese.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+ImpactSpaceFX           = ""
+WorldSpaceFX            = "Debris_cheese"
+
+/*
+** Debris 36 - smallcheese
+*/
+
+[Debris36]
+
+Name			= "smallcheese"
+SurfaceId		= 91
+MinScale		= 1
+MaxScale		= 5
+MinVel			= <0.0, 0.0, -50.0>
+MaxVel			= <0.0, 0.0, 50.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 250.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 4
+Rotate			= 1
+MinBounce		= 2
+MaxBounce		= 5
+GravityScale	= 0.8
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\chunk1.ltb"
+Model2			= "FX\Debris\Models\chunk2.ltb"
+Model3			= "FX\Debris\Models\chunk3.ltb"
+Model4			= "FX\Debris\Models\chunk4.ltb"
+Skin0			= "FX\Debris\Skins\cheese.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+ImpactSpaceFX           = ""
+WorldSpaceFX            = "Debris_cheese"
+
+/*
+**  Debris37 - fuzz 
+*/
+
+[Debris37]
+
+Name			= "fuzz"
+SurfaceId		= 53
+MinScale		= 0.2
+MaxScale		= 0.6
+MinVel			= <-200.0, -50.0, -200.0>
+MaxVel			= <200.0, 300.0, 200.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 200.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 2.0
+Number			= 10
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\paper1.ltb"
+Model2			= "FX\Debris\Models\paper2.ltb"
+Model3			= "FX\Debris\Models\paper3.ltb"
+Skin0			= "FX\Debris\Skins\paper.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+
+/*
+** Debris 38 - banana
+*/
+
+[Debris38]
+
+Name			= "banana"
+SurfaceId		= 91
+MinScale		= 1
+MaxScale		= 1
+MinVel			= <-10.0, 1.0, -10.0>
+MaxVel			= <10.0, 1.0, 10.0>
+MinWorldVel             = <0.0, 100.0, 0.0>
+MaxWorldVel             = <0.0, 200.0, 0.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 3.0
+Number			= 1
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 3
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= "FX\Debris\Models\banana.ltb"
+Skin0			= "guns\skins_pv\banana.dtx"
+RenderStyle0	= "RS\default.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+
+/*
+**  Debris39 - onion 
+*/
+
+[Debris39]
+
+Name			= "onion"
+SurfaceId		= 53
+MinScale		= 0.2
+MaxScale		= 0.6
+MinVel			= <-200.0, -50.0, -200.0>
+MaxVel			= <200.0, 300.0, 200.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 200.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 2.0
+Number			= 0
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= ""
+Model2			= ""
+Model3			= ""
+Skin0			= ""
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+ImpactSpaceFX           = ""
+WorldSpaceFX            = "Debris_onion"
+
+/*
+**  Debris40 - tomato
+*/
+
+[Debris40]
+
+Name			= "tomato"
+SurfaceId		= 53
+MinScale		= 0.2
+MaxScale		= 0.6
+MinVel			= <-200.0, -50.0, -200.0>
+MaxVel			= <200.0, 300.0, 200.0>
+MinWorldVel             = <-100.0, 100.0, -100.0>
+MaxWorldVel             = <100.0, 200.0, 100.0>
+MinDebrisOffset	= <10.0, 10.0, 10.0>
+MaxDebrisOffset	= <10.0, 10.0, 10.0>
+MinLifetime		= 9.0
+MaxLifetime		= 15.0
+Fadetime		= 2.0
+Number			= 0
+Rotate			= 1
+MinBounce		= 1
+MaxBounce		= 5
+GravityScale	= 1.0
+Alpha			= 1.0
+Model1			= ""
+Model2			= ""
+Model3			= ""
+Skin0			= ""
+RenderStyle0	= "RS\transparent.ltb"
+BounceSnd1		= ""
+BounceSnd2		= ""
+ExplodeSnd1		= ""
+ExplodeSnd2		= ""
+ImpactSpaceFX           = ""
+WorldSpaceFX            = "Debris_tomato"
+
+
+

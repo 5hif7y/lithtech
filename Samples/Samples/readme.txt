@@ -1,0 +1,1 @@
+This directory contains the samples for the LithTech Jupiter Development System.

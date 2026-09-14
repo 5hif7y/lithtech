@@ -1,0 +1,1 @@
+admagmtypes.h

@@ -1,0 +1,733 @@
+/************************************************************************
+**
+** K E Y   I T E M S
+**
+** The KeyItems definitions define all of the attributes associated with
+** a particular key item type.
+**
+** All key item definitions should contain the following properties:
+**
+**	Name (String)
+**
+**		User friendly name used in DEdit.
+**
+**	NameId (Integer)
+**
+**		Id that maps to the key item name (stored in CRes.dll)
+**
+**	DescriptionId (Integer)
+**
+**		Id that maps to the key item description (stored in CRes.dll)
+**
+**	Image (String)
+**
+**		Name of the interface image associated with the key item
+**
+**	Filename (String)
+**
+**		Name of the model file associated with the key item
+**
+**	Skin0-N (String)
+**
+**		Name of the skin file dtx(s) associated with the gear type model.
+**      There can be any number of skins: Skin0, Skin1, ..., SkinN
+**
+**  RenderStyle0-N (String)
+**
+**		Name of the render style file ltb(s).
+**      There can be any number of render styles: RenderStyle0, RenderStyle1, ..., RenderStyleN
+**
+**	FXName (String)	(OPTIONAL)
+**
+**		Specifies the optional name of an FxED created FX to create for this key
+**		item.  The value of this property MUST correspond to the name of a FX 
+**		created using FxED.
+**
+**  SoundName (String)
+**
+**      The name of the sound to play when the key item is picked up.
+**		(either the absolute path to the sound or the name of the soundbutes.txt
+**		sound)
+**
+*/
+
+
+
+/*
+**  Note: Key item ids begin at 4500 in the string table. Descriptions start at 4750. //Interface\Photos\Weapons\p38.dtx
+*/
+
+
+/*
+**  KeyItem0 - Dead battery
+*/
+
+[KeyItem0]
+Name			= "DeadBattery"
+NameId          = 4503
+DescriptionId	= 4753
+Image           = "Interface\photos\keyitems\Battery.dtx"
+Filename		= "Props\Models\OhBattery1.ltb"
+Skin0			= "Props\Skins\OhBattery.dtx"
+FXName			= "Impact_Metal"
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem1 - Fresh battery
+*/
+
+[KeyItem1]
+Name			= "FreshBattery"
+NameId          = 4504
+DescriptionId	= 4754
+Image           = "Interface\photos\keyitems\Battery.dtx"
+Filename		= "Props\Models\OhBattery2.ltb"
+Skin0			= "Props\Skins\OhBattery.dtx"
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem2 - Briefcase
+*/
+
+[KeyItem2]
+Name			= "Briefcase"
+NameId          = 4505
+DescriptionId	= 4755
+Image           = "Interface\photos\keyitems\Briefcase.dtx"
+Filename		= "Props\Models\IIBriefcase.ltb"
+Skin0			= "Props\Skins\IIBriefcase.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem3 - Fuel can
+*/
+
+[KeyItem3]
+Name			= "FuelCan"
+NameId          = 4506
+DescriptionId	= 4756
+Image           = "Interface\photos\keyitems\FuelCan.dtx"
+Filename		= "Props\Models\SiGasCan.ltb"
+Skin0			= "Props\Skins\SiGasCan.dtx"
+RenderStyle0			= "RS\transparent.ltb"
+FXName			= ""
+SoundName		= "Snd\powerups\pu_gascan.WAV"
+
+/*
+**  KeyItem4 - Fuse
+*/
+
+[KeyItem4]
+Name			= "Fuse"
+NameId          = 4507
+DescriptionId	= 4757
+Image           = "Interface\photos\keyitems\Fuse.dtx"
+Filename		= "Props\Models\AnFuse2.ltb"
+Skin0			= "Props\Skins\AnFuse2.dtx"
+RenderStyle0	= "RS\glass.ltb"
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem5 - Key Ring
+*/
+
+[KeyItem5]
+Name			= "KeyRing"
+NameId          = 4508
+DescriptionId	= 4758
+Image           = "Interface\photos\keyitems\KeyRing.dtx"
+Filename		= "props\models\IIKeyRing2.ltb"
+Skin0			= "props\skins\IIkeyRing.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "Snd\powerups\pu_keys.WAV"
+
+/*
+**  KeyItem6 - Wire coil - c09s01
+*/
+
+[KeyItem6]
+Name			= "WireCoil"
+NameId          = 4509
+DescriptionId	= 4759
+Image           = "Interface\photos\keyitems\WireCoil.dtx"
+Filename		= "Props\Models\UbWireCoil.ltb"
+Skin0			= "Props\Skins\UbWireCoil.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem7 - Wrench - c09s01
+*/
+
+[KeyItem7]
+Name			= "Wrench"
+NameId          = 4510
+DescriptionId	= 4760
+Image           = "Interface\photos\keyitems\Wrench.dtx"
+Filename		= "Props\Models\GenWrenchC.ltb"
+Skin0			= "Props\Skins\GenWrenchC.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "wrench"
+
+/*
+**  KeyItem8 - Doorknob
+*/
+
+[KeyItem8]
+Name			= "DoorKnob"
+NameId          = 4511
+DescriptionId	= 4761
+Image           = "Interface\photos\keyitems\Doorknob.dtx"
+Filename		= "props\models\GenDorKnob2L.ltb"
+Skin0			= "props\skins\GenDorknob2b.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem9 - Chime ringer
+*/
+
+[KeyItem9]
+Name			= "ChimeRinger"
+NameId          = 4512
+DescriptionId	= 4762
+Image           = ""
+Filename		= "Props\Models\OhBattery2.ltb"
+Skin0			= "Props\Skins\OhBattery.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+
+/*
+**  KeyItem10 - Bucket
+*/
+
+[KeyItem10]
+Name			= "Bucket"
+NameId          = 4513
+DescriptionId	= 4763
+Image           = "Interface\photos\keyitems\Bucket.dtx"
+Filename		= "Props\Models\InBucket.ltb"
+Skin0			= "Props\Skins\InBucket.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem11 - SpigotValve
+*/
+
+[KeyItem11]
+Name			= "SpigotValve"
+NameId          = 4514
+DescriptionId	= 4764
+Image           = ""
+Filename		= "Props\Models\OhBattery2.ltb"
+Skin0			= "Props\Skins\OhBattery.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+
+/*
+**  KeyItem12 - Number of tape for M-9: c02s09 
+*/
+
+[KeyItem12]
+Name			= "M-9_TapeNumber"
+NameId          = 4523
+DescriptionId	= 4773
+Image           = "Interface\photos\keyitems\Document.dtx"
+Filename		= "Props\Models\IILetter1.ltb"
+Skin0			= "Props\Skins\IILetter1.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem13 - Security Code: c02s09 
+*/
+
+[KeyItem13]
+Name			= "Security_Code"
+NameId          = 4527
+DescriptionId	= 4770
+Image           = "Interface\photos\keyitems\Document.dtx"
+Filename		= "Props\Models\IILetter1.ltb"
+Skin0			= "Props\Skins\IILetter1.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem14 - Vacuum Tube for c04s05
+*/
+
+[KeyItem14]
+Name			= "VacuumTube"
+NameId          = 4519
+DescriptionId	= 4769
+Image           = "Interface\photos\keyitems\VacuumTube.dtx"
+Filename		= "Props\Models\SiVacuumTube.ltb"
+Skin0			= "Props\Skins\SiVacuumTube.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem15 - Sugar for generator in c02s07
+*/
+
+[KeyItem15]
+Name			= "Sugar"
+NameId          = 4520
+DescriptionId	= 4776
+Image           = "Interface\photos\keyitems\Sugar.dtx"
+Filename		= "Props\Models\SiSugar1.ltb"
+Skin0			= "Props\Skins\SiSugar1.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem16 - Rupee for CP_c03s01
+*/
+
+[KeyItem16]
+Name			= "Rupee"
+NameId          = 4524
+DescriptionId	= 4774
+Image           = "Interface\photos\keyitems\Rupee.dtx"
+Filename		= "Props\Models\inrupee.ltb"
+Skin0			= "Props\Skins\inrupee.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= "Impact_Metal"
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem17 - Dr Schenker's glasses
+*/
+
+[KeyItem17]
+Name			= "Glasses"
+NameId          = 4528
+DescriptionId	= 4778
+Image           = "Interface\photos\keyitems\Glasses.dtx"
+Filename		= "props\models\puschenkglasses.ltb"
+Skin0			= "attachments\skins\schenkglasses.dtx"
+RenderStyle0 		= "RS\furshell.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem18 - Generic card
+*/
+
+[KeyItem18]
+Name			= "GCard"
+NameId          = 4531
+DescriptionId	= 4783
+Image           = "Interface\photos\keyitems\Card-G.dtx"
+Filename		= "Props\Models\GtCard.ltb"
+Skin0			= "props\skins\GtCard.dtx"
+RenderStyle0			= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem19 - Generic UWB card
+*/
+
+[KeyItem19]
+Name			= "UCard"
+NameId          = 4532
+DescriptionId	= 4784
+Image           = "Interface\photos\keyitems\Card-U.dtx"
+Filename		= "Props\Models\GtCard.ltb"
+Skin0			= "props\skins\UbCard.dtx"
+RenderStyle0			= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem20 - UnderWater Voice Recorder
+*/
+
+[KeyItem20]
+Name			= "Ub Voice Recorder"
+NameId          = 4533
+DescriptionId	= 4785
+Image           = "Interface\photos\keyitems\UBVoiceRecorder.dtx"
+Filename		= "Props\Models\UbVRecorder.ltb"
+Skin0			= "Props\skins\UbVRecorder.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem21 - UWB_WireCoil
+*/
+
+[KeyItem21]
+Name			= "UWB_Wire"
+NameId          = 4509
+DescriptionId	= 4780
+Image           = "Interface\photos\keyitems\UWB-Wire.dtx"
+Filename		= "Props\Models\UbWireCoil.ltb"
+Skin0			= "Props\Skins\UbWireCoil.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem22 - Snowmobilekeys
+*/
+
+[KeyItem22]
+Name			= "Snowmobilekeys"
+NameId          = 4529
+DescriptionId	= 4779
+Image           = "Interface\photos\keyitems\KeyRing.dtx"
+Filename		= "props\models\IIKeyRing2.ltb"
+Skin0			= "props\skins\IIkeyRing.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "Snd\powerups\pu_keys.WAV"
+
+/*
+**  KeyItem23 - Fifty Rupees
+*/
+
+[KeyItem23]
+Name			= "Fiftyrupee"
+NameId          = 4530
+DescriptionId	= 4780
+Image           = "Interface\photos\keyitems\Rupee.dtx"
+Filename		= "Props\Models\InRupee.ltb"
+Skin0			= "Props\skins\InRupee.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem24 - CraneKey
+*/
+
+[KeyItem24]
+Name			= "Crane key"
+NameId          = 4534
+DescriptionId	= 4782
+Image           = "Interface\photos\keyitems\CraneKey.dtx"
+Filename		= "Props\Models\UbKey.ltb"
+Skin0			= "Props\skins\UbKey.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem25 - UWB_Request
+*/
+
+[KeyItem25]
+Name			= "UWB_Request"
+NameId          = 4516
+DescriptionId	= 4766
+Image           = "Interface\photos\keyitems\UWB-Request.dtx"
+Filename		= "Props\Models\UbRequest.ltb"
+Skin0			= "Props\skins\UbRequest.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem26 - UWB_Manual
+*/
+
+[KeyItem26]
+Name			= "UWB_Manual"
+NameId          = 4515
+DescriptionId	= 4765
+Image           = "Interface\photos\keyitems\UWB-Manual.dtx"
+Filename		= "Props\Models\UbCManual.ltb"
+Skin0			= "Props\skins\UbCManual.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem27 - UWB_Addendium
+*/
+
+[KeyItem27]
+Name			= "UWB_Addendium"
+NameId          = 4517
+DescriptionId	= 4767
+Image           = "Interface\photos\keyitems\UWB-Addendum.dtx"
+Filename		= "Props\Models\UbCManual2.ltb"
+Skin0			= "Props\skins\UbCManual2.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem28 - UWB_Catalog
+*/
+
+[KeyItem28]
+Name			= "UWB_Catalog"
+NameId          = 4535
+DescriptionId	= 4781
+Image           = "Interface\photos\keyitems\UWB-Catalog.dtx"
+Filename		= "Props\Models\UbCManual.ltb"
+Skin0			= "Props\skins\UbCCatalog.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem29 - UWB_Screwdriver
+*/
+
+[KeyItem29]
+Name			= "UWB_Screwdriver"
+NameId          = 4536
+DescriptionId	= 4786
+Image           = "Interface\photos\keyitems\UWB-ScrewDriver.dtx"
+Filename		= "Props\Models\GenScrwdriver.ltb"
+Skin0			= "Props\Skins\GenScrwdriver.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem30 - Melvin_Tape1
+*/
+
+[KeyItem30]
+Name			= "Melvin_Tape1"
+NameId          = 4537
+DescriptionId	= 4787
+Image           = "Interface\photos\keyitems\MelvinTape.dtx"
+Filename		= "Props\Models\MEnvelope.ltb"
+Skin0			= "Props\Skins\MEnvelope.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem31 - Melvin_Tape2
+*/
+
+[KeyItem31]
+Name			= "Melvin_Tape2"
+NameId          = 4538
+DescriptionId	= 4788
+Image           = "Interface\photos\keyitems\MelvinTape.dtx"
+Filename		= "Props\Models\MEnvelope.ltb"
+Skin0			= "Props\Skins\MEnvelope.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem32 - Melvin_Tape3
+*/
+
+[KeyItem32]
+Name			= "Melvin_Tape3"
+NameId          = 4539
+DescriptionId	= 4789
+Image           = "Interface\photos\keyitems\MelvinTape.dtx"
+Filename		= "Props\Models\MEnvelope.ltb"
+Skin0			= "Props\Skins\MEnvelope.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem33 - Melvin_Tape4
+*/
+
+[KeyItem33]
+Name			= "Melvin_Tape4"
+NameId          = 4540
+DescriptionId	= 4790
+Image           = "Interface\photos\keyitems\MelvinTape.dtx"
+Filename		= "Props\Models\MEnvelope.ltb"
+Skin0			= "Props\Skins\MEnvelope.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem34 - Melvin_Tape5
+*/
+
+[KeyItem34]
+Name			= "Melvin_Tape5"
+NameId          = 4541
+DescriptionId	= 4791
+Image           = "Interface\photos\keyitems\MelvinTape.dtx"
+Filename		= "Props\Models\MEnvelope.ltb"
+Skin0			= "Props\Skins\MEnvelope.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem35 - Melvin_Tape6
+*/
+
+[KeyItem35]
+Name			= "Melvin_Tape6"
+NameId          = 4542
+DescriptionId	= 4792
+Image           = "Interface\photos\keyitems\MelvinTape.dtx"
+Filename		= "Props\Models\MEnvelope.ltb"
+Skin0			= "Props\Skins\MEnvelope.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem36 - Balaji_SafeCombination_c07s01
+*/
+
+[KeyItem36]
+Name			= "Balaji_Combination"
+NameId          = 4543
+DescriptionId	= 4793
+Image           = "Interface\photos\keyitems\Document.dtx"
+Filename		= "Props\Models\IINote.ltb"
+Skin0			= "Props\Skins\IINote.dtx"
+RenderStyle0	= ""
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem37 - Siberia_card
+*/
+
+[KeyItem37]
+Name			= "SCard"
+NameId              = 4544
+DescriptionId		= 4794
+Image               = "Interface\photos\keyitems\Card-S.dtx"
+Filename		= "Props\Models\GtCard.ltb"
+Skin0			= "props\skins\SiCard.dtx"
+RenderStyle0			= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem38 - Coffee pot
+*/
+
+[KeyItem38]
+Name			= "CoffeePot"
+NameId              = 4545
+DescriptionId		= 4795
+Image               = "Interface\photos\keyitems\CoffeePot.dtx"
+Filename		= "Props\Models\SiCofePot1.ltb"
+Skin0			= "Props\Skins\SiCofePot1.dtx"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+
+/*
+**  KeyItem39 - Hotel Key
+*/
+
+[KeyItem39]
+Name			= "HotelKey"
+NameId          = 4546
+DescriptionId	= 4796
+Image           = "Interface\photos\keyitems\KeyRing.dtx"
+Filename		= "props\models\IIKeyRing2.ltb"
+Skin0			= "props\skins\IIkeyRing.dtx"
+RenderStyle0	= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "Snd\powerups\pu_keys.WAV"
+
+/*
+**  KeyItem40 - Super Computer Services card
+*/
+
+[KeyItem40]
+Name			= "SpenCard" //this is the new underwaterbase card for Spencer.
+NameId          = 4549
+DescriptionId	= 4799
+Image           = "Interface\photos\keyitems\Card-U.dtx"
+Filename		= "Props\Models\GtCard.ltb"
+Skin0			= "props\skins\UbCard.dtx"
+RenderStyle0			= "RS\transparent.ltb"
+Chrome			= 0
+Chromakey		= 0
+FXName			= ""
+SoundName		= "DefaultKeyItemSound"
+

@@ -1,0 +1,1 @@
+globalhotkeydb.h

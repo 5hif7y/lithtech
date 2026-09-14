@@ -1,0 +1,1 @@
+bestringfunc.h

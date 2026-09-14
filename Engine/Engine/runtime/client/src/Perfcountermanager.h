@@ -1,0 +1,1 @@
+perfcountermanager.h

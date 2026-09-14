@@ -1,0 +1,21 @@
+[General]
+Name	= "Radeon 7200"
+
+[Settings]
+DynamicLight = 0
+ShadowDetail = 0
+PolyGridBumpmap = 0
+PolyGridFresnel = 0
+EnvironmentBumpMapping = 0
+AnisotropicFiltering = 0
+TrilinearFiltering = 0
+EnvironmentMapping = 0
+DetailTextures = 0
+TripleBuffering = 0
+MuzzleLight = 0
+Tracers = 0
+ShellCasings = 0
+WeatherFX = 0
+ImpactFX = 0
+DebrisFX = 0
+DetailLevel = 0

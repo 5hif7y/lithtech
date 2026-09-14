@@ -25,3 +25,12 @@ cmake --build build -j$(nproc)  # → lith_engine 7.3K + renderer_vulkan 185K
 .venv/bin/python /tmp/vuln_scan.py          # triage sin leer 7888 files
 .venv/bin/python /tmp/vuln_scan_after.py    # re-scan 4 files fix + index
 ```
+
+## Sesión 11–14 sep (runtime Vulkan)
+
+8. [Demos Vulkan en Runtime](08-Demos-Vulkan-Runtime.md) — probes, ventana SDL3/X11, menú, input, SDL2 vs SDL3
+9. [Límites, Gaps y Riesgos](09-Limites-Gaps-Riesgos.md) — sandbox sin X, RenderCamera no-op, crash pendiente
+10. [Guía Demos](GUIA-DEMOS.md) — compilar y correr las 19 demos
+11. [TODO](TODO.md) — tareas faltantes
+12. [Conversación](CONVERSACION.md) — copia directa de la sesión
+13. [Digested Prompt](DIGESTED-PROMPT.md) — prompt maduro para restauración legacy

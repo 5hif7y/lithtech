@@ -80,6 +80,10 @@ public:
 	void					OnEnterWorld();
 	void					OnExitWorld();
 
+	// Probe/headless auto-start enters the world without a menu click:
+	// hide the menu overlay like case 0 of the GUI would.
+	void					EnterGameUI();
+
 	void					OnCommandOn(int command);
 	void					OnCommandOff(int command);
 

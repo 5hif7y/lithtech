@@ -4,6 +4,7 @@
 //#include "stdafx.h"
 
 #include "ParsedMsg.h"
+#include <cctype> // toupper (MSVC needs it explicit; gcc pulls it transitively)
 
 CParsedMsg::CToken CParsedMsg::s_cEmptyToken("");
 

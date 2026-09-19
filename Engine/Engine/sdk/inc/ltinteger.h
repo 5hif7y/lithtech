@@ -2,8 +2,12 @@
 #define __LTINTEGER_H__
 #include <cstdint>
 #ifndef __int64
-// gcc Linux: map MSVC __int64 to int64_t, but keep unsigned handling via ifdef above
+#ifndef _WIN32
+// gcc/Clang Linux: map MSVC __int64 to int64_t, but keep unsigned handling via ifdef above.
+// (On Windows __int64 is a builtin keyword: redefining it as a macro breaks
+// <cstdint> types, intrin.h and every 'unsigned __int64' below.)
 #define __int64 int64_t
+#endif
 #endif
 
 

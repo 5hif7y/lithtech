@@ -19,6 +19,11 @@ public:
   HRESULT Init(SDL_Window* window);
   // Ventana nativa X11 (Linux): display/ventana ya creados por el caller.
   HRESULT InitNative(void* display, unsigned long window, uint32_t w, uint32_t h);
+#ifdef _WIN32
+  // Ventana nativa Win32 (Windows): HWND ya creado por el caller (ventana
+  // SDL plain). No usa SDL_Vulkan_* (el SDL2 de vcpkg no trae backend Vulkan).
+  HRESULT InitNativeWin32(void* hwnd, uint32_t w, uint32_t h);
+#endif
   // Swapchain presentable sin ventana (VK_EXT_headless_surface): ejercita
   // el mismo codigo acquire/record/submit/present que la ventana real.
   HRESULT InitHeadlessPresent(uint32_t w, uint32_t h);
@@ -52,6 +57,9 @@ public:
 private:
   bool createInstance();
   bool createInstanceX11();
+#ifdef _WIN32
+  bool createInstanceWin32();
+#endif
   bool pickPhysicalDevice();
   bool createLogicalDevice();
   bool createSwapchain(SDL_Window* window);

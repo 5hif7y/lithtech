@@ -33,7 +33,12 @@ target_link_libraries(renderer_vulkan PUBLIC
   lith_engine
 )
 
-target_compile_definitions(renderer_vulkan PUBLIC RENDERER_VULKAN VK_USE_PLATFORM_XLIB_KHR)
+target_compile_definitions(renderer_vulkan PUBLIC RENDERER_VULKAN)
+if(WIN32)
+  target_compile_definitions(renderer_vulkan PUBLIC VK_USE_PLATFORM_WIN32_KHR)
+else()
+  target_compile_definitions(renderer_vulkan PUBLIC VK_USE_PLATFORM_XLIB_KHR)
+endif()
 
 # Shaders GLSL -> SPIR-V embebido (tri pipeline headless + ventana)
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/shaders)

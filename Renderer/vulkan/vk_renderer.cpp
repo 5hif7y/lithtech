@@ -238,6 +238,43 @@ HRESULT VulkanRenderer::InitNative(void* display, unsigned long window,
 }
 #endif
 
+#ifdef _WIN32
+#include <vulkan/vulkan_win32.h>
+
+bool VulkanRenderer::createInstanceWin32() {
+  VkApplicationInfo appInfo{};
+  appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+  appInfo.pApplicationName = "NOLF2 LithTech Jupiter";
+  appInfo.apiVersion = VK_API_VERSION_1_2;
+  const char* exts[] = {
+    VK_KHR_SURFACE_EXTENSION_NAME,
+    VK_KHR_WIN32_SURFACE_EXTENSION_NAME
+  };
+  VkInstanceCreateInfo ci{};
+  ci.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+  ci.pApplicationInfo = &appInfo;
+  ci.enabledExtensionCount = 2;
+  ci.ppEnabledExtensionNames = exts;
+  return vkCreateInstance(&ci, nullptr, &m_instance) == VK_SUCCESS;
+}
+
+HRESULT VulkanRenderer::InitNativeWin32(void* hwnd, uint32_t w, uint32_t h) {
+  if (!hwnd) return E_INVALIDARG;
+  if (!createInstanceWin32()) return E_FAIL;
+  VkWin32SurfaceCreateInfoKHR sci{};
+  sci.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+  sci.hinstance = GetModuleHandle(nullptr);
+  sci.hwnd = (HWND)hwnd;
+  if (vkCreateWin32SurfaceKHR(m_instance, &sci, nullptr, &m_surface) != VK_SUCCESS)
+    return E_FAIL;
+  if (!lith_validate_ptr(m_instance) || !lith_validate_ptr(m_surface)) return E_FAIL;
+  if (!pickPhysicalDevice()) return E_FAIL;
+  if (!createLogicalDevice()) return E_FAIL;
+  if (!createSwapchainWithExtent(w ? w : 800, h ? h : 600)) return E_FAIL;
+  return S_OK;
+}
+#endif
+
 bool VulkanRenderer::pickPhysicalDevice() {
   if (!lith_validate_ptr(m_instance) || !lith_validate_ptr(m_surface)) return false;
   uint32_t count = 0;

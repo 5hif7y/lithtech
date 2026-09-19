@@ -30,13 +30,25 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   )
 endif()
 
-# Dependencias Linux - Vulkan vendoreado si no esta en sistema (Arch sin sudo no tiene vulkan-headers)
-if(EXISTS ${CMAKE_SOURCE_DIR}/third_party/vulkan/include/vulkan/vulkan.h)
+# En MSVC los macros min/max de windows.h rompen <algorithm>/<limits>
+# (std::max, numeric_limits::max, std::clamp). El codigo 2003-era que los
+# necesite usara __min/__max o <algorithm> explicito.
+if(MSVC)
+  add_compile_definitions(NOMINMAX)
+endif()
+# Dependencias Vulkan - en Windows se prefiere el SDK instalado (vulkan-1.lib);
+# en Linux se usa el vendoreado si no hay headers de sistema (Arch sin sudo no tiene vulkan-headers)
+if(WIN32)
+  find_package(Vulkan QUIET)
+endif()
+if(NOT Vulkan_FOUND AND EXISTS ${CMAKE_SOURCE_DIR}/third_party/vulkan/include/vulkan/vulkan.h)
   set(Vulkan_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/third_party/vulkan/include)
   set(Vulkan_FOUND TRUE)
-  add_library(Vulkan::Vulkan INTERFACE IMPORTED)
-  target_include_directories(Vulkan::Vulkan INTERFACE ${Vulkan_INCLUDE_DIR})
-  target_link_libraries(Vulkan::Vulkan INTERFACE vulkan)
+  if(NOT TARGET Vulkan::Vulkan)
+    add_library(Vulkan::Vulkan INTERFACE IMPORTED)
+    target_include_directories(Vulkan::Vulkan INTERFACE ${Vulkan_INCLUDE_DIR})
+    target_link_libraries(Vulkan::Vulkan INTERFACE vulkan)
+  endif()
   find_package(Vulkan QUIET)
   if(NOT Vulkan_FOUND)
     set(Vulkan_FOUND TRUE)
@@ -57,7 +69,42 @@ add_library(lith_platform INTERFACE)
 target_include_directories(lith_platform INTERFACE
   ${CMAKE_SOURCE_DIR}/Platform
 )
-target_compile_definitions(lith_platform INTERFACE PLATFORM_LINUX)
+if(WIN32)
+  target_compile_definitions(lith_platform INTERFACE PLATFORM_WINDOWS)
+  # Platform/windows.h sombrea a <windows.h> en el include path: el dispatcher
+  # incluye el header real del SDK por ruta absoluta (LITH_REAL_WINDOWS_H).
+  if(DEFINED ENV{WindowsSdkDir})
+    file(TO_CMAKE_PATH "$ENV{WindowsSdkDir}" _LITH_WINSDK_DIR)
+  else()
+    get_filename_component(_LITH_WINSDK_DIR
+      "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot10]" ABSOLUTE)
+  endif()
+  if(NOT CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
+    file(GLOB _LITH_SDK_VERS RELATIVE "${_LITH_WINSDK_DIR}/Include" "${_LITH_WINSDK_DIR}/Include/10.*")
+    list(SORT _LITH_SDK_VERS)
+    list(GET _LITH_SDK_VERS -1 CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
+  endif()
+  set(LITH_REAL_WINDOWS_H
+    "${_LITH_WINSDK_DIR}/Include/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}/um/windows.h")
+  if(NOT EXISTS "${LITH_REAL_WINDOWS_H}")
+    message(FATAL_ERROR "No se encontro el SDK header real: ${LITH_REAL_WINDOWS_H}")
+  endif()
+  message(STATUS "LITH_REAL_WINDOWS_H=${LITH_REAL_WINDOWS_H}")
+  target_compile_definitions(lith_platform INTERFACE
+    "LITH_REAL_WINDOWS_H=\"${LITH_REAL_WINDOWS_H}\"")
+  # Idem para <crtdbg.h>: el shim sombrea al header real (vive en el UCRT
+  # del SDK, no en MSVC) y rompe <vector>/<memory> (_RPTF0/_CRT_ASSERT).
+  set(LITH_REAL_CRTDBG_H
+    "${_LITH_WINSDK_DIR}/Include/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}/ucrt/crtdbg.h")
+  if(NOT EXISTS "${LITH_REAL_CRTDBG_H}")
+    message(FATAL_ERROR "No se encontro el header real crtdbg.h: ${LITH_REAL_CRTDBG_H}")
+  endif()
+  message(STATUS "LITH_REAL_CRTDBG_H=${LITH_REAL_CRTDBG_H}")
+  target_compile_definitions(lith_platform INTERFACE
+    "LITH_REAL_CRTDBG_H=\"${LITH_REAL_CRTDBG_H}\"")
+else()
+  target_compile_definitions(lith_platform INTERFACE PLATFORM_LINUX)
+endif()
 
 # Libs portables (Fase 2, graphify wt 0-1) — se añaden antes de Engine para que Engine pueda linkear si LITH_ENGINE_FULL=ON
 option(LITH_LIBS_PORTABLE "Compilar libs portables via graphify (Fase2)" OFF)

@@ -36,6 +36,10 @@ public:
 
 	void     		HandleInput(int nCommand);
 
+	// Switches straight to the in-game HUD (probe/headless auto-start skips
+	// the menu click that normally does this).
+	void			ShowInGame();
+
 	CUIFont*		GetVectorFont()							{ return m_pFont; }
     void     		SetText(const char* sText);
 	void			SetStats(unsigned Score, float Money)	{ m_Score = Score; m_Money = Money; }

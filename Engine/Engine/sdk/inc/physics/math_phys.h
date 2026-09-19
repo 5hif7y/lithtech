@@ -165,8 +165,12 @@ inline	T DEGREES_TO_RADIANS( T a )	{ return a*RADIANS_PER_DEGREE; }
 //read time stamp (cycle) counter
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #ifdef _WIN32
+#if defined(_MSC_VER)
+#include <intrin.h>
+#endif
 inline int32 rdtsc()
 {
+#if defined(_M_IX86)
     int t;
 
     __asm
@@ -176,6 +180,12 @@ inline int32 rdtsc()
     }
 
     return t;
+#elif defined(_MSC_VER) && (defined(_M_X64) || defined(_M_ARM64))
+    // MSVC x64/ARM64 has no inline __asm: use the rdtsc intrinsic.
+    return (int32)__rdtsc();
+#else
+    return 0;
+#endif
 }
 #endif//win32
 #endif//doxygen

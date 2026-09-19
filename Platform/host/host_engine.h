@@ -16,12 +16,16 @@
 #include <iltwidgetmanager.h>
 #include <iltmessage.h>
 #include <iltstream.h>
+#include <ltobjectcreate.h>
 #include <cmath>
 #include <cstdarg>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <filesystem>
+#ifndef _WIN32
+#include <unistd.h> // readlink(/proc/self/exe) for exeDir()
+#endif
 #ifndef _WIN32
 #include <strings.h>
 #include <glob.h>
@@ -64,6 +68,11 @@
 #include "Platform/host/HostClientTables.inc"
 
 namespace Host {
+
+// Hooks implemented by host_server.h (server build only). When null, the
+// client keeps its legacy behavior (dropped messages, HostMessageWrite).
+inline void (*g_routeToServer)(ILTMessage_Read* m) = nullptr;
+inline ILTMessage_Write* (*g_createClientMessage)() = nullptr;
 
 struct Stats {
     int frames = 0;
@@ -189,6 +198,7 @@ struct ObjState {
     LTVector pos;
     LTRotation rot;
     LTVector vel;
+    uint32 type = 0; // m_ObjectType at creation (OT_CAMERA=5 finds the camera)
     ObjState() { pos.Init(0, 0, 0); rot.Init(); vel.Init(0, 0, 0); }
 };
 inline std::map<HOBJECT, ObjState>& objects() {
@@ -267,6 +277,28 @@ static LTRESULT T_StartGame(StartGameRequest* r) {
     stats().worldStartRequested = true;
     return LT_OK;
 }
+static LTRESULT T_InitNetworking(const char* pDriver, uint32 dwFlags) {
+    (void)pDriver; (void)dwFlags;
+    return LT_OK;
+}
+static LTRESULT T_AddInternetDriver() { return LT_OK; }
+static LTRESULT T_GetSessionList(NetSession*& pListHead, const char* pInfo) {
+    (void)pInfo;
+    pListHead = nullptr;
+    return LT_OK;
+}
+static LTRESULT T_GetServiceList(NetService*& pListHead) {
+    pListHead = nullptr;
+    return LT_ERROR;
+}
+static LTRESULT T_FreeServiceList(NetService* pListHead) {
+    (void)pListHead;
+    return LT_OK;
+}
+static LTRESULT T_SelectService(HNETSERVICE hNetService) {
+    (void)hNetService;
+    return LT_OK;
+}
 // Consumes a pending world start (set by T_StartGame). The main loop calls
 // shell->OnEnterWorld() when this returns true, so menu-initiated games
 // (StartNormalGame/Host/Join from the GUI) enter the world like the
@@ -277,7 +309,12 @@ inline bool consumeWorldStart() {
     return r;
 }
 static HLOCALOBJ T_CreateObject(ObjectCreateStruct* s) {
-    (void)s; return makeObject();
+    HLOCALOBJ h = makeObject();
+    if (s) {
+        ObjState* o = findObj(h);
+        if (o) o->type = s->m_ObjectType;
+    }
+    return h;
 }
 static HLOCALOBJ T_GetClientObject() {
     if (objects().empty()) return makeObject();
@@ -287,46 +324,46 @@ static void T_SetObjectPosAndRotation(HLOCALOBJ h, const LTVector* p, const LTRo
     ObjState* o = findObj(h); if (!o) return;
     if (p) o->pos = *p; if (r) o->rot = *r;
 }
-static LTRESULT T_SetObjectRotation(HLOCALOBJ h, const LTRotation* r) {
-    ObjState* o = findObj(h); if (!o || !r) return LT_ERROR;
-    o->rot = *r; return LT_OK;
+static void T_SetObjectRotation(HLOCALOBJ h, const LTRotation* r) {
+    ObjState* o = findObj(h); if (!o || !r) return;
+    o->rot = *r;
 }
 static HSURFACE T_GetScreenSurface() {
     return reinterpret_cast<HSURFACE>((intptr_t)0x5);
 }
-static LTRESULT T_GetSurfaceDims(HSURFACE h, uint32* w, uint32* ht) {
-    (void)h; if (w) *w = 800; if (ht) *ht = 600; return LT_OK;
+static void T_GetSurfaceDims(HSURFACE h, uint32* w, uint32* ht) {
+    (void)h; if (w) *w = 800; if (ht) *ht = 600;
 }
 static LTRESULT T_SetRenderMode(RMode* m) {
     if (m) emit("SetRenderMode %ux%u", m->m_Width, m->m_Height); return LT_OK;
 }
-static LTRESULT T_ClearScreen(HSURFACE h, uint32 f, LTVector* c) {
-    (void)h; (void)f; (void)c; return LT_OK;
+static LTRESULT T_ClearScreen(LTRect* r, uint32 f, LTRGB* c) {
+    (void)r; (void)f; (void)c; return LT_OK;
 }
 static LTRESULT T_Start3D() { return LT_OK; }
 static LTRESULT T_End3D(uint32 f) { (void)f; return LT_OK; }
 static LTRESULT T_RenderCamera(HOBJECT h, LTFLOAT t) {
     (void)h; (void)t; return LT_OK;
 }
-static LTRESULT T_FlipScreen(HSURFACE h) {
-    (void)h; stats().frames++; return LT_OK;
+static LTRESULT T_FlipScreen(uint32 f) {
+    (void)f; stats().frames++; return LT_OK;
 }
 static LTRESULT T_StartOptimized2D() { return LT_OK; }
 static LTRESULT T_EndOptimized2D() { return LT_OK; }
-static LTRESULT T_SetCameraRect(HOBJECT h, bool b, int x, int y, int w, int ht) {
-    (void)h; (void)b; (void)x; (void)y; (void)w; (void)ht; return LT_OK;
+static void T_SetCameraRect(HLOCALOBJ h, bool b, int x, int y, int w, int ht) {
+    (void)h; (void)b; (void)x; (void)y; (void)w; (void)ht;
 }
-static LTRESULT T_SetCameraFOV(HOBJECT h, float f) {
-    (void)h; (void)f; return LT_OK;
+static void T_SetCameraFOV(HLOCALOBJ h, float fovX, float fovY) {
+    (void)h; (void)fovX; (void)fovY;
 }
 static bool T_IsCommandOn(int c) { return cmdOn(c); }
-static LTRESULT T_RunConsoleString(char* s) { (void)s; return LT_OK; }
-static LTRESULT T_GetAxisOffsets(LTVector* v) {
+static void T_RunConsoleString(const char* s) { (void)s; }
+static void T_GetAxisOffsets(LTFLOAT* v) {
     float a[3] = {0, 0, 0};
     takeAxes(a);
-    if (v) v->Init(a[0], a[1], a[2]); return LT_OK;
+    if (v) { v[0] = a[0]; v[1] = a[1]; v[2] = a[2]; }
 }
-static void T_ClearInput() {}
+static LTRESULT T_ClearInput() { return LT_OK; }
 
 // ---- tuned subclasses ----
 static MemStream* loadRealFile(const std::string& full) {
@@ -383,8 +420,25 @@ static bool loadTGA(const std::string& path, TgaImage& out) {
     }
     return true;
 }
+// Executable directory (double-click runs start deep inside build-msvc/).
+static std::string exeDir() {
+    static std::string d = [] {
+#ifdef _WIN32
+        char buf[1024];
+        DWORD n = GetModuleFileNameA(nullptr, buf, (DWORD)sizeof(buf));
+        std::string s = n ? buf : "";
+#else
+        char buf[4096];
+        ssize_t n = readlink("/proc/self/exe", buf, sizeof(buf) - 1);
+        std::string s = n > 0 ? std::string(buf, (size_t)n) : "";
+#endif
+        size_t pos = s.find_last_of("/\\");
+        return pos == std::string::npos ? std::string() : s.substr(0, pos);
+    }();
+    return d;
+}
 // Windows .rez semantics are case-insensitive; emulate that on unix-likes.
-static bool resolveAsset(const std::string& p, std::string& out) {
+static bool tryResolveAsset(const std::string& p, std::string& out) {
     FILE* f = fopen(p.c_str(), "rb");
     if (f) { fclose(f); out = p; return true; }
 #ifdef _WIN32
@@ -433,6 +487,22 @@ static bool resolveAsset(const std::string& p, std::string& out) {
     out = cur;
     return true;
 #endif
+}
+// Wrapper: try as-is (cwd), then walk up from the exe dir and cwd so
+// double-click runs (cwd = deep build output dir) find repo data files.
+static bool resolveAsset(const std::string& p, std::string& out) {
+    if (tryResolveAsset(p, out)) return true;
+    std::error_code ec;
+    std::string roots[2] = { exeDir(), std::filesystem::current_path(ec).string() };
+    for (const std::string& root : roots) {
+        if (root.empty()) continue;
+        std::filesystem::path d(root);
+        for (int i = 0; i < 8 && !d.empty(); ++i, d = d.parent_path()) {
+            std::filesystem::path cand = d / std::filesystem::path(p);
+            if (tryResolveAsset(cand.string(), out)) return true;
+        }
+    }
+    return false;
 }
 struct TexEntry { uint32_t w = 0, h = 0, vkId = 0; std::string name; };
 struct TexRegistry {
@@ -520,7 +590,8 @@ public:
         return LT_ERROR;
     }
     LTRESULT SendToServer(ILTMessage_Read* m, uint32 f) override {
-        (void)m; (void)f; return LT_OK;
+        if (g_routeToServer) g_routeToServer(m);
+        (void)f; return LT_OK;
     }
     float GetVarValueFloat(HCONSOLEVAR h) override {
         (void)h; return 0.0f;
@@ -536,6 +607,12 @@ public:
         o->Shutdown = &T_Shutdown;
         o->ShutdownWithMessage = &T_ShutdownWithMessage;
         o->StartGame = &T_StartGame;
+        o->InitNetworking = &T_InitNetworking;
+        o->AddInternetDriver = &T_AddInternetDriver;
+        o->GetSessionList = &T_GetSessionList;
+        o->GetServiceList = &T_GetServiceList;
+        o->FreeServiceList = &T_FreeServiceList;
+        o->SelectService = &T_SelectService;
         o->CreateObject = &T_CreateObject;
         o->GetClientObject = &T_GetClientObject;
         o->SetObjectPosAndRotation = &T_SetObjectPosAndRotation;
@@ -760,6 +837,10 @@ public:
         return LT_OK;
     }
     LTRESULT CreateMessage(ILTMessage_Write*& m) override {
+        if (g_createClientMessage) {
+            m = g_createClientMessage();
+            return LT_OK;
+        }
         m = new HostMessageWrite();
         return LT_OK;
     }
@@ -1069,6 +1150,9 @@ public:
     }
 };
 
+} // namespace Host — the UI stubs below define ::CUIPolyString/::CUIFormattedPolyString
+  // (global SDK classes); defining them inside the namespace is ill-formed on MSVC.
+
 
 // ---- engine base methods with no Linux implementation (ctor/dtor only) ----
 CUIPolyString::CUIPolyString() {}
@@ -1108,5 +1192,3 @@ CUIFormattedPolyString::CUIFormattedPolyString(CUIFont* f, const char* b,
     (void)a;
 }
 CUIFormattedPolyString::~CUIFormattedPolyString() {}
-
-} // namespace Host

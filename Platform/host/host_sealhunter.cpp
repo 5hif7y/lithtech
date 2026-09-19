@@ -5,7 +5,9 @@
 // menu receives input. Exit 0 only with frames>0 and no shutdown.
 // Prints HOST_RESULT line.
 #include "Platform/host/host_engine.h"
+#include "Platform/host/host_server.h"
 #include "ltclientshell.h"
+#include "ltservershell.h"
 #ifdef _LINUX
 #ifdef HAS_SDL3
 // Via principal SDL3 (ver host_sdl3.h; ese TU es el unico que incluye
@@ -83,6 +85,18 @@ static void mapSDLKey(int sym, int& vk, int& cmd) {
 #include <cstdio>
 #include <cstring>
 #include <string>
+#ifdef _WIN32
+#include <SDL2/SDL_syswm.h>
+// HWND de una ventana SDL sin pasar por SDL_Vulkan_* (ausente en el
+// SDL2 de vcpkg). Solo Windows.
+static void* SdlHwnd(SDL_Window* w) {
+    SDL_SysWMinfo info;
+    SDL_VERSION(&info.version);
+    if (!w || !SDL_GetWindowWMInfo(w, &info)) return nullptr;
+    if (info.subsystem != SDL_SYSWM_WINDOWS) return nullptr;
+    return info.info.win.window;
+}
+#endif
 
 extern ILTClient* g_pLTClient;
 extern ILTDrawPrim* g_pLTCDrawPrim;
@@ -93,6 +107,25 @@ extern ILTFontManager* g_pLTCFontManager;
 extern ILTTexInterface* g_pLTCTexInterface;
 extern ILTModelClient* g_pLTCModel;
 extern ILTWidgetManager* g_pLTCWidgetManager;
+
+// ---- ILTPhysics base fallbacks ----
+// HostPhysics/PhysicsTuned override every ILTPhysics virtual, but MSVC still
+// needs definitions for the non-pure base virtuals to emit the base vtables
+// (their real bodies live in the full engine,
+// Engine/Engine/runtime/shared/src/shared_iltphysics.cpp, which demos don't
+// build). These are never called through a base subobject; LT_ERROR signals
+// misuse. Single TU => no ODR risk.
+LTRESULT ILTPhysics::IsWorldObject(HOBJECT) { return LT_ERROR; }
+LTRESULT ILTPhysics::GetMass(HOBJECT, float*) { return LT_ERROR; }
+LTRESULT ILTPhysics::SetMass(HOBJECT, float) { return LT_ERROR; }
+LTRESULT ILTPhysics::GetFrictionCoefficient(HOBJECT, float*) { return LT_ERROR; }
+LTRESULT ILTPhysics::SetFrictionCoefficient(HOBJECT, float) { return LT_ERROR; }
+LTRESULT ILTPhysics::GetObjectDims(HOBJECT, LTVector*) { return LT_ERROR; }
+LTRESULT ILTPhysics::GetVelocity(HOBJECT, LTVector*) { return LT_ERROR; }
+LTRESULT ILTPhysics::GetForceIgnoreLimit(HOBJECT, float&) { return LT_ERROR; }
+LTRESULT ILTPhysics::SetForceIgnoreLimit(HOBJECT, float) { return LT_ERROR; }
+LTRESULT ILTPhysics::GetAcceleration(HOBJECT, LTVector*) { return LT_ERROR; }
+LTRESULT ILTPhysics::GetStandingOn(HOBJECT, CollisionInfo*) { return LT_ERROR; }
 
 int main(int argc, char* argv[]) {
     int frames = 60;
@@ -220,18 +253,36 @@ int main(int argc, char* argv[]) {
         }
         sdlWin = SDL_CreateWindow("Sealhunter - LithTech Jupiter (Vulkan)",
                                   SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                  800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_VULKAN);
+                                  800, 600, SDL_WINDOW_SHOWN
+#ifdef _WIN32
+                                  /* sin SDL_WINDOW_VULKAN: superficie nativa Win32 abajo */
+#else
+                                  | SDL_WINDOW_VULKAN
+#endif
+                                  );
         if (!sdlWin) {
             printf("WINDOW_RESULT ok=0 stage=swindow frames=0 err=%s\n", SDL_GetError());
             SDL_Quit();
             return 1;
         }
+#ifdef _WIN32
+        {
+            void* hwnd = SdlHwnd(sdlWin);
+            if (!hwnd || vk.InitNativeWin32(hwnd, 800, 600) != S_OK) {
+                printf("WINDOW_RESULT ok=0 stage=vkinit frames=0\n");
+                SDL_DestroyWindow(sdlWin);
+                SDL_Quit();
+                return 1;
+            }
+        }
+#else
         if (vk.Init(sdlWin) != S_OK) {
             printf("WINDOW_RESULT ok=0 stage=vkinit frames=0\n");
             SDL_DestroyWindow(sdlWin);
             SDL_Quit();
             return 1;
         }
+#endif
         Host::VkBridge::renderer() = &vk;
         Host::VkBridge::width() = 800;
         Host::VkBridge::height() = 600;
@@ -272,6 +323,31 @@ int main(int argc, char* argv[]) {
     g_pLTCModel = &model;
     g_pLTCWidgetManager = &widget;
 
+    // ---- dedicated in-process server (Fase B): interfaces, shell, seals ----
+    Host::bindServerInterfaces();
+    static CLTServerShell serverShell;
+    Host::setServerShell(&serverShell);
+    if (serverShell.OnServerInitialized() != LT_OK) {
+        printf("HOST_RESULT ok=0 stage=srvinit frames=0\n");
+        return 1;
+    }
+    serverShell.PreStartWorld(false);
+    {
+        std::map<std::string, std::string> sealProps;
+        sealProps["Filename"] = "";
+        sealProps["Texture"] = "";
+        sealProps["RenderStyle"] = "";
+        sealProps["SealValue"] = "10.0";
+        LTVector p;
+        p.Init(-150.0f, 60.0f, 0.0f);
+        Host::spawnServerObject("Seal", p, "Seal0", sealProps);
+        p.Init(0.0f, 60.0f, 150.0f);
+        Host::spawnServerObject("Seal", p, "Seal1", sealProps);
+        p.Init(150.0f, 60.0f, -150.0f);
+        Host::spawnServerObject("Seal", p, "Seal2", sealProps);
+    }
+    printf("SERVER: initialized objects=%u\n", Host::serverObjectCount());
+
     CLTClientShell* shell = new CLTClientShell();
 
     RMode mode;
@@ -304,6 +380,8 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         shell->OnEnterWorld();
+        shell->EnterGameUI();
+        Host::ServerOnClientEnterWorld(&serverShell);
         Host::consumeWorldStart();
     } else {
         printf("HOST: menu boot (StartNormalGame deferred to menu choice)\n");
@@ -320,13 +398,16 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < frames; i++) {
             if (Host::consumeWorldStart()) {
                 shell->OnEnterWorld();
+                Host::ServerOnClientEnterWorld(&serverShell);
                 printf("HOST: entered world\n");
             }
             shell->Update();
+            Host::tickServerWorld(1.0f / 60.0f);
             if (Host::stats().shutdownRequested) break;
             if (vk.RenderWindowFrame() != S_OK) {
                 printf("PSURFACE_RESULT ok=0 stage=present frames=%d\n", presents);
                 shell->OnExitWorld();
+                Host::ServerOnClientExitWorld(&serverShell);
                 return 1;
             }
             presents++;
@@ -347,6 +428,7 @@ int main(int argc, char* argv[]) {
         printf("PSURFACE_RESULT ok=%d frames=%d draws=%d presents=%d\n",
                pok ? 1 : 0, presents, ps.drawPrimCalls, presents);
         shell->OnExitWorld();
+        Host::ServerOnClientExitWorld(&serverShell);
         return pok ? 0 : 1;
     }
 #ifdef _LINUX
@@ -392,14 +474,17 @@ int main(int argc, char* argv[]) {
             }
             if (Host::consumeWorldStart()) {
                 shell->OnEnterWorld();
+                Host::ServerOnClientEnterWorld(&serverShell);
                 printf("HOST: entered world\n");
             }
             shell->Update();
+            Host::tickServerWorld(1.0f / 60.0f);
             if (Host::stats().shutdownRequested) break;
             if (vk.RenderWindowFrame() != S_OK) {
                 printf("WINDOW_RESULT ok=0 stage=present frames=%d\n",
                        presents);
                 shell->OnExitWorld();
+                Host::ServerOnClientExitWorld(&serverShell);
                 Sdl3_Destroy(sdlWin);
                 return 1;
             }
@@ -418,7 +503,11 @@ int main(int argc, char* argv[]) {
                fps);
         printf("WINDOW_RESULT ok=%d frames=%d draws=%d presents=%d fps=%.1f\n",
                wok ? 1 : 0, presents, ws.drawPrimCalls, presents, fps);
+        printf("SERVER: objects=%u updateticks=%u time=%.2f\n",
+               Host::serverObjectCount(), Host::ServerWorld::instance().totalTicks,
+               Host::ServerWorld::instance().time);
         shell->OnExitWorld();
+        Host::ServerOnClientExitWorld(&serverShell);
         Sdl3_Destroy(sdlWin);
         return wok ? 0 : 1;
     }
@@ -480,13 +569,16 @@ int main(int argc, char* argv[]) {
             }
             if (Host::consumeWorldStart()) {
                 shell->OnEnterWorld();
+                Host::ServerOnClientEnterWorld(&serverShell);
                 printf("HOST: entered world\n");
             }
             shell->Update();
+            Host::tickServerWorld(1.0f / 60.0f);
             if (Host::stats().shutdownRequested) break;
             if (vk.RenderWindowFrame() != S_OK) {
                 printf("WINDOW_RESULT ok=0 stage=present frames=%d\n", presents);
                 shell->OnExitWorld();
+                Host::ServerOnClientExitWorld(&serverShell);
                 XDestroyWindow(xDpy, xWin);
                 XCloseDisplay(xDpy);
                 return 1;
@@ -505,7 +597,11 @@ int main(int argc, char* argv[]) {
                presents, ws.drawPrimCalls, ws.uiRenders, ws.objectsCreated, fps);
         printf("WINDOW_RESULT ok=%d frames=%d draws=%d presents=%d fps=%.1f\n",
                wok ? 1 : 0, presents, ws.drawPrimCalls, presents, fps);
+        printf("SERVER: objects=%u updateticks=%u time=%.2f\n",
+               Host::serverObjectCount(), Host::ServerWorld::instance().totalTicks,
+               Host::ServerWorld::instance().time);
         shell->OnExitWorld();
+        Host::ServerOnClientExitWorld(&serverShell);
         XDestroyWindow(xDpy, xWin);
         XCloseDisplay(xDpy);
         return wok ? 0 : 1;
@@ -551,13 +647,16 @@ int main(int argc, char* argv[]) {
             }
             if (Host::consumeWorldStart()) {
                 shell->OnEnterWorld();
+                Host::ServerOnClientEnterWorld(&serverShell);
                 printf("HOST: entered world\n");
             }
             shell->Update();
+            Host::tickServerWorld(1.0f / 60.0f);
             if (Host::stats().shutdownRequested) break;
             if (vk.RenderWindowFrame() != S_OK) {
                 printf("WINDOW_RESULT ok=0 stage=present frames=%d\n", presents);
                 shell->OnExitWorld();
+                Host::ServerOnClientExitWorld(&serverShell);
                 SDL_DestroyWindow(sdlWin);
                 SDL_Quit();
                 return 1;
@@ -573,7 +672,11 @@ int main(int argc, char* argv[]) {
                presents, ws.drawPrimCalls, ws.uiRenders, ws.objectsCreated, fps);
         printf("WINDOW_RESULT ok=%d frames=%d draws=%d presents=%d fps=%.1f\n",
                wok ? 1 : 0, presents, ws.drawPrimCalls, presents, fps);
+        printf("SERVER: objects=%u updateticks=%u time=%.2f\n",
+               Host::serverObjectCount(), Host::ServerWorld::instance().totalTicks,
+               Host::ServerWorld::instance().time);
         shell->OnExitWorld();
+        Host::ServerOnClientExitWorld(&serverShell);
         SDL_DestroyWindow(sdlWin);
         SDL_Quit();
         return wok ? 0 : 1;
@@ -582,12 +685,15 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < frames; i++) {
         if (Host::consumeWorldStart()) {
             shell->OnEnterWorld();
+            Host::ServerOnClientEnterWorld(&serverShell);
             printf("HOST: entered world\n");
         }
         shell->Update();
+        Host::tickServerWorld(1.0f / 60.0f);
         if (Host::stats().shutdownRequested) break;
     }
     shell->OnExitWorld();
+    Host::ServerOnClientExitWorld(&serverShell);
 
     Host::Stats& s = Host::stats();
     size_t vkTris = 0;
@@ -605,5 +711,8 @@ int main(int argc, char* argv[]) {
     if (vulkan) ok = ok && vkTris > 0 && vkOk;
     printf("HOST_RESULT ok=%d stage=run frames=%d draws=%d vktris=%d\n",
            ok ? 1 : 0, s.frames, s.drawPrimCalls, (int)vkTris);
+    printf("SERVER: objects=%u updateticks=%u time=%.2f\n",
+           Host::serverObjectCount(), Host::ServerWorld::instance().totalTicks,
+           Host::ServerWorld::instance().time);
     return ok ? 0 : 1;
 }

@@ -383,6 +383,9 @@ size_t drawWorldMesh(VulkanRenderer& vk, const WorldData& w, WorldTexCache& c,
         }
         (void)b;
     }
+    // Dos pasadas: 0 = skybox (fondo, sin depthWrite), 1 = resto del mundo.
+    // El orden de emision define el orden de dibujado (drawOrdered).
+    for (int pass = 0; pass < 2; pass++) {
     for (size_t bi = 0; bi < w.blocks.size(); bi++) {
         if (useOnly && !only[bi]) continue;
         const WorldBlock& b = w.blocks[bi];
@@ -390,6 +393,7 @@ size_t drawWorldMesh(VulkanRenderer& vk, const WorldData& w, WorldTexCache& c,
         float ox = 0, oy = 0, oz = 0;
         const bool sky =
             campos && !b.sections.empty() && isSkyTex(b.sections[0].tex0);
+        if (sky != (pass == 0)) continue;
         if (sky) {
             ox = campos[0] - b.cx;
             oy = campos[1] - b.cy;
@@ -426,10 +430,14 @@ size_t drawWorldMesh(VulkanRenderer& vk, const WorldData& w, WorldTexCache& c,
                         v[k].a = sv.a;
                     }
                 }
-                vk.PushTri3D(tex, v);
+                if (sky)
+                    vk.PushTri3DSky(tex, v);
+                else
+                    vk.PushTri3D(tex, v);
                 tris++;
             }
         }
+    }
     }
     return tris;
 }
@@ -479,7 +487,9 @@ void drawWorldFrame(VulkanRenderer& vk) {
     frustumFromVP16(VP, g_frustum);
     g_frustumValid = true;
     unsigned sd = 0, ss = 0;
-    drawWorldMesh(vk, *w, tc, sd, ss, true, cp, &g_frustum, nullptr);
+    // fullBright=false: usa los colores/luz horneados del World.dat
+    // (con true todo sale blanco lavado, sin el azul de la cueva).
+    drawWorldMesh(vk, *w, tc, sd, ss, false, cp, &g_frustum, nullptr);
 }
 
 int runWorldTest(const std::string& ppm) {
@@ -744,6 +754,33 @@ void pushScore(CLTClientShell* shell) {
 }
 
 // Modelos en vivo: focas del server + snowman + jugador + mazo.
+// Traslacion (espacio-local del modelo) del primer nodo cuyo nombre
+// contenga `sub` (insensible a mayusculas). Para anclar props a sockets
+// (ej. mazo -> mano derecha) como hace el engine con RightHand.
+static bool modelNodeTx(const ModelFile& m, const char* sub, float o[3]) {
+    size_t sl = strlen(sub);
+    for (size_t i = 0; i < m.nodes.size(); i++) {
+        const std::string& nm = m.nodes[i].name;
+        if (nm.size() < sl) continue;
+        for (size_t k = 0; k + sl <= nm.size(); k++) {
+            size_t j = 0;
+            for (; j < sl; j++) {
+                const char a = nm[k + j], b = sub[j];
+                const char al = (a >= 'A' && a <= 'Z') ? (char)(a + 32) : a;
+                const char bl = (b >= 'A' && b <= 'Z') ? (char)(b + 32) : b;
+                if (al != bl) break;
+            }
+            if (j == sl) {
+                o[0] = m.nodes[i].G[12];
+                o[1] = m.nodes[i].G[13];
+                o[2] = m.nodes[i].G[14];
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void drawModelsFrame(VulkanRenderer& vk) {
     if (!ServerWorld::instance().clientEntered) return;
     static bool tried = false;
@@ -798,6 +835,16 @@ void drawModelsFrame(VulkanRenderer& vk) {
             for (size_t j = 0; j < defs[i].m->meshes.size(); j++)
                 tr += defs[i].m->meshes[j].idx.size() / 3;
             printf("[model] live %s tris=%u\n", defs[i].file, (unsigned)tr);
+            for (size_t j = 0; j < defs[i].m->meshes.size(); j++) {
+                const ModelMesh& mm = defs[i].m->meshes[j];
+                printf("[model] live %s mesh%u piece='%s' skel=%d eff=%u "
+                       "slots=%d\n",
+                       defs[i].file, (unsigned)j, mm.piece.c_str(),
+                       mm.isSkel ? 1 : 0, mm.effector, mm.texSlot);
+            }
+            for (size_t j = 0; j < defs[i].m->nodes.size() && j < 48; j++)
+                printf("[model] live %s node%u '%s'\n", defs[i].file,
+                       (unsigned)j, defs[i].m->nodes[j].name.c_str());
         }
         modelsLiveFlag() = haveSeal && haveBruno;
         fflush(stdout);
@@ -871,9 +918,18 @@ void drawModelsFrame(VulkanRenderer& vk) {
         if (haveMal) {
             const float fx = sinf(pp.yaw), fz = cosf(pp.yaw);
             const float rx = fz, rz = -fx;
-            const float hx = pp.x + rx * 20.0f + fx * 18.0f;
-            const float hy = pp.y + 32.0f;
-            const float hz = pp.z + rz * 20.0f + fz * 18.0f;
+            float hx = pp.x + rx * 20.0f + fx * 18.0f;
+            float hy = pp.y + 32.0f;
+            float hz = pp.z + rz * 20.0f + fz * 18.0f;
+            // Ancla a la mano derecha (socket RightHand del engine) en vez
+            // del offset fijo: el nodo viene en espacio-local del modelo.
+            float sock[3];
+            if (haveBruno && modelNodeTx(guardM, "righthand", sock)) {
+                const float c = cosf(pp.yaw), s = sinf(pp.yaw);
+                hx = pp.x + sock[0] * c + sock[2] * s;
+                hy = pp.y + sock[1];
+                hz = pp.z - sock[0] * s + sock[2] * c;
+            }
             for (size_t j = 0; j < malM.meshes.size(); j++)
                 drawModelInstance(vk, malM.meshes[j], tMal, hx, hy, hz,
                                   pp.yaw, 0.35f);

@@ -351,9 +351,17 @@ static bool isSkyTex(const std::string& n) {
             tolower(n[2]) == 'x' && tolower(n[3]) == 'f' &&
             tolower(n[4]) == 'x');
 }
+// Frustum del ultimo frame (lo publica drawWorldFrame; lo consume
+// drawModelInstance para las instancias dinamicas). Vale solo si
+// g_frustumValid: drawWorldFrame sale pronto sin mundo/camara.
+static Frustum6 g_frustum;
+static bool g_frustumValid = false;
+
 size_t drawWorldMesh(VulkanRenderer& vk, const WorldData& w, WorldTexCache& c,
                      unsigned& secDrawn, unsigned& secSkip,
-                     bool fullBright = false, const float* campos = nullptr) {
+                     bool fullBright = false, const float* campos = nullptr,
+                     const Frustum6* frustum = nullptr,
+                     unsigned* nCullBlock = nullptr) {
     size_t tris = 0;
     VkMeshVert v[3];
     // Aislamiento de bloques para diagnostico: SEAL_BLOCKS="0,3,5".
@@ -380,10 +388,21 @@ size_t drawWorldMesh(VulkanRenderer& vk, const WorldData& w, WorldTexCache& c,
         const WorldBlock& b = w.blocks[bi];
         // Skybox sigue a la camara (ver isSkyTex).
         float ox = 0, oy = 0, oz = 0;
-        if (campos && !b.sections.empty() && isSkyTex(b.sections[0].tex0)) {
+        const bool sky =
+            campos && !b.sections.empty() && isSkyTex(b.sections[0].tex0);
+        if (sky) {
             ox = campos[0] - b.cx;
             oy = campos[1] - b.cy;
             oz = campos[2] - b.cz;
+        }
+        // Frustum culling por bloque (AABB ya desplazada para el skybox).
+        // El skybox nunca se cullea: su caja es de autor y tras centrarlo
+        // casi siempre intersecta; cullearlo por error deja sin horizonte.
+        if (frustum && !sky &&
+            !aabbVisible(*frustum, b.cx + ox, b.cy + oy, b.cz + oz, b.hx,
+                         b.hy, b.hz)) {
+            if (nCullBlock) (*nCullBlock)++;
+            continue;
         }
         for (size_t si = 0; si < b.sections.size(); si++) {
             const WorldSection& s = b.sections[si];
@@ -457,8 +476,10 @@ void drawWorldFrame(VulkanRenderer& vk) {
                  (float)VkBridge::width() / (float)VkBridge::height(), 1.0f,
                  20000.0f, VP);
     vk.SetViewProj(VP);
+    frustumFromVP16(VP, g_frustum);
+    g_frustumValid = true;
     unsigned sd = 0, ss = 0;
-    drawWorldMesh(vk, *w, tc, sd, ss, true, cp);
+    drawWorldMesh(vk, *w, tc, sd, ss, true, cp, &g_frustum, nullptr);
 }
 
 int runWorldTest(const std::string& ppm) {
@@ -555,12 +576,16 @@ int runWorldTest(const std::string& ppm) {
     float VP[16];
     lookAt4(pos, tgt, 90.0f, 800.0f / 600.0f, 1.0f, size * 8.0f + 500.0f, VP);
     vk.SetViewProj(VP);
+    frustumFromVP16(VP, g_frustum);
+    g_frustumValid = true;
     vk.Clear(0xFF87A0C0);
-    unsigned secDrawn = 0, secSkip = 0;
-    const size_t tris = drawWorldMesh(vk, w, tc, secDrawn, secSkip);
-    printf("WORLD: drawn tris=%u secDrawn=%u secSkip=%u texOk=%u texMiss=%u "
+    unsigned secDrawn = 0, secSkip = 0, secCull = 0;
+    const size_t tris =
+        drawWorldMesh(vk, w, tc, secDrawn, secSkip, false, nullptr,
+                      &g_frustum, &secCull);
+    printf("WORLD: drawn tris=%u secDrawn=%u secSkip=%u secCull=%u texOk=%u texMiss=%u "
            "sprites=%u\n",
-           (unsigned)tris, secDrawn, secSkip, tc.hits, tc.miss, tc.sprites);
+           (unsigned)tris, secDrawn, secSkip, secCull, tc.hits, tc.miss, tc.sprites);
     if (!vk.SnapshotPPM(ppm.c_str())) {
         printf("WORLD_RESULT ok=0 stage=snap\n");
         return 1;
@@ -599,6 +624,29 @@ void drawModelInstance(VulkanRenderer& vk, const ModelMesh& mesh, uint32_t tex,
     if (!tex || mesh.verts.empty() || mesh.idx.empty()) return;
     const float c = cosf(yaw), s = sinf(yaw);
     const float cp = cosf(pitch), sp = sinf(pitch);
+    if (g_frustumValid) {
+        // Esfera local (barata: pocos miles de verts) -> mundo con la misma
+        // rotacion que los verts de abajo; el radio es invariante a rotacion.
+        float mnx = mesh.verts[0].x, mxx = mnx;
+        float mny = mesh.verts[0].y, mxy = mny;
+        float mnz = mesh.verts[0].z, mxz = mnz;
+        for (size_t i = 1; i < mesh.verts.size(); i++) {
+            const ModelVert& mv = mesh.verts[i];
+            if (mv.x < mnx) mnx = mv.x; else if (mv.x > mxx) mxx = mv.x;
+            if (mv.y < mny) mny = mv.y; else if (mv.y > mxy) mxy = mv.y;
+            if (mv.z < mnz) mnz = mv.z; else if (mv.z > mxz) mxz = mv.z;
+        }
+        const float ccx = (mnx + mxx) * 0.5f, ccy = (mny + mxy) * 0.5f,
+                    ccz = (mnz + mxz) * 0.5f;
+        const float hx = (mxx - mnx) * 0.5f, hy = (mxy - mny) * 0.5f,
+                    hz = (mxz - mnz) * 0.5f;
+        const float rad = sqrtf(hx * hx + hy * hy + hz * hz);
+        const float x1 = ccx * c + ccz * s;
+        const float z1 = -ccx * s + ccz * c;
+        if (!sphereVisible(g_frustum, x1 + px, ccy * cp - z1 * sp + py,
+                           ccy * sp + z1 * cp + pz, rad))
+            return;
+    }
     VkMeshVert v[3];
     for (size_t t = 0; t + 2 < mesh.idx.size(); t += 3) {
         for (int k = 0; k < 3; k++) {
@@ -857,6 +905,8 @@ int runModelTest(const std::string& ppm) {
     float VP[16];
     lookAt4(campos, camtgt, 90.0f, 800.0f / 600.0f, 1.0f, 3000.0f, VP);
     vk.SetViewProj(VP);
+    frustumFromVP16(VP, g_frustum);
+    g_frustumValid = true;
     vk.Clear(0xFF203038);
     for (int mi = 0; mi < 6; mi++) {
         std::string rp;

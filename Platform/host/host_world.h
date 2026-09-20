@@ -81,6 +81,63 @@ inline void lookAt4(const Vec3& pos, const Vec3& tgt, float fovXdeg,
     matMul4(P, V, vp);
 }
 
+// ---- frustum culling CPU (R4): planos extraidos de la VP ya calculada ----
+// La VP es columna-mayor, NDC Vulkan (Y invertida, Z en [0,1]).
+// Metodo Gribb-Hartmann adaptado a Z [0,1]: L/R/B/T iguales que OpenGL,
+// Near = fila2 (z>=0), Far = fila3-fila2 (z<=w). Dentro: dot(n,p)+d >= 0.
+struct Frustum6 {
+    float n[6][3]; // L,R,B,T,Near,Far (normalizadas)
+    float d[6];
+};
+inline void frustumFromVP16(const float vp[16], Frustum6& f) {
+    float row[4][4];
+    for (int r = 0; r < 4; r++)
+        for (int c = 0; c < 4; c++) row[r][c] = vp[c * 4 + r];
+    float p[6][4] = {
+        {row[3][0] + row[0][0], row[3][1] + row[0][1],
+         row[3][2] + row[0][2], row[3][3] + row[0][3]}, // L
+        {row[3][0] - row[0][0], row[3][1] - row[0][1],
+         row[3][2] - row[0][2], row[3][3] - row[0][3]}, // R
+        {row[3][0] + row[1][0], row[3][1] + row[1][1],
+         row[3][2] + row[1][2], row[3][3] + row[1][3]}, // B
+        {row[3][0] - row[1][0], row[3][1] - row[1][1],
+         row[3][2] - row[1][2], row[3][3] - row[1][3]}, // T
+        {row[2][0], row[2][1], row[2][2], row[2][3]},   // Near
+        {row[3][0] - row[2][0], row[3][1] - row[2][1],
+         row[3][2] - row[2][2], row[3][3] - row[2][3]}, // Far
+    };
+    for (int i = 0; i < 6; i++) {
+        float l = sqrtf(p[i][0] * p[i][0] + p[i][1] * p[i][1] +
+                        p[i][2] * p[i][2]);
+        if (l < 1e-8f) l = 1.0f;
+        f.n[i][0] = p[i][0] / l;
+        f.n[i][1] = p[i][1] / l;
+        f.n[i][2] = p[i][2] / l;
+        f.d[i] = p[i][3] / l;
+    }
+}
+// Test AABB vs frustum (vertice-p, como GetAABBPlaneCorner del D3D original).
+inline bool aabbVisible(const Frustum6& f, float cx, float cy, float cz,
+                        float hx, float hy, float hz) {
+    for (int i = 0; i < 6; i++) {
+        const float px = f.n[i][0] >= 0 ? cx + hx : cx - hx;
+        const float py = f.n[i][1] >= 0 ? cy + hy : cy - hy;
+        const float pz = f.n[i][2] >= 0 ? cz + hz : cz - hz;
+        if (f.n[i][0] * px + f.n[i][1] * py + f.n[i][2] * pz + f.d[i] < 0)
+            return false;
+    }
+    return true;
+}
+// Esfera conservadora (para instancias de modelo con pos/rot dinamica).
+inline bool sphereVisible(const Frustum6& f, float cx, float cy, float cz,
+                          float r) {
+    for (int i = 0; i < 6; i++) {
+        if (f.n[i][0] * cx + f.n[i][1] * cy + f.n[i][2] * cz + f.d[i] < -r)
+            return false;
+    }
+    return true;
+}
+
 // ---- lector LE con cotas ----
 struct DatReader {
     const uint8_t* d = nullptr;

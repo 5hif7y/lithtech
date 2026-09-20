@@ -1,4 +1,4 @@
-WORLD: blocks=10 sections=24 tris=4115
+﻿WORLD: blocks=10 sections=24 tris=4115
 WORLD: bbox=(-2796,-1052,-3840)-(2796,1052,3840)
 WORLD: ground(120,-140)=-674
 WORLD: ground(80,-100)=-674
@@ -22,6 +22,6 @@ WORLD: tex 'tex\siberia\tfsib018.dtx' x3
 WORLD: tex 'tex\siberia\tfsib021.dtx' x3
 HOST: vulkan device=Radeon RX 580 Series vendor=0x1002 device=0x67df
 WORLD: cam=(0,3456,-8064) tgt=(0,0,0)
-WORLD: drawn tris=4103 secDrawn=23 secSkip=1 texOk=23 texMiss=0 sprites=0
+WORLD: drawn tris=4103 secDrawn=23 secSkip=1 secCull=0 texOk=23 texMiss=0 sprites=0
 WORLD: nonClear=46089
 WORLD_RESULT ok=1 tris=4103

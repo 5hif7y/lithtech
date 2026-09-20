@@ -4,6 +4,7 @@
 // Solo LOD0, solo bind pose (sin anims): suficiente para focas, jugador,
 // snowman y mazo. Header-only como host_world.h.
 #pragma once
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -39,6 +40,7 @@ struct ModelMesh {
 struct ModelNode {
     std::string name;
     uint16_t idx = 0;
+    int parent = -1; // idx del padre (-1 = root); lo rellena parseModelNode
     float G[16]; // global bind (columna-mayor)
 };
 struct ModelFile {
@@ -205,7 +207,8 @@ inline void skinVert(const RawVert& sv, const BoneSet* set,
     o[0] = x; o[1] = y; o[2] = z;
 }
 
-inline bool parseModelNode(ModelReader& r, ModelFile& m, int depth) {
+inline bool parseModelNode(ModelReader& r, ModelFile& m, int depth,
+                            int parent) {
     if (depth > 64) {
         r.ok = false;
         return false;
@@ -213,6 +216,7 @@ inline bool parseModelNode(ModelReader& r, ModelFile& m, int depth) {
     ModelNode nd;
     nd.name = r.str();
     nd.idx = r.u16();
+    nd.parent = parent;
     (void)r.u8(); // flags
     if (!r.ok) return false;
     float mat[16];
@@ -233,7 +237,7 @@ inline bool parseModelNode(ModelReader& r, ModelFile& m, int depth) {
         return false;
     }
     for (uint32_t i = 0; i < nc; i++)
-        if (!parseModelNode(r, m, depth + 1)) return false;
+        if (!parseModelNode(r, m, depth + 1, (int)nd.idx)) return false;
     return true;
 }
 
@@ -474,7 +478,7 @@ inline bool loadLTB(const std::string& path, ModelFile& m) {
             if (!r.ok) return false;
         }
     }
-    if (!parseModelNode(r, m, 0)) return false;
+    if (!parseModelNode(r, m, 0, -1)) return false;
     const uint32_t nws = r.u32();
     if (!r.ok || nws > 1024) return false;
     for (uint32_t i = 0; i < nws; i++) {
@@ -493,5 +497,164 @@ inline bool loadLTB(const std::string& path, ModelFile& m) {
     for (size_t i = 0; i < m.meshes.size(); i++)
         cookModelMesh(m, m.meshes[i]);
     return r.ok;
+}
+
+// ---- pose procedural R5: rotar subarboles rigidos sobre el bind ----
+// Sin tracks de anim: cada delta rota un joint y sus descendientes con
+// D = T(p)*R*T(-p) (p = origen bind del joint). Los verts se asignan por
+// hueso dominante (rango BoneSet o indices MP, o effector en rigidos).
+struct PoseDelta {
+    int joint = -1;
+    float ax = 1.0f, ay = 0.0f, az = 0.0f;
+    float ang = 0.0f;
+};
+inline int findNodeCI(const ModelFile& m, const char* name) {
+    for (size_t i = 0; i < m.nodes.size(); i++) {
+        const std::string& nm = m.nodes[i].name;
+        size_t j = 0;
+        for (; name[j] && j < nm.size(); j++) {
+            char a = nm[j], b = name[j];
+            if (a >= 'A' && a <= 'Z') a = (char)(a + 32);
+            if (b >= 'A' && b <= 'Z') b = (char)(b + 32);
+            if (a != b) break;
+        }
+        if (!name[j] && j == nm.size()) return (int)i;
+    }
+    return -1;
+}
+inline void mat4IdentP(float o[16]) {
+    for (int i = 0; i < 16; i++) o[i] = (i % 5 == 0) ? 1.0f : 0.0f;
+}
+inline void mat4MulP(const float a[16], const float b[16], float o[16]) {
+    for (int c = 0; c < 4; c++)
+        for (int r = 0; r < 4; r++) {
+            float s = 0;
+            for (int k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k];
+            o[c * 4 + r] = s;
+        }
+}
+inline void mat4RotAxisP(const float ax[3], float ang, float o[16]) {
+    const float l =
+        sqrtf(ax[0] * ax[0] + ax[1] * ax[1] + ax[2] * ax[2]);
+    if (l < 1e-8f) {
+        mat4IdentP(o);
+        return;
+    }
+    const float x = ax[0] / l, y = ax[1] / l, z = ax[2] / l;
+    const float c = cosf(ang), s = sinf(ang), C = 1.0f - c;
+    mat4IdentP(o);
+    o[0] = x * x * C + c; o[1] = y * x * C + z * s; o[2] = z * x * C - y * s;
+    o[4] = x * y * C - z * s; o[5] = y * y * C + c; o[6] = z * y * C + x * s;
+    o[8] = x * z * C + y * s; o[9] = y * z * C - x * s; o[10] = z * z * C + c;
+}
+inline void jointDeltaMat(const ModelFile& m, int joint, const float ax[3],
+                          float ang, float o[16]) {
+    float p[3] = {0, 0, 0};
+    if (joint >= 0 && (size_t)joint < m.nodes.size()) {
+        p[0] = m.nodes[(size_t)joint].G[12];
+        p[1] = m.nodes[(size_t)joint].G[13];
+        p[2] = m.nodes[(size_t)joint].G[14];
+    }
+    float R[16], T1[16], T2[16], tmp[16];
+    mat4RotAxisP(ax, ang, R);
+    mat4IdentP(T1); T1[12] = p[0]; T1[13] = p[1]; T1[14] = p[2];
+    mat4IdentP(T2); T2[12] = -p[0]; T2[13] = -p[1]; T2[14] = -p[2];
+    mat4MulP(R, T2, tmp);
+    mat4MulP(T1, tmp, o);
+}
+inline int dominantBone(const ModelFile& m, const ModelMesh& mesh, size_t vi) {
+    (void)m;
+    if (mesh.isSkel && vi < mesh.raw.size()) {
+        const RawVert& rv = mesh.raw[vi];
+        int bones[4] = {-1, -1, -1, -1};
+        if (mesh.isMP) {
+            for (int k = 0; k < 4; k++)
+                bones[k] = rv.bi[k] == 0xFF ? -1 : (int)rv.bi[k];
+        } else {
+            for (size_t s = 0; s < mesh.sets.size(); s++) {
+                const BoneSet& bs = mesh.sets[s];
+                if (vi >= bs.first && vi < (size_t)bs.first + bs.count) {
+                    for (int k = 0; k < 4; k++)
+                        bones[k] =
+                            bs.bones[k] == 0xFF ? -1 : (int)bs.bones[k];
+                    break;
+                }
+            }
+            if (bones[0] < 0 && mesh.haveEffector)
+                return (int)mesh.effector;
+        }
+        const float w[4] = {rv.b[0], rv.b[1], rv.b[2],
+                            1.0f - (rv.b[0] + rv.b[1] + rv.b[2])};
+        int best = -1;
+        float bw = 0;
+        for (int k = 0; k < 4; k++)
+            if (bones[k] >= 0 && w[k] > bw) {
+                bw = w[k];
+                best = bones[k];
+            }
+        return best;
+    }
+    if (mesh.haveEffector) return (int)mesh.effector;
+    return -1;
+}
+inline bool inSubtree(const ModelFile& m, int bone, int joint) {
+    for (int b = bone; b >= 0 && (size_t)b < m.nodes.size();
+         b = m.nodes[(size_t)b].parent) {
+        if (b == joint) return true;
+        if (m.nodes[(size_t)b].parent == b) break;
+    }
+    return false;
+}
+inline void applyPose(const ModelFile& m, const ModelMesh& mesh,
+                      const PoseDelta* ds, int ndt, const ModelVert* src,
+                      ModelVert* dst, size_t n) {
+    int nn = ndt > 4 ? 4 : ndt;
+    if (nn <= 0 || !ds) {
+        for (size_t i = 0; i < n; i++) dst[i] = src[i];
+        return;
+    }
+    float D[4][16];
+    int nj[4];
+    for (int d = 0; d < nn; d++) {
+        nj[d] = ds[d].joint;
+        const float ax[3] = {ds[d].ax, ds[d].ay, ds[d].az};
+        jointDeltaMat(m, nj[d], ax, ds[d].ang, D[d]);
+    }
+    for (size_t i = 0; i < n; i++) {
+        float x = src[i].x, y = src[i].y, z = src[i].z;
+        const int bb = dominantBone(m, mesh, i);
+        if (bb >= 0) {
+            for (int d = 0; d < nn; d++)
+                if (nj[d] >= 0 && inSubtree(m, bb, nj[d])) {
+                    const float* M = D[d];
+                    const float nx = M[0] * x + M[4] * y + M[8] * z + M[12];
+                    const float ny = M[1] * x + M[5] * y + M[9] * z + M[13];
+                    const float nz = M[2] * x + M[6] * y + M[10] * z + M[14];
+                    x = nx; y = ny; z = nz;
+                    break;
+                }
+        }
+        dst[i].x = x; dst[i].y = y; dst[i].z = z;
+        dst[i].u = src[i].u; dst[i].v = src[i].v;
+    }
+}
+// Punto en espacio-local tras la pose (ej. mano para el mazo).
+inline void posePoint(const ModelFile& m, const PoseDelta* ds, int ndt,
+                      int socketJoint, const float p[3], float o[3]) {
+    float x = p[0], y = p[1], z = p[2];
+    int nn = ndt > 4 ? 4 : ndt;
+    if (ds)
+        for (int d = 0; d < nn; d++)
+            if (ds[d].joint >= 0 && socketJoint >= 0 &&
+                inSubtree(m, socketJoint, ds[d].joint)) {
+                float D[16];
+                const float ax[3] = {ds[d].ax, ds[d].ay, ds[d].az};
+                jointDeltaMat(m, ds[d].joint, ax, ds[d].ang, D);
+                const float nx = D[0] * x + D[4] * y + D[8] * z + D[12];
+                const float ny = D[1] * x + D[5] * y + D[9] * z + D[13];
+                const float nz = D[2] * x + D[6] * y + D[10] * z + D[14];
+                x = nx; y = ny; z = nz;
+            }
+    o[0] = x; o[1] = y; o[2] = z;
 }
 } // namespace Host

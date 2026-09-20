@@ -674,6 +674,55 @@ void drawModelInstance(VulkanRenderer& vk, const ModelMesh& mesh, uint32_t tex,
     }
 }
 
+// Variante con verts ya poseados (R5): mismo raster, otra fuente.
+void drawModelInstancePosed(VulkanRenderer& vk, const ModelMesh& mesh,
+                            const ModelVert* vv, uint32_t tex, float px,
+                            float py, float pz, float yaw, float pitch = 0.0f) {
+    if (!tex || !vv || mesh.idx.empty()) return;
+    const float c = cosf(yaw), s = sinf(yaw);
+    const float cp = cosf(pitch), sp = sinf(pitch);
+    if (g_frustumValid && !mesh.verts.empty()) {
+        float mnx = mesh.verts[0].x, mxx = mnx;
+        float mny = mesh.verts[0].y, mxy = mny;
+        float mnz = mesh.verts[0].z, mxz = mnz;
+        for (size_t i = 1; i < mesh.verts.size(); i++) {
+            const ModelVert& mv = mesh.verts[i];
+            if (mv.x < mnx) mnx = mv.x; else if (mv.x > mxx) mxx = mv.x;
+            if (mv.y < mny) mny = mv.y; else if (mv.y > mxy) mxy = mv.y;
+            if (mv.z < mnz) mnz = mv.z; else if (mv.z > mxz) mxz = mv.z;
+        }
+        const float ccx = (mnx + mxx) * 0.5f, ccy = (mny + mxy) * 0.5f,
+                    ccz = (mnz + mxz) * 0.5f;
+        const float hx = (mxx - mnx) * 0.5f, hy = (mxy - mny) * 0.5f,
+                    hz = (mxz - mnz) * 0.5f;
+        const float rad = sqrtf(hx * hx + hy * hy + hz * hz);
+        const float x1 = ccx * c + ccz * s;
+        const float z1 = -ccx * s + ccz * c;
+        if (!sphereVisible(g_frustum, x1 + px, ccy * cp - z1 * sp + py,
+                           ccy * sp + z1 * cp + pz, rad))
+            return;
+    }
+    VkMeshVert v[3];
+    for (size_t t = 0; t + 2 < mesh.idx.size(); t += 3) {
+        for (int k = 0; k < 3; k++) {
+            const ModelVert& sv = vv[mesh.idx[t + (size_t)k]];
+            const float x1 = sv.x * c + sv.z * s;
+            const float z1 = -sv.x * s + sv.z * c;
+            v[k].x = x1 + px;
+            v[k].y = sv.y * cp - z1 * sp + py;
+            v[k].z = sv.y * sp + z1 * cp + pz;
+            v[k].u = sv.u;
+            v[k].v = sv.v;
+            v[k].r = v[k].g = v[k].b = v[k].a = 1.0f;
+        }
+        vk.PushTri3D(tex, v);
+    }
+}
+
+// Instante del ultimo ataque efectivo (para la pose de ataque R5).
+static float g_lastAttackT = -10.0f;
+inline float attackTime() { return g_lastAttackT; }
+
 // R4 melee: flanco de ataque (cmd 15 = click/espacio) + cooldown 0.6s.
 // Dispara el CheckForHit() REAL del CPlayerSrvr (raycast 35 +
 // OBJ_MID_DAMAGE 5). Con force=true el headless auto-ataque lo dispara.
@@ -706,6 +755,7 @@ void pollAttack(bool force) {
     const float t = ServerWorld::instance().time;
     if (!force && t - lastSwing < 0.6f) return;
     lastSwing = t;
+    g_lastAttackT = t;
     static_cast<CPlayerSrvr*>(pp)->CheckForHit();
     printf("[host] swing t=%.2f\n", t);
     fflush(stdout);
@@ -843,8 +893,9 @@ void drawModelsFrame(VulkanRenderer& vk) {
                        mm.isSkel ? 1 : 0, mm.effector, mm.texSlot);
             }
             for (size_t j = 0; j < defs[i].m->nodes.size() && j < 48; j++)
-                printf("[model] live %s node%u '%s'\n", defs[i].file,
-                       (unsigned)j, defs[i].m->nodes[j].name.c_str());
+                printf("[model] live %s node%u par=%d '%s'\n", defs[i].file,
+                       (unsigned)j, defs[i].m->nodes[j].parent,
+                       defs[i].m->nodes[j].name.c_str());
         }
         modelsLiveFlag() = haveSeal && haveBruno;
         fflush(stdout);
@@ -906,29 +957,77 @@ void drawModelsFrame(VulkanRenderer& vk) {
     }
     const PlayerPub& pp = playerPub();
     if (pp.valid) {
+        // --- pose procedural R5: caminar por distancia + ataque ---
+        const float t = ServerWorld::instance().time;
+        static float lastPPx = 0, lastPPz = 0, walkPhase = 0;
+        static bool haveLastPP = false;
+        float walkSpeed = 0;
+        if (haveLastPP) {
+            const float dx = pp.x - lastPPx, dz = pp.z - lastPPz;
+            const float dist = sqrtf(dx * dx + dz * dz);
+            walkSpeed = dist * 60.0f; // u/s a 60 ticks
+            walkPhase += dist * 0.08f;
+        }
+        lastPPx = pp.x; lastPPz = pp.z; haveLastPP = true;
+        const bool poseOn =
+            !(getenv("SEAL_POSE") && getenv("SEAL_POSE")[0] == '0');
+        PoseDelta pd[6];
+        int npd = 0;
+        float bob = 0;
+        const float adt = t - attackTime();
+        float atkEnv = 0;
+        if (adt >= 0 && adt < 0.5f)
+            atkEnv = adt < 0.12f ? adt / 0.12f : 1.0f - (adt - 0.12f) / 0.38f;
+        int jn = -1;
+        if (poseOn && haveBruno) {
+            if (walkSpeed > 8.0f) {
+                const float s1 = sinf(walkPhase);
+                const float s2 = sinf(walkPhase + 3.14159265f);
+                if ((jn = findNodeCI(guardM, "Left_legu")) >= 0 && npd < 6)
+                    pd[npd++] = {jn, 1, 0, 0, 0.55f * s1};
+                if ((jn = findNodeCI(guardM, "Right_legu")) >= 0 && npd < 6)
+                    pd[npd++] = {jn, 1, 0, 0, 0.55f * s2};
+                if ((jn = findNodeCI(guardM, "Left_armu")) >= 0 && npd < 6)
+                    pd[npd++] = {jn, 1, 0, 0, 0.35f * s2};
+                if ((jn = findNodeCI(guardM, "Right_armu")) >= 0 && npd < 6)
+                    pd[npd++] = {jn, 1, 0, 0, 0.35f * s1};
+                bob = fabsf(cosf(walkPhase)) * 2.0f;
+            }
+            if (atkEnv > 0 &&
+                (jn = findNodeCI(guardM, "Right_armu")) >= 0 && npd < 6)
+                pd[npd++] = {jn, 1, 0, 0, -1.9f * atkEnv};
+        }
         if (haveBruno) {
+            // Posed por mesh (bind si npd==0): applyPose copia directo.
+            std::vector<std::vector<ModelVert> > pverts(
+                guardM.meshes.size());
             for (size_t j = 0; j < guardM.meshes.size(); j++) {
+                const ModelMesh& mm = guardM.meshes[j];
+                pverts[j].resize(mm.verts.size());
+                applyPose(guardM, mm, pd, npd, mm.verts.data(),
+                          pverts[j].data(), mm.verts.size());
                 const uint32_t tx =
-                    guardM.meshes[j].texSlot == 1 && tBruno1 ? tBruno1
-                                                             : tBruno;
-                drawModelInstance(vk, guardM.meshes[j], tx, pp.x, pp.y, pp.z,
-                                  pp.yaw);
+                    mm.texSlot == 1 && tBruno1 ? tBruno1 : tBruno;
+                drawModelInstancePosed(vk, mm, pverts[j].data(), tx, pp.x,
+                                       pp.y + bob, pp.z, pp.yaw);
             }
         }
         if (haveMal) {
             const float fx = sinf(pp.yaw), fz = cosf(pp.yaw);
             const float rx = fz, rz = -fx;
             float hx = pp.x + rx * 20.0f + fx * 18.0f;
-            float hy = pp.y + 32.0f;
+            float hy = pp.y + 32.0f + bob;
             float hz = pp.z + rz * 20.0f + fz * 18.0f;
-            // Ancla a la mano derecha (socket RightHand del engine) en vez
-            // del offset fijo: el nodo viene en espacio-local del modelo.
+            // Ancla a la mano POSEADA (sigue al brazo al atacar/caminar).
             float sock[3];
-            if (haveBruno && modelNodeTx(guardM, "righthand", sock)) {
+            int hj = haveBruno ? findNodeCI(guardM, "Right_hand") : -1;
+            if (hj >= 0 && modelNodeTx(guardM, "righthand", sock)) {
+                float ps[3];
+                posePoint(guardM, pd, npd, hj, sock, ps);
                 const float c = cosf(pp.yaw), s = sinf(pp.yaw);
-                hx = pp.x + sock[0] * c + sock[2] * s;
-                hy = pp.y + sock[1];
-                hz = pp.z - sock[0] * s + sock[2] * c;
+                hx = pp.x + ps[0] * c + ps[2] * s;
+                hy = pp.y + ps[1] + bob;
+                hz = pp.z - ps[0] * s + ps[2] * c;
             }
             for (size_t j = 0; j < malM.meshes.size(); j++)
                 drawModelInstance(vk, malM.meshes[j], tMal, hx, hy, hz,

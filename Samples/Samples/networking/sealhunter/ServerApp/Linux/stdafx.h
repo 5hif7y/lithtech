@@ -1,1 +1,1 @@
-// StdAfx.h - required for build of shared files
+stdafx.h

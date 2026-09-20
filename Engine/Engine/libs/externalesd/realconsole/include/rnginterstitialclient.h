@@ -1,1 +1,1 @@
-int RngLoadInterstitialLibrary (int bIsEnd);
+rnginterstitialclient.h

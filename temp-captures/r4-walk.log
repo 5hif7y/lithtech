@@ -18,8 +18,9 @@ HOST: OnEngineInitialized -> 0 shutdown=0
 [host] StartGame accepted (headless world)
 HOST: StartNormalGame -> 0 shutdown=0
 [host] CLTClientShell::OnEnterWorld()
-[srv] CLTServerShell::OnClientEnterWorld(HCLIENT: 0000000000000001)[srv] Can't find StartPoint. Using (0.000000, 0.000000, 0.000000) instead.[srv] Got the RightHand socket[srv] Got the socket[srv] Got the transform[srv] Error creating attachment!![srv] (PlayerSrvr) Error: too many OBBs on weapon! Expecting only one.[srv] SERVER Player Pos: 0.000000 0.000000 0.000000[srv] ClientHandle: 000001A171F96CE0[srv] ClientID 0[srv] client entered world player=000001A178B6DE10
+[srv] CLTServerShell::OnClientEnterWorld(HCLIENT: 0000000000000001)[srv] Can't find StartPoint. Using (0.000000, 0.000000, 0.000000) instead.[srv] Got the RightHand socket[srv] Got the socket[srv] Got the transform[srv] Error creating attachment!![srv] (PlayerSrvr) Error: too many OBBs on weapon! Expecting only one.[srv] SERVER Player Pos: 0.000000 0.000000 0.000000[srv] ClientHandle: 0000020199D049A0[srv] ClientID 0[srv] client entered world player=00000201A85B9960
 [srv] player start moved to field
+[host] walk f=0 pos=(0,0,0)
 [host] Computer Name: DESKTOP-GOF3C5B
 [srv] DESKTOP-GOF3C5B has entered the game[srv] seal texture id=8 (demo-sealhunter/sealhunter/rez/tex/seal/seal.tga)
 [world] live: blocks=10 tris=4115 (demo-sealhunter/sealhunter/rez/Worlds/World.dat)
@@ -101,13 +102,13 @@ HOST: StartNormalGame -> 0 shutdown=0
 [model] Seal0 at (-670,-512,400) ground=-527
 [model] Seal1 at (-600,-528,420) ground=-507
 [model] Seal2 at (-750,-528,430) ground=-545
-[model]  at (-700,-528,400) ground=-535
+[model]  at (-699,-528,400) ground=-535
 [model]  at (0,0,0) ground=-674
-[model] player at (-700,-528,400) ground=-535
+[model] player at (-699,-528,400) ground=-535
 [model] snowman ground=-674
 [host] score=0 money=0.00
 [srv] CLTServerShell::OnClientExitWorld(0000000000000001)[srv] client exited world
-HOST: vulkan tris=1686 uirenders=360 snapshot=temp-captures/r4-gameplay.ppm
+HOST: vulkan tris=1686 uirenders=360 snapshot=temp-captures/r4-walk.ppm
 HOST: frames=120 draws=1560 uirenders=360 objects=2 cprint=16
 HOST_RESULT ok=1 stage=run frames=120 draws=1560 vktris=1686
 SERVER: objects=3 updateticks=188 time=2.00

@@ -966,12 +966,13 @@ void drawModelsFrame(VulkanRenderer& vk) {
             const float dx = pp.x - lastPPx, dz = pp.z - lastPPz;
             const float dist = sqrtf(dx * dx + dz * dz);
             walkSpeed = dist * 60.0f; // u/s a 60 ticks
-            walkPhase += dist * 0.08f;
+            // Zancada completa: fase por distancia con paso de ~90u.
+            walkPhase += dist * (6.2831853f / 90.0f);
         }
         lastPPx = pp.x; lastPPz = pp.z; haveLastPP = true;
         const bool poseOn =
             !(getenv("SEAL_POSE") && getenv("SEAL_POSE")[0] == '0');
-        PoseDelta pd[6];
+        PoseDelta pd[8];
         int npd = 0;
         float bob = 0;
         const float adt = t - attackTime();
@@ -983,18 +984,26 @@ void drawModelsFrame(VulkanRenderer& vk) {
             if (walkSpeed > 8.0f) {
                 const float s1 = sinf(walkPhase);
                 const float s2 = sinf(walkPhase + 3.14159265f);
-                if ((jn = findNodeCI(guardM, "Left_legu")) >= 0 && npd < 6)
-                    pd[npd++] = {jn, 1, 0, 0, 0.55f * s1};
-                if ((jn = findNodeCI(guardM, "Right_legu")) >= 0 && npd < 6)
-                    pd[npd++] = {jn, 1, 0, 0, 0.55f * s2};
-                if ((jn = findNodeCI(guardM, "Left_armu")) >= 0 && npd < 6)
-                    pd[npd++] = {jn, 1, 0, 0, 0.35f * s2};
-                if ((jn = findNodeCI(guardM, "Right_armu")) >= 0 && npd < 6)
-                    pd[npd++] = {jn, 1, 0, 0, 0.35f * s1};
-                bob = fabsf(cosf(walkPhase)) * 2.0f;
+                if ((jn = findNodeCI(guardM, "Left_legu")) >= 0 && npd < 8)
+                    pd[npd++] = {jn, 1, 0, 0, 0.7f * s1};
+                if ((jn = findNodeCI(guardM, "Right_legu")) >= 0 && npd < 8)
+                    pd[npd++] = {jn, 1, 0, 0, 0.7f * s2};
+                // Rodilla: flexiona al llevar la pierna atras (siempre >=0).
+                float k1 = sinf(walkPhase - 0.9f);
+                float k2 = sinf(walkPhase + 3.14159265f - 0.9f);
+                if (k1 < 0) k1 = 0; if (k2 < 0) k2 = 0;
+                if ((jn = findNodeCI(guardM, "Left_legl")) >= 0 && npd < 8)
+                    pd[npd++] = {jn, 1, 0, 0, 0.25f + 0.6f * k1};
+                if ((jn = findNodeCI(guardM, "Right_legl")) >= 0 && npd < 8)
+                    pd[npd++] = {jn, 1, 0, 0, 0.25f + 0.6f * k2};
+                if ((jn = findNodeCI(guardM, "Left_armu")) >= 0 && npd < 8)
+                    pd[npd++] = {jn, 1, 0, 0, 0.5f * s2};
+                if ((jn = findNodeCI(guardM, "Right_armu")) >= 0 && npd < 8)
+                    pd[npd++] = {jn, 1, 0, 0, 0.5f * s1};
+                bob = fabsf(cosf(walkPhase)) * 2.5f;
             }
             if (atkEnv > 0 &&
-                (jn = findNodeCI(guardM, "Right_armu")) >= 0 && npd < 6)
+                (jn = findNodeCI(guardM, "Right_armu")) >= 0 && npd < 8)
                 pd[npd++] = {jn, 1, 0, 0, -1.9f * atkEnv};
         }
         if (haveBruno) {
@@ -1028,6 +1037,34 @@ void drawModelsFrame(VulkanRenderer& vk) {
                 hx = pp.x + ps[0] * c + ps[2] * s;
                 hy = pp.y + ps[1] + bob;
                 hz = pp.z - ps[0] * s + ps[2] * c;
+            }
+            // Grip: el origen del mazo no esta en el mango; lleva el punto
+            // de agarre (centro inferior del bbox local) a la mano.
+            if (!malM.meshes.empty() && !malM.meshes[0].verts.empty()) {
+                static bool gok = false;
+                static float gx = 0, gy = 0, gz = 0;
+                if (!gok) {
+                    gok = true;
+                    const std::vector<ModelVert>& mv = malM.meshes[0].verts;
+                    float mnx = mv[0].x, mxx = mnx, mny = mv[0].y,
+                          mxy = mny, mnz = mv[0].z, mxz = mnz;
+                    for (size_t i = 1; i < mv.size(); i++) {
+                        if (mv[i].x < mnx) mnx = mv[i].x;
+                        else if (mv[i].x > mxx) mxx = mv[i].x;
+                        if (mv[i].y < mny) mny = mv[i].y;
+                        else if (mv[i].y > mxy) mxy = mv[i].y;
+                        if (mv[i].z < mnz) mnz = mv[i].z;
+                        else if (mv[i].z > mxz) mxz = mv[i].z;
+                    }
+                    gx = (mnx + mxx) * 0.5f; gy = mny; gz = (mnz + mxz) * 0.5f;
+                }
+                // Resta R(agarre) con la misma rotacion del dibujado (0.35).
+                const float gc = cosf(pp.yaw), gs = sinf(pp.yaw);
+                const float gcp = cosf(0.35f), gsp = sinf(0.35f);
+                const float gx1 = gx * gc + gz * gs;
+                const float gz1 = -gx * gs + gz * gc;
+                hx -= gx1; hy -= gy * gcp - gz1 * gsp;
+                hz -= gy * gsp + gz1 * gcp;
             }
             for (size_t j = 0; j < malM.meshes.size(); j++)
                 drawModelInstance(vk, malM.meshes[j], tMal, hx, hy, hz,
@@ -1063,6 +1100,14 @@ int runModelTest(const std::string& ppm) {
     frustumFromVP16(VP, g_frustum);
     g_frustumValid = true;
     vk.Clear(0xFF203038);
+    // Pose estatica de prueba: SEAL_POSE_TEST=<fase rad> posa al guardia
+    // a mitad de zancada (solo probe de modelos, el juego usa la marcha).
+    float testPhase = 0;
+    bool testPose = false;
+    if (const char* e = getenv("SEAL_POSE_TEST")) {
+        testPhase = (float)atof(e);
+        testPose = true;
+    }
     for (int mi = 0; mi < 6; mi++) {
         std::string rp;
         std::string cand = base + "/Models/" + names[mi] + ".ltb";
@@ -1099,7 +1144,32 @@ int runModelTest(const std::string& ppm) {
             continue;
         }
         for (size_t i = 0; i < mf.meshes.size(); i++) {
-            drawModelInstance(vk, mf.meshes[i], tex, posX[mi], 0, 0, 0.4f);
+            if (testPose && !strcmp(names[mi], "HARMGuard")) {
+                PoseDelta tpd[8];
+                int tnpd = 0, tj = -1;
+                const float ts1 = sinf(testPhase);
+                const float ts2 = sinf(testPhase + 3.14159265f);
+                float tk = sinf(testPhase - 0.9f);
+                if (tk < 0) tk = 0;
+                if ((tj = findNodeCI(mf, "Left_legu")) >= 0 && tnpd < 8)
+                    tpd[tnpd++] = {tj, 1, 0, 0, 0.7f * ts1};
+                if ((tj = findNodeCI(mf, "Right_legu")) >= 0 && tnpd < 8)
+                    tpd[tnpd++] = {tj, 1, 0, 0, 0.7f * ts2};
+                if ((tj = findNodeCI(mf, "Left_legl")) >= 0 && tnpd < 8)
+                    tpd[tnpd++] = {tj, 1, 0, 0, 0.25f + 0.6f * tk};
+                if ((tj = findNodeCI(mf, "Left_armu")) >= 0 && tnpd < 8)
+                    tpd[tnpd++] = {tj, 1, 0, 0, 0.5f * ts2};
+                if ((tj = findNodeCI(mf, "Right_armu")) >= 0 && tnpd < 8)
+                    tpd[tnpd++] = {tj, 1, 0, 0, 0.5f * ts1};
+                std::vector<ModelVert> tp;
+                tp.resize(mf.meshes[i].verts.size());
+                applyPose(mf, mf.meshes[i], tpd, tnpd,
+                          mf.meshes[i].verts.data(), tp.data(), tp.size());
+                drawModelInstancePosed(vk, mf.meshes[i], tp.data(), tex,
+                                       posX[mi], 0, 0, 0.4f);
+            } else {
+                drawModelInstance(vk, mf.meshes[i], tex, posX[mi], 0, 0, 0.4f);
+            }
             totalTris += mf.meshes[i].idx.size() / 3;
         }
     }

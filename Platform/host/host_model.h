@@ -608,13 +608,13 @@ inline bool inSubtree(const ModelFile& m, int bone, int joint) {
 inline void applyPose(const ModelFile& m, const ModelMesh& mesh,
                       const PoseDelta* ds, int ndt, const ModelVert* src,
                       ModelVert* dst, size_t n) {
-    int nn = ndt > 4 ? 4 : ndt;
+    int nn = ndt > 8 ? 8 : ndt;
     if (nn <= 0 || !ds) {
         for (size_t i = 0; i < n; i++) dst[i] = src[i];
         return;
     }
-    float D[4][16];
-    int nj[4];
+    float D[8][16];
+    int nj[8];
     for (int d = 0; d < nn; d++) {
         nj[d] = ds[d].joint;
         const float ax[3] = {ds[d].ax, ds[d].ay, ds[d].az};
@@ -642,7 +642,7 @@ inline void applyPose(const ModelFile& m, const ModelMesh& mesh,
 inline void posePoint(const ModelFile& m, const PoseDelta* ds, int ndt,
                       int socketJoint, const float p[3], float o[3]) {
     float x = p[0], y = p[1], z = p[2];
-    int nn = ndt > 4 ? 4 : ndt;
+    int nn = ndt > 8 ? 8 : ndt;
     if (ds)
         for (int d = 0; d < nn; d++)
             if (ds[d].joint >= 0 && socketJoint >= 0 &&

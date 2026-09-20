@@ -51,8 +51,12 @@ public:
   // (columna-mayor, 16 floats), con test de profundidad. Requieren tex>0;
   // para color plano usar una textura blanca 1x1.
   void PushTri3D(uint32_t tex, const VkMeshVert v[3]);
+  // Skybox (fondo): batch propio; drawOrdered lo dibuja primero SIN
+  // escribir profundidad, para que el mundo lo tape donde corresponda.
+  void PushTri3DSky(uint32_t tex, const VkMeshVert v[3]);
   void SetViewProj(const float m[16]);
   size_t PendingMeshTris() const;
+  size_t PendingSkyTris() const;
 
   // Headless offscreen: sin ventana/swapchain, con readback a PPM.
   bool InitHeadless(uint32_t w, uint32_t h);
@@ -88,8 +92,9 @@ private:
   bool drawOrdered(VkCommandBuffer cmd, VkRenderPass pass);
   // Pipeline 3D (R1): crea el pipeline mesh para el pass dado, con depth
   // solo si el pass tiene attachment de profundidad (m_depthFormat valido).
+  // depthWrite=false para el pipeline del skybox (fondo sin ocluir).
   bool createMeshPipeline(VkRenderPass pass, uint32_t w, uint32_t h,
-                          VkPipeline& out);
+                          VkPipeline& out, bool depthWrite = true);
   bool uploadMeshBatch();
   // Formato de profundidad soportado por el dispositivo fisico, o
   // VK_FORMAT_UNDEFINED si no hay (el 3D dibuja sin depth en ese caso).
@@ -167,6 +172,8 @@ private:
   // Estado del pipeline 3D (R1): batch de tris mundo + MVP + depth.
   struct MeshTri { uint32_t tex = 0; VkMeshVert v[3]; };
   std::vector<MeshTri> m_meshBatch;
+  // Batch del skybox: mismos verts, pipeline sin depthWrite, va primero.
+  std::vector<MeshTri> m_skyBatch;
   float m_viewProj[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
   VkBuffer m_meshBuf = VK_NULL_HANDLE;
   VkDeviceMemory m_meshMem = VK_NULL_HANDLE;
@@ -174,6 +181,8 @@ private:
   VkPipelineLayout m_meshPipeLayout = VK_NULL_HANDLE;
   VkPipeline m_meshPipeWin = VK_NULL_HANDLE;
   VkPipeline m_meshPipeOff = VK_NULL_HANDLE;
+  VkPipeline m_skyPipeWin = VK_NULL_HANDLE;
+  VkPipeline m_skyPipeOff = VK_NULL_HANDLE;
   VkFormat m_depthFormat = VK_FORMAT_UNDEFINED;
   VkImage m_depthImg = VK_NULL_HANDLE;
   VkDeviceMemory m_depthMem = VK_NULL_HANDLE;

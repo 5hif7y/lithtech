@@ -61,6 +61,8 @@ void VulkanRenderer::Shutdown() {
   if (m_texPipeOff) { vkDestroyPipeline(m_device, m_texPipeOff, nullptr); m_texPipeOff = VK_NULL_HANDLE; }
   if (m_meshPipeWin) { vkDestroyPipeline(m_device, m_meshPipeWin, nullptr); m_meshPipeWin = VK_NULL_HANDLE; }
   if (m_meshPipeOff) { vkDestroyPipeline(m_device, m_meshPipeOff, nullptr); m_meshPipeOff = VK_NULL_HANDLE; }
+  if (m_skyPipeWin) { vkDestroyPipeline(m_device, m_skyPipeWin, nullptr); m_skyPipeWin = VK_NULL_HANDLE; }
+  if (m_skyPipeOff) { vkDestroyPipeline(m_device, m_skyPipeOff, nullptr); m_skyPipeOff = VK_NULL_HANDLE; }
   if (m_meshPipeLayout) { vkDestroyPipelineLayout(m_device, m_meshPipeLayout, nullptr); m_meshPipeLayout = VK_NULL_HANDLE; }
   if (m_meshBuf) { vkDestroyBuffer(m_device, m_meshBuf, nullptr); m_meshBuf = VK_NULL_HANDLE; }
   if (m_meshMem) { vkFreeMemory(m_device, m_meshMem, nullptr); m_meshMem = VK_NULL_HANDLE; }
@@ -896,6 +898,7 @@ HRESULT VulkanRenderer::RenderWindowFrame() {
   m_batch.clear();
   m_texBatch.clear();
   m_meshBatch.clear();
+  m_skyBatch.clear();
   m_order.clear();
   return S_OK;
 }
@@ -1326,15 +1329,28 @@ void VulkanRenderer::PushTri3D(uint32_t tex, const VkMeshVert v[3]) {
   m_order.push_back(it);
 }
 
+void VulkanRenderer::PushTri3DSky(uint32_t tex, const VkMeshVert v[3]) {
+  if (!tex || !v) return;
+  MeshTri t;
+  t.tex = tex;
+  t.v[0] = v[0];
+  t.v[1] = v[1];
+  t.v[2] = v[2];
+  m_skyBatch.push_back(t);
+  // Sin item en m_order: el sky siempre se dibuja primero (drawOrdered).
+}
+
 void VulkanRenderer::SetViewProj(const float m[16]) {
   if (!m) return;
   memcpy(m_viewProj, m, sizeof(m_viewProj));
 }
 
 size_t VulkanRenderer::PendingMeshTris() const { return m_meshBatch.size(); }
+size_t VulkanRenderer::PendingSkyTris() const { return m_skyBatch.size(); }
 
 bool VulkanRenderer::createMeshPipeline(VkRenderPass pass, uint32_t w,
-                                        uint32_t h, VkPipeline& out) {
+                                        uint32_t h, VkPipeline& out,
+                                        bool depthWrite) {
   out = VK_NULL_HANDLE;
   if (!m_device || !pass || !w || !h) return false;
   const bool hasDepth = (m_depthFormat != VK_FORMAT_UNDEFINED);
@@ -1407,7 +1423,25 @@ bool VulkanRenderer::createMeshPipeline(VkRenderPass pass, uint32_t w,
   VkPipelineDepthStencilStateCreateInfo dsi{};
   dsi.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
   dsi.depthTestEnable = hasDepth ? VK_TRUE : VK_FALSE;
-  dsi.depthWriteEnable = hasDepth ? VK_TRUE : VK_FALSE;
+  dsi.depthWriteEnable = (hasDepth && depthWrite) ? VK_TRUE : VK_FALSE;
+  // Override empirico de winding (solo mesh, el sky queda CULL_NONE):
+  // SEAL_CULL=0 none (defecto), 1 back/CCW, 2 back/CW. El flip Y de
+  // buildPersp4 (o[5]=-f) invierte el winding en pantalla vs D3D.
+  // Winding verificado empiricamente (r3-cull*/r2-cull* 20/9/26):
+  // BACK+CW es el unico que conserva el mundo (BACK+CCW lo vacia);
+  // el flip Y de buildPersp4 (o[5]=-f) invierte el winding vs D3D.
+  // SEAL_CULL override: 0 none, 1 back/CCW, 2 back/CW (defecto).
+  if (depthWrite) {
+    int cullMode = 2;
+    if (const char* e = getenv("SEAL_CULL")) cullMode = atoi(e);
+    if (cullMode == 1) {
+      rsi.cullMode = VK_CULL_MODE_BACK_BIT;
+      rsi.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    } else if (cullMode == 2) {
+      rsi.cullMode = VK_CULL_MODE_BACK_BIT;
+      rsi.frontFace = VK_FRONT_FACE_CLOCKWISE;
+    }
+  }
   dsi.depthCompareOp = VK_COMPARE_OP_LESS;
   VkPipelineColorBlendAttachmentState ba{};
   ba.blendEnable = VK_TRUE;
@@ -1464,7 +1498,8 @@ bool VulkanRenderer::createMeshPipeline(VkRenderPass pass, uint32_t w,
 }
 
 bool VulkanRenderer::uploadMeshBatch() {
-  VkDeviceSize need = (VkDeviceSize)m_meshBatch.size() * 3 * sizeof(VkMeshVert);
+  VkDeviceSize need = (VkDeviceSize)(m_skyBatch.size() + m_meshBatch.size()) *
+                      3 * sizeof(VkMeshVert);
   if (need > m_meshCap) {
     if (m_meshBuf) vkDestroyBuffer(m_device, m_meshBuf, nullptr);
     if (m_meshMem) vkFreeMemory(m_device, m_meshMem, nullptr);
@@ -1501,6 +1536,10 @@ bool VulkanRenderer::uploadMeshBatch() {
     if (vkMapMemory(m_device, m_meshMem, 0, need, 0, &dst) != VK_SUCCESS)
       return false;
     VkMeshVert* w = (VkMeshVert*)dst;
+    // Sky primero (offset 0), mundo despues: el dibujado del sky usa
+    // [0, skyVerts) y el loop de mesh arranca en mf=skyVerts.
+    for (size_t i = 0; i < m_skyBatch.size(); i++)
+      for (int k = 0; k < 3; k++) *w++ = m_skyBatch[i].v[k];
     for (size_t i = 0; i < m_meshBatch.size(); i++)
       for (int k = 0; k < 3; k++) *w++ = m_meshBatch[i].v[k];
     vkUnmapMemory(m_device, m_meshMem);
@@ -1512,10 +1551,11 @@ bool VulkanRenderer::uploadMeshBatch() {
 // as needed. Vulkan executes draws in command order with no implicit
 // cross-pipeline ordering, unlike the GL/DX immediate paths this mirrors.
 bool VulkanRenderer::drawOrdered(VkCommandBuffer cmd, VkRenderPass pass) {
-  if (m_order.empty()) {
+  if (m_order.empty() && m_skyBatch.empty()) {
     m_batch.clear();
     m_texBatch.clear();
     m_meshBatch.clear();
+    m_skyBatch.clear();
     return true;
   }
   if (!m_pipeline) {
@@ -1542,14 +1582,42 @@ bool VulkanRenderer::drawOrdered(VkCommandBuffer cmd, VkRenderPass pass) {
   }
   VkPipeline* mslot = (pass == m_renderPass && m_renderPass) ? &m_meshPipeWin
                                                              : &m_meshPipeOff;
+  VkPipeline* sslot = (pass == m_renderPass && m_renderPass) ? &m_skyPipeWin
+                                                              : &m_skyPipeOff;
+  const bool needSky = !m_skyBatch.empty();
   if (needMesh) {
     if (!*mslot && !createMeshPipeline(pass, ew, eh, *mslot)) return false;
-    if (!uploadMeshBatch()) return false;
+    if (needSky && !*sslot &&
+        !createMeshPipeline(pass, ew, eh, *sslot, false))
+      return false;
+    if (needMesh || needSky) {
+      if (!uploadMeshBatch()) return false;
+    }
   }
   if (!uploadBatch()) return false;
   VkPipeline cur = VK_NULL_HANDLE;
   VkDeviceSize off = 0;
-  uint32_t ff = 0, tf = 0, mf = 0;
+  uint32_t ff = 0, tf = 0;
+  // El mundo arranca tras el sky en el vertex buffer compartido.
+  uint32_t mf = (uint32_t)m_skyBatch.size() * 3;
+  if (needSky) {
+    cur = *sslot;
+    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, cur);
+    vkCmdBindVertexBuffers(cmd, 0, 1, &m_meshBuf, &off);
+    vkCmdPushConstants(cmd, m_meshPipeLayout, VK_SHADER_STAGE_VERTEX_BIT, 0,
+                       (uint32_t)sizeof(m_viewProj), m_viewProj);
+    uint32_t sf = 0;
+    for (size_t i = 0; i < m_skyBatch.size(); i++) {
+      const uint32_t id = m_skyBatch[i].tex;
+      if (id && id <= m_textures.size()) {
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                m_meshPipeLayout, 0, 1,
+                                &m_textures[id - 1].set, 0, nullptr);
+        vkCmdDraw(cmd, 3, 1, sf, 0);
+      }
+      sf += 3;
+    }
+  }
   for (size_t i = 0; i < m_order.size(); i++) {
     if (m_order[i].mesh) {
       if (cur != *mslot) {
@@ -1599,6 +1667,7 @@ bool VulkanRenderer::drawOrdered(VkCommandBuffer cmd, VkRenderPass pass) {
   m_batch.clear();
   m_texBatch.clear();
   m_meshBatch.clear();
+  m_skyBatch.clear();
   m_order.clear();
   return true;
 }

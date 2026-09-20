@@ -22,6 +22,19 @@ Because much of the current code was produced through AI-assisted development, t
 
 The current state should therefore be treated as a **research and restoration workspace**, rather than a finished fork.
 
+## TODO
+
+* Clean up the documentation. Cheap AI tools mixed my native Rioplatense Spanish with Chinese-like sentence structures, and I also dumped text from several broken or undocumented sessions. I will restructure the documentation and rewrite it in simple, clear English.
+
+* Develop more demos and samples.
+
+* Fix the `sealhunter` demo. Culling is currently broken, and the skybox incorrectly clips everything at the horizon.
+
+* Support game SDKs through a common interface, possibly `IGame.h`, to normalize each implementation and keep the architecture modular.
+
+* Develop a drop-in replacement for `vulkan.ren` for older games.
+
+
 ## Planned Cleanup
 
 The next stage is to:

@@ -170,6 +170,13 @@ uint32 Seal::ObjectMessageFn(HOBJECT hSender, ILTMessage_Read *pMsg)
 	{
 		case OBJ_MID_DAMAGE:
             {
+				// R4: los muertos no vuelven a morir (el timer DYING no se
+				// resetea con cada golpe).
+				if (m_iAction == ACTION_DYING || m_iAction == ACTION_DEAD)
+				{
+					break;
+				}
+
 				// Stop moving if the seal is hit.
 				StopMoving();
 				m_iAction = ACTION_HIT;
@@ -203,6 +210,10 @@ uint32 Seal::ObjectMessageFn(HOBJECT hSender, ILTMessage_Read *pMsg)
                     }
 
 					m_iAction = ACTION_DYING;
+
+					// R4: fallback sin anims (el stub no dispara DEATH_DONE
+					// por string-key de modelo): morir por timer.
+					m_fTimeToDie = 1.2f;
 
 					PlayClientFX("SealFall", m_hObject, LTNULL, LTNULL, 0);
                 }
@@ -350,7 +361,16 @@ uint32 Seal::Update()
 		case ACTION_HIT:
 		case ACTION_DYING:
 		{
-			// Do nothing.
+			// R4: sin string-keys de anim en el stub, DYING muere por timer
+			// (la key DEATH_DONE real llama a Die() antes si llega).
+			if (m_iAction == ACTION_DYING)
+			{
+				m_fTimeToDie -= g_pLTServer->GetFrameTime();
+				if (m_fTimeToDie < 0.0f)
+				{
+					Die();
+				}
+			}
 			break;
 		}
 
@@ -687,6 +707,13 @@ void Seal::SendKillStealChatMessage(HOBJECT hFirst, HOBJECT hKiller)
 //-----------------------------------------------------------------------------
 void Seal::Die()
 {
+	// R4:idempotente (el timer DYING y la key DEATH_DONE real no deben
+	// duplicar el kill).
+	if (m_iAction == ACTION_DEAD)
+	{
+		return;
+	}
+
 	StopMoving();
 
 	// Calc seal kill value

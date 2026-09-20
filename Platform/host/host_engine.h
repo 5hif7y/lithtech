@@ -128,6 +128,23 @@ inline void takeAxes(float out[3]) {
     out[0] = a[0]; out[1] = a[1]; out[2] = a[2];
     a[0] = a[1] = a[2] = 0;
 }
+// ---- publicacion cliente->host: transform del jugador para dibujar su modelo.
+// CPlayerClnt::Update lo publica cada frame (R3-live); el host lo consume.
+struct PlayerPub {
+    float x = 0, y = 0, z = 0, yaw = 0, pitch = 0;
+    bool valid = false;
+};
+inline PlayerPub& playerPub() {
+    static PlayerPub s;
+    return s;
+}
+// Definida una sola vez en host_sealhunter.cpp (este header es single-TU;
+// los .cpp del juego solo la declaran para publicar el transform).
+void notePlayer(float x, float y, float z, float yaw, float pitch);
+inline bool& modelsLiveFlag() {
+    static bool b = false;
+    return b;
+}
 #ifdef _LINUX
 // X11 KeySym -> (Windows VK, engine command). Commands mirror the demo's
 // autoexec.cfg bindings (WASD/arrows move, Enter Start, Space Jump,
@@ -312,7 +329,11 @@ static HLOCALOBJ T_CreateObject(ObjectCreateStruct* s) {
     HLOCALOBJ h = makeObject();
     if (s) {
         ObjState* o = findObj(h);
-        if (o) o->type = s->m_ObjectType;
+        if (o) {
+            o->type = s->m_ObjectType;
+            o->pos = s->m_Pos;
+            o->rot = s->m_Rotation;
+        }
     }
     return h;
 }
@@ -832,8 +853,9 @@ public:
 class CommonTuned : public HostCommon {
 public:
     LTRESULT SetupEuler(LTRotation& r, float p, float y, float rl) override {
-        (void)p; (void)y; (void)rl;
-        r.Init();
+        // R4: euler REAL (igual que HostILTCommon): el stub en identidad
+        // hacia que todo lo cliente (movimiento, camara) mirara a +Z.
+        r = LTRotation(p, y, rl);
         return LT_OK;
     }
     LTRESULT CreateMessage(ILTMessage_Write*& m) override {

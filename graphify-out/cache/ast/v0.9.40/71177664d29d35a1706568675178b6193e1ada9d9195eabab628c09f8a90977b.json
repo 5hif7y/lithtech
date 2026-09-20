@@ -1,1 +1,0 @@
-{"nodes": [{"id": "$graphify-root$_third_party_vulkan_include_vulkan_vulkan_metal_h", "label": "vulkan_metal.h", "file_type": "code", "source_file": "third_party/vulkan/include/vulkan/vulkan_metal.h", "source_location": "L1"}], "edges": [], "raw_calls": [], "input_tokens": 0, "output_tokens": 0}

@@ -48,6 +48,12 @@ public:
     uint32	    EngineMessageFn(uint32 messageID, void *pData, float fData);
     uint32      ObjectMessageFn(HOBJECT hSender, ILTMessage_Read *pMsg);
 
+    // R4: el host la usa para dejar de dibujar focas muertas.
+    bool        IsDead() const
+    {
+        return m_iAction == ACTION_DEAD || m_iAction == ACTION_DYING;
+    }
+
 private:
 
     uint32		PreCreate(void *pData, float fData);

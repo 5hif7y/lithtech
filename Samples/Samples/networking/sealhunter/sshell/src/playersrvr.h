@@ -66,6 +66,8 @@ public:
                                         }
     float               GetMoney(){ return m_fMoney; }
     char*               GetName(){ return m_sName; }
+    // R4: el host dispara el hit-check real en el flanco de ataque.
+    void 				CheckForHit();
 
 private:
 
@@ -75,7 +77,6 @@ private:
     void        		CreateProjectile();
     void        		CreateAttachment(HATTACHMENT &hAttachment, HOBJECT hChildObject, const char* sSocket,
                     	             	 LTVector &vRotOffset, LTVector &vPosOffset);
-    void 				CheckForHit();
     void 				PlaySound(int i);
 
 private:

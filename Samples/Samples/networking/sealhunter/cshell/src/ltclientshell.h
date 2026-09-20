@@ -84,6 +84,9 @@ public:
 	// hide the menu overlay like case 0 of the GUI would.
 	void					EnterGameUI();
 
+	// R4: el host empuja el score del server (el stub no tiene net).
+	void					SetHudStats(unsigned score, float money);
+
 	void					OnCommandOn(int command);
 	void					OnCommandOff(int command);
 

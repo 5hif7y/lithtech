@@ -1,1 +1,0 @@
-{"nodes": [{"id": "$graphify-root$_third_party_vulkan_include_vulkan_vulkan_ubm_h", "label": "vulkan_ubm.h", "file_type": "code", "source_file": "third_party/vulkan/include/vulkan/vulkan_ubm.h", "source_location": "L1"}], "edges": [], "raw_calls": [], "parse_errors": {"first_error_line": 35, "multiline_error": false}}

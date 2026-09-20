@@ -450,6 +450,12 @@ void CLTClientShell::EnterGameUI()
     m_Gui.ShowInGame();
 }
 
+// R4: puente de score host->GUI (ver SetHudStats en el header).
+void CLTClientShell::SetHudStats(unsigned score, float money)
+{
+    m_Gui.SetStats(score, money);
+}
+
 
 
 //---------------------------------------------------------------------------

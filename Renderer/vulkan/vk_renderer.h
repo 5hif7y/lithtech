@@ -10,6 +10,8 @@
 struct VkTriVert { float x, y, r, g, b, a; };
 // Quad texturado 2D (pos NDC, uv 0..1, color 0..1 para modular).
 struct VkTexVert { float x, y, u, v, r, g, b, a; };
+// Triangulo 3D texturado (pos en espacio mundo, MVP via SetViewProj).
+struct VkMeshVert { float x, y, z, u, v, r, g, b, a; };
 
 class VulkanRenderer {
 public:
@@ -45,6 +47,13 @@ public:
   void PushTexQuad(uint32_t tex, const VkTexVert v[4]);
   size_t PendingTexQuads() const;
 
+  // Triangulos 3D (R1): espacio mundo, MVP combinado via SetViewProj
+  // (columna-mayor, 16 floats), con test de profundidad. Requieren tex>0;
+  // para color plano usar una textura blanca 1x1.
+  void PushTri3D(uint32_t tex, const VkMeshVert v[3]);
+  void SetViewProj(const float m[16]);
+  size_t PendingMeshTris() const;
+
   // Headless offscreen: sin ventana/swapchain, con readback a PPM.
   bool InitHeadless(uint32_t w, uint32_t h);
   void PushTri(const VkTriVert v[3]);
@@ -77,6 +86,22 @@ private:
                          VkPipeline& out);
   bool uploadTexBatch();
   bool drawOrdered(VkCommandBuffer cmd, VkRenderPass pass);
+  // Pipeline 3D (R1): crea el pipeline mesh para el pass dado, con depth
+  // solo si el pass tiene attachment de profundidad (m_depthFormat valido).
+  bool createMeshPipeline(VkRenderPass pass, uint32_t w, uint32_t h,
+                          VkPipeline& out);
+  bool uploadMeshBatch();
+  // Formato de profundidad soportado por el dispositivo fisico, o
+  // VK_FORMAT_UNDEFINED si no hay (el 3D dibuja sin depth en ese caso).
+  VkFormat findDepthFormat();
+  // Crea img/mem/view de profundidad (uso interno ventana y headless).
+  static bool createDepthImage(VkPhysicalDevice phys, VkDevice dev,
+                               uint32_t w, uint32_t h, VkFormat fmt,
+                               VkImage& img, VkDeviceMemory& mem,
+                               VkImageView& view);
+  // Crea m_depthImg/Mem/View (ventana) de wxh; destruye previos.
+  bool createDepthResources(uint32_t w, uint32_t h);
+  void destroyDepthResources();
 
   VkInstance m_instance = VK_NULL_HANDLE;
   VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
@@ -126,9 +151,9 @@ private:
   struct TexQuad { uint32_t tex = 0; VkTexVert v[6]; };
   std::vector<WinTex> m_textures;
   std::vector<TexQuad> m_texBatch;
-  // Submission order across flat/textured items (Vulkan has no implicit
+  // Submission order across flat/textured/items 3D (Vulkan has no implicit
   // order between pipelines: replay submission order explicitly).
-  struct DrawItem { bool tex = false; uint32_t idx = 0; };
+  struct DrawItem { bool tex = false; bool mesh = false; uint32_t idx = 0; };
   std::vector<DrawItem> m_order;
   VkDescriptorSetLayout m_texLayout = VK_NULL_HANDLE;
   VkDescriptorPool m_texPool = VK_NULL_HANDLE;
@@ -139,6 +164,24 @@ private:
   VkBuffer m_texBuf = VK_NULL_HANDLE;
   VkDeviceMemory m_texMem = VK_NULL_HANDLE;
   VkDeviceSize m_texCap = 0;
+  // Estado del pipeline 3D (R1): batch de tris mundo + MVP + depth.
+  struct MeshTri { uint32_t tex = 0; VkMeshVert v[3]; };
+  std::vector<MeshTri> m_meshBatch;
+  float m_viewProj[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
+  VkBuffer m_meshBuf = VK_NULL_HANDLE;
+  VkDeviceMemory m_meshMem = VK_NULL_HANDLE;
+  VkDeviceSize m_meshCap = 0;
+  VkPipelineLayout m_meshPipeLayout = VK_NULL_HANDLE;
+  VkPipeline m_meshPipeWin = VK_NULL_HANDLE;
+  VkPipeline m_meshPipeOff = VK_NULL_HANDLE;
+  VkFormat m_depthFormat = VK_FORMAT_UNDEFINED;
+  VkImage m_depthImg = VK_NULL_HANDLE;
+  VkDeviceMemory m_depthMem = VK_NULL_HANDLE;
+  VkImageView m_depthView = VK_NULL_HANDLE;
+  VkImage m_offDepthImg = VK_NULL_HANDLE;
+  VkDeviceMemory m_offDepthMem = VK_NULL_HANDLE;
+  VkImageView m_offDepthView = VK_NULL_HANDLE;
+  VkClearValue m_depthClear{};
   VkCommandPool m_upPool = VK_NULL_HANDLE;
   VkCommandBuffer m_upBuf = VK_NULL_HANDLE;
   VkFence m_upFence = VK_NULL_HANDLE;

@@ -108,32 +108,53 @@ bool VulkanRenderer::InitHeadless(uint32_t w, uint32_t h) {
     if (vkCreateImageView(m_device, &vi, nullptr, &m_offView) != VK_SUCCESS)
         return false;
 
-    VkAttachmentDescription att{};
-    att.format = VK_FORMAT_R8G8B8A8_UNORM;
-    att.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    att.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    att.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    att.finalLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+    // Depth para el pipeline 3D (R1); sin el, los tris mesh dibujan sin orden.
+    findDepthFormat();
+    const bool hasDepth = (m_depthFormat != VK_FORMAT_UNDEFINED);
+    if (hasDepth &&
+        !createDepthImage(m_physicalDevice, m_device, w, h, m_depthFormat,
+                          m_offDepthImg, m_offDepthMem, m_offDepthView))
+        return false;
+
+    VkAttachmentDescription atts[2]{};
+    atts[0].format = VK_FORMAT_R8G8B8A8_UNORM;
+    atts[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    atts[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    atts[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    atts[0].finalLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     VkAttachmentReference ref{};
+    ref.attachment = 0;
     ref.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     VkSubpassDescription sub{};
     sub.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     sub.colorAttachmentCount = 1;
     sub.pColorAttachments = &ref;
+    VkAttachmentReference depthRef{};
+    if (hasDepth) {
+        atts[1].format = m_depthFormat;
+        atts[1].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        atts[1].storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        atts[1].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        atts[1].finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        depthRef.attachment = 1;
+        depthRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        sub.pDepthStencilAttachment = &depthRef;
+    }
     VkRenderPassCreateInfo rpi{};
     rpi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-    rpi.attachmentCount = 1;
-    rpi.pAttachments = &att;
+    rpi.attachmentCount = hasDepth ? 2u : 1u;
+    rpi.pAttachments = atts;
     rpi.subpassCount = 1;
     rpi.pSubpasses = &sub;
     if (vkCreateRenderPass(m_device, &rpi, nullptr, &m_offPass) != VK_SUCCESS)
         return false;
 
+    VkImageView fbAtts[2] = {m_offView, m_offDepthView};
     VkFramebufferCreateInfo fbi{};
     fbi.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
     fbi.renderPass = m_offPass;
-    fbi.attachmentCount = 1;
-    fbi.pAttachments = &m_offView;
+    fbi.attachmentCount = hasDepth ? 2u : 1u;
+    fbi.pAttachments = fbAtts;
     fbi.width = w;
     fbi.height = h;
     fbi.layers = 1;
@@ -289,14 +310,14 @@ bool VulkanRenderer::SnapshotPPM(const char* path) {
     bi.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
     vkResetCommandBuffer(m_cmdBuffer, 0);
     if (vkBeginCommandBuffer(m_cmdBuffer, &bi) != VK_SUCCESS) return false;
-    VkClearValue clear = m_clearValue;
+    VkClearValue clears[2] = {m_clearValue, m_depthClear};
     VkRenderPassBeginInfo rp{};
     rp.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
     rp.renderPass = m_offPass;
     rp.framebuffer = m_offFb;
     rp.renderArea.extent = m_offExtent;
-    rp.clearValueCount = 1;
-    rp.pClearValues = &clear;
+    rp.clearValueCount = (m_depthFormat != VK_FORMAT_UNDEFINED) ? 2u : 1u;
+    rp.pClearValues = clears;
     vkCmdBeginRenderPass(m_cmdBuffer, &rp, VK_SUBPASS_CONTENTS_INLINE);
     if (!drawOrdered(m_cmdBuffer, m_offPass)) return false;
     vkCmdEndRenderPass(m_cmdBuffer);

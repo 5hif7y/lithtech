@@ -35,6 +35,12 @@ void PlayClientFX(char* szFXName, HOBJECT hParent, LTVector* pvPos, LTRotation *
 // ----------------------------------------------------------------------- //
 void PlayClientFX(char* szFXName, HOBJECT hParent, HOBJECT hTarget, LTVector* pvPos, LTRotation *prRot, LTVector *pvTargetPos, uint32 dwFlags)
 {
+	// R4: sin salida en el stub (SendSFXMessage es no-op, no hay backend de
+	// audio/FX en el cliente). El ciclo CAutoMessage locales rompia en su
+	// dtor (DecRef->Free->delete); se reimplementa cuando exista backend.
+	(void)szFXName; (void)hParent; (void)hTarget; (void)pvPos;
+	(void)prRot; (void)pvTargetPos; (void)dwFlags;
+	return;
 	LTVector vPos;
 	LTRotation rRot;
 	if(hParent)
@@ -88,4 +94,8 @@ void PlayClientFX(char* szFXName, HOBJECT hParent, HOBJECT hTarget, LTVector* pv
 	}
 
 	g_pLTServer->SendSFXMessage(cMsg.Read(), vPos, 0);
+
+	// R4-debug temporal: validez del mensaje antes del dtor.
+	fprintf(stderr, "[fx] %s msg=%p\n", szFXName ? szFXName : "?",
+	        (void*)(ILTMessage_Write*)cMsg);
 }

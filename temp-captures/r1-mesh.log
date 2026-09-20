@@ -1,0 +1,3 @@
+HOST: vulkan device=Radeon RX 580 Series vendor=0x1002 device=0x67df
+MESH: tris=312 nonClear=126110 red=1356
+MESH_RESULT ok=1 tris=312

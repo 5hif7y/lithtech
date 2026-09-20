@@ -77,6 +77,16 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
       )
       add_custom_target(vk_tri_tex_spv DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tri_tex_spv.h)
       add_dependencies(renderer_vulkan vk_tri_tex_spv)
+      # Pipeline 3D (R1): mesh3d.vert/mesh3d.frag como header para world+modelos
+      add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/mesh3d_spv.h
+        COMMAND ${GLSLANG_VALIDATOR} -V ${CMAKE_CURRENT_SOURCE_DIR}/shaders/mesh3d.vert -o ${CMAKE_CURRENT_BINARY_DIR}/mesh3d.vert.spv
+        COMMAND ${GLSLANG_VALIDATOR} -V ${CMAKE_CURRENT_SOURCE_DIR}/shaders/mesh3d.frag -o ${CMAKE_CURRENT_BINARY_DIR}/mesh3d.frag.spv
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/embed_spv.py ${CMAKE_CURRENT_BINARY_DIR}/mesh3d.vert.spv ${CMAKE_CURRENT_BINARY_DIR}/mesh3d.frag.spv ${CMAKE_CURRENT_BINARY_DIR}/mesh3d_spv.h kMesh3dVertSpv kMesh3dFragSpv
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/shaders/mesh3d.vert ${CMAKE_CURRENT_SOURCE_DIR}/shaders/mesh3d.frag
+      )
+      add_custom_target(vk_mesh3d_spv DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/mesh3d_spv.h)
+      add_dependencies(renderer_vulkan vk_mesh3d_spv)
       target_include_directories(renderer_vulkan PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
     endif()
   endif()

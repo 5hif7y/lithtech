@@ -23,6 +23,11 @@
 #include "commandids.h"
 #include "msgids.h"
 #include "animids.h"
+// Puente R3-live: publica el transform del jugador para dibujar su modelo.
+// (host_engine.h es single-TU del host; aqui solo se declara.)
+namespace Host {
+void notePlayer(float x, float y, float z, float yaw, float pitch);
+}
 
 #define MOVEMENT_RATE 2000.0f
 #define JUMP_TIME 0.25f
@@ -110,6 +115,15 @@ void CPlayerClnt::CreatePlayer()
     objCreateStruct.m_Pos = vPos;
     objCreateStruct.m_Rotation = rRot;
 
+    // R3-live: el stub de server no resuelve GameStartPoint; se usa el
+    // campo de juego medido (suelo del canon, grilla de raycasts).
+    if (vPos.x == 0.0f && vPos.y == 0.0f && vPos.z == 0.0f) {
+        objCreateStruct.m_Pos.x = -700.0f;
+        objCreateStruct.m_Pos.y = -528.0f;
+        objCreateStruct.m_Pos.z = 400.0f;
+        m_fYaw = 1.5708f; // mirar al este, hacia focas y snowman
+    }
+
     strcpy(objCreateStruct.m_Filenames[0], "Models\\HARMGuard.ltb");
     strcpy(objCreateStruct.m_Filenames[1], "Models\\playerbase.ltb");
     strcpy(objCreateStruct.m_SkinNames[0], "ModelTextures\\HARMPurple.dtx");
@@ -185,6 +199,9 @@ void CPlayerClnt::Update()
 
     // Send our information to the server
     g_pCShell->SendVelPosAndRot(vVel, vPos, rRot);
+
+    // R3-live: publica el transform para el renderer del host.
+    Host::notePlayer(vPos.x, vPos.y, vPos.z, m_fYaw, m_fPitch);
 
     // update club position
     if(!m_hClubObject)

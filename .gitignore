@@ -33,6 +33,7 @@ cmake_install.cmake
 compile_commands.json
 # Graphify
 graphify-output/
+graphify-out/
 *.graphify.json
 # Vulkan
 *.spv

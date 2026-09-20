@@ -87,6 +87,21 @@ inline ClassDef* FindClassDef(const char* name) {
 static HCLASS S_GetClass(const char* pName) {
     return reinterpret_cast<HCLASS>(FindClassDef(pName));
 }
+// R4: faltaban cablear (GetObjectClass/IsKindOf en NULL crasheaban el
+// melee en CheckForHit). HCLASS es ClassDef*.
+static HCLASS S_GetObjectClass(HOBJECT hObj) {
+    ServerObj* o = ServerWorld::fromH(hObj);
+    return (o && o->cls) ? reinterpret_cast<HCLASS>(o->cls) : nullptr;
+}
+static bool S_IsKindOf(HCLASS hClass, HCLASS hTest) {
+    if (!hClass || !hTest) return false;
+    const ClassDef* target = reinterpret_cast<const ClassDef*>(hClass);
+    for (const ClassDef* c = reinterpret_cast<const ClassDef*>(hTest); c;
+         c = c->m_ParentClass) {
+        if (c == target) return true;
+    }
+    return false;
+}
 static LPBASECLASS S_CreateObject(HCLASS hClass, ObjectCreateStruct* pStruct);
 static LPBASECLASS S_CreateObjectProps(HCLASS hClass, ObjectCreateStruct* pStruct, const char* pszProps) {
     (void)pszProps;
@@ -202,6 +217,50 @@ static LTRESULT S_GetLastCollision(CollisionInfo* pInfo) {
 // Ground plane y=0: seals fall until they hit it (no world geometry loaded).
 static bool S_IntersectSegment(IntersectQuery* pQuery, IntersectInfo* pInfo) {
     if (!pQuery || !pInfo) return false;
+    // R4 melee: primero objetos server como esferas (focas r=60). Solo
+    // clase Seal (por nombre): asi el jugador nunca se auto-impacta.
+    {
+        bool found = false;
+        float bestT = 1.0f;
+        LTVector hitObj;
+        HOBJECT hitH = nullptr;
+        LTVector d;
+        d.x = pQuery->m_To.x - pQuery->m_From.x;
+        d.y = pQuery->m_To.y - pQuery->m_From.y;
+        d.z = pQuery->m_To.z - pQuery->m_From.z;
+        float len2 = d.x * d.x + d.y * d.y + d.z * d.z;
+        if (len2 > 1e-9f) {
+            for (auto& o : ServerWorld::instance().objs) {
+                if (!o || !o->active || !o->obj) continue;
+                if (o->name.compare(0, 4, "Seal") != 0) continue;
+                const float r = 60.0f;
+                LTVector rel;
+                rel.x = o->pos.x - pQuery->m_From.x;
+                rel.y = o->pos.y - pQuery->m_From.y;
+                rel.z = o->pos.z - pQuery->m_From.z;
+                float t = (rel.x * d.x + rel.y * d.y + rel.z * d.z) / len2;
+                if (t < 0.0f) t = 0.0f;
+                if (t > 1.0f) t = 1.0f;
+                float cx = pQuery->m_From.x + d.x * t - o->pos.x;
+                float cy = pQuery->m_From.y + d.y * t - o->pos.y;
+                float cz = pQuery->m_From.z + d.z * t - o->pos.z;
+                float dist2 = cx * cx + cy * cy + cz * cz;
+                // Sin guarda de distancia minima: el filtro por nombre Seal
+                // ya excluye al jugador (auto-impacto imposible).
+                if (dist2 < r * r && t < bestT) {
+                    bestT = t;
+                    hitH = ServerWorld::toH(o.get());
+                    hitObj = o->pos;
+                    found = true;
+                }
+            }
+        }
+        if (found) {
+            pInfo->m_Point = hitObj;
+            pInfo->m_hObject = hitH;
+            return true;
+        }
+    }
     float fy = pQuery->m_From.y, ty = pQuery->m_To.y;
     if ((fy > 0.0f && ty > 0.0f) || (fy < 0.0f && ty < 0.0f)) return false;
     float denom = fy - ty;
@@ -498,6 +557,8 @@ public:
     const char* _InterfaceImplementation() override { return ""; }
     void apply() {
         GetClass = &S_GetClass;
+        GetObjectClass = &S_GetObjectClass;
+        IsKindOf = &S_IsKindOf;
         CreateObject = &S_CreateObject;
         CreateObjectProps = &S_CreateObjectProps;
         GetPropString = &S_GetPropString;
@@ -811,7 +872,13 @@ public:
         return LT_OK;
     }
     LTRESULT SendToObject(ILTMessage_Read* pMsg, HOBJECT hSender, HOBJECT hSendTo, uint32 flags) override {
-        (void)pMsg; (void)hSender; (void)hSendTo; (void)flags;
+        (void)flags;
+        // R4: entrega local sincrona (el engine real routea por net; aca
+        // alcanza para Seal::ObjectMessageFn y KILLSCORE al jugador).
+        if (!pMsg || !hSendTo) return LT_ERROR;
+        ServerObj* o = ServerWorld::fromH(hSendTo);
+        if (!o || !o->active || !o->obj) return LT_ERROR;
+        o->obj->ObjectMessageFn(hSender, pMsg);
         return LT_OK;
     }
     LTRESULT SendToServer(ILTMessage_Read* pMsg, HOBJECT hSender, uint32 flags) override {
@@ -1195,8 +1262,10 @@ public:
         return LT_OK;
     }
     LTRESULT SetupEuler(LTRotation& rot, float pitch, float yaw, float roll) override {
-        (void)pitch; (void)yaw; (void)roll;
-        rot.Init();
+        // R4: euler REAL del engine (ctor LTRotation(pitch,yaw,roll) de
+        // sdk/inc/ltrotation.h). El stub Init() dejaba todo en identidad:
+        // el jugador caminaba/miraba/atacaba siempre a +Z sin importar yaw.
+        rot = LTRotation(pitch, yaw, roll);
         return LT_OK;
     }
     LTRESULT CreateMessage(ILTMessage_Write*& pMsg) override {
@@ -1674,14 +1743,25 @@ inline uint32 tickServerWorld(float dt) {
     w.time += dt;
     w.frameDt = dt;
     uint32 ticked = 0;
-    for (auto& o : w.objs) {
-        if (!o->active || !o->useTimer || !o->obj) continue;
-        if (w.time < o->nextUpdate) continue;
+    // Por indice y revalidando: el update puede borrar objetos (RemoveObject
+    // al morir una foca) e invalidar iteradores de un range-for.
+    size_t i = 0;
+    while (i < w.objs.size()) {
+        ServerObj* o = w.objs[i].get();
+        if (!o->active || !o->useTimer || !o->obj) {
+            ++i;
+            continue;
+        }
+        if (w.time < o->nextUpdate) {
+            ++i;
+            continue;
+        }
         o->useTimer = false;
-        w.current = o.get();
+        w.current = o;
         o->obj->EngineMessageFn(MID_UPDATE, nullptr, 0.0f);
         w.current = nullptr;
         ++ticked;
+        if (i < w.objs.size() && w.objs[i].get() == o) ++i;
     }
     w.totalTicks += ticked;
     // Render phase piggyback: ticks run once per frame right before the
@@ -1721,6 +1801,8 @@ static uint32 sealTextureId() {
 inline void DrawServerWorld() {
     // World visuals only while the client is in-world (never over the menu).
     if (!ServerWorld::instance().clientEntered) return;
+    // R3-live: con modelos 3D los billboards foto sobran.
+    if (modelsLiveFlag()) return;
     uint32 tex = sealTextureId();
     if (!tex || !VkBridge::renderer()) return;
     const ObjState* cam = nullptr;
@@ -1756,6 +1838,12 @@ inline void DrawServerWorld() {
 
 // Mirror client world presence on the server: first client enter spawns the
 // server player (CPlayerSrvr via OnClientEnterWorld), exit removes it.
+// R4: el CPlayerSrvr del cliente (para CheckForHit y score). Se fija al
+// entrar al mundo; vale nullptr antes.
+inline LPBASECLASS& serverPlayerObj() {
+    static LPBASECLASS p = nullptr;
+    return p;
+}
 inline void ServerOnClientEnterWorld(CLTServerShell* shell) {
     ServerWorld& w = ServerWorld::instance();
     if (!shell || w.clientEntered) return;
@@ -1764,6 +1852,17 @@ inline void ServerOnClientEnterWorld(CLTServerShell* shell) {
     shell->OnAddClient(c);
     LPBASECLASS p = shell->OnClientEnterWorld(c);
     printf("[srv] client entered world player=%p\n", (void*)p);
+    // R3-live: el stub no resuelve GameStartPoint (cae a 0,0,0); se coloca
+    // al jugador del server en su posicion disenada (como al cliente).
+    for (std::vector<std::unique_ptr<ServerObj>>::iterator it = w.objs.begin();
+         it != w.objs.end(); ++it) {
+        if (it->get() && (*it)->obj == p) {
+            (*it)->pos.Init(-700.0f, -528.0f, 400.0f);
+            printf("[srv] player start moved to field\n");
+            break;
+        }
+    }
+    serverPlayerObj() = p;
     fflush(stdout);
 }
 inline void ServerOnClientExitWorld(CLTServerShell* shell) {

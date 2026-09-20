@@ -1,0 +1,10 @@
+HOST: vulkan device=Radeon RX 580 Series vendor=0x1002 device=0x67df
+MODEL: seal meshes=1 verts=1004 tris=1008 nodes=16 children=5 slots=0 
+MODEL: bruno meshes=2 verts=2007 tris=1864 nodes=35 children=0 slots=1 0 
+MODEL: SnowMan meshes=1 verts=742 tris=785 nodes=13 children=0 slots=0 
+MODEL: Mallet meshes=1 verts=132 tris=109 nodes=2 children=0 slots=0 
+MODEL: HARMGuard meshes=2 verts=2289 tris=1932 nodes=35 children=1 slots=0 1 
+MODEL: playerbase sin geometria propia (ok)
+MODEL: playerbase meshes=0 verts=0 tris=0 nodes=35 children=0 slots=
+MODEL: totalTris=5698 texOk=6 texMiss=0
+MODEL_RESULT ok=1 tris=5698

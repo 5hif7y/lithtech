@@ -118,6 +118,21 @@ if(LITH_LIBS_PORTABLE)
   endforeach()
 endif()
 
+# Tools via CMake (no tocan .vcproj legacy). LITH_TOOL_LITHREZ: empaquetador
+# .rez (Engine/Engine/tools/LithRez). Requiere rezmgr: si LITH_LIBS_PORTABLE
+# esta OFF se agrega solo ese subdir.
+option(LITH_TOOL_LITHREZ "Compilar LithRez (.rez packer/unpacker) via CMake" OFF)
+if(LITH_TOOL_LITHREZ)
+  if(NOT TARGET rezmgr AND EXISTS ${CMAKE_SOURCE_DIR}/Engine/Engine/libs/rezmgr/CMakeLists.txt)
+    add_subdirectory(Engine/Engine/libs/rezmgr)
+  endif()
+  # rezmgr linkea CLTBaseList/CBaseHash/CVirtBaseList de lith (Libs/Libs/lith).
+  if(NOT TARGET lith AND EXISTS ${CMAKE_SOURCE_DIR}/Libs/Libs/lith/CMakeLists.txt)
+    add_subdirectory(Libs/Libs/lith)
+  endif()
+  add_subdirectory(Engine/Engine/tools/LithRez)
+endif()
+
 # Engine - file glob resiliente a estructura exacta
 add_subdirectory(Engine)
 

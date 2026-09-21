@@ -62,6 +62,7 @@ public:
 	REZDIRNAME	GetDir();                                                               // Returns the name of the directory this resource is located in
     CRezDir*    GetParentDir() { return m_pParentDir; };                                // Returns the parent directory that contains this item
 	REZTIME		GetTime() { return m_nTime; };											// Last time resource was modified
+	REZID		GetID() { return m_nID; };												// ID number of this resource (se persiste en WriteDirBlock para SHA1 identico)
 
 	BOOL		Get(BYTE* pBytes);                                                      // Copies the data from this resource to the specified location
 	BOOL		Get(void* pBytes) { return Get((BYTE*)pBytes); };						// void version of get
@@ -117,6 +118,7 @@ private:
 	REZNAME				m_sName;			// Name of the resource
     CRezTyp*            m_pType;            // Resource type
 	REZTIME		 		m_nTime;			// The last time the data in the resource was updated (does not include keys or description)
+	REZID				m_nID;				// ID number of the resource (antes se ignoraba: InitRezItm lo descartaba y WriteDirBlock escribia 0)
 	REZSIZE				m_nSize;			// The size in bytes of the data in this resource
 	CRezDir*			m_pParentDir;		// Pointer to the directory structure in memory that this resource is in (the parent)
 	DWORD				m_nFilePos;			// File position in the resource file for this resources data (note, this is relative to m_nDataPos in the directory)
@@ -189,6 +191,7 @@ public:
 	CRezDir*	CreateDir(REZDIRNAME sDir);                         // Creates the specified directory inside the current directory (should not contain \ or /)
 	CRezItm*	CreateRez(REZID ID, REZNAME Name, REZTYPE Type);    // Creates the specified resource in the resource file
 	REZTIME     GetTime() { return m_nLastTimeModified; };		    // Last time resource was modified in this dir
+	void        SetTime(REZTIME Time) { m_nLastTimeModified = Time; };   // Set dir time (lo usa TransferDir con el mtime del disco para SHA1 identico)
 
 private:
     CRezDir(CRezMgr* pRezMgr, CRezDir* pParentDir, REZDIRNAME szDirName, DWORD nFilePos, 
@@ -291,6 +294,9 @@ public:
 
 	void SetNextIDNumToUse( DWORD nNextIDNumToUse ) { m_nNextIDNumToUse = nNextIDNumToUse; }
 	DWORD GetNextIDNumToUse( ) { return m_nNextIDNumToUse; }
+
+	// SHA1 identico: fija el Time del header (MarkCurTime lo pisa con "ahora" en cada Create/Save)
+	void SetLastTimeModified(REZTIME nTime) { m_nLastTimeModified = nTime; }
 
 private:
 	friend class CRezDir;

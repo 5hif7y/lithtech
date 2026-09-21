@@ -120,6 +120,7 @@ CRezItm::CRezItm()
   m_pRezFile = NULL;
   m_pParentDir = NULL;
   m_sName = NULL;
+  m_nID = 0;
   m_heName.SetRezItm(this);
 };
 
@@ -139,6 +140,7 @@ void CRezItm::InitRezItm(CRezDir* pParentDir, REZNAME sName, REZID nID, CRezTyp*
 
   m_pType = pType;
 
+  m_nID = nID;
   m_nSize = nSize;
   m_nFilePos = nFilePos;
   m_nTime = nTime;
@@ -1146,6 +1148,8 @@ CRezMgr::CRezMgr() {
   m_pPrimaryRezFile = NULL;
   m_nNumRezFiles = 0;
   m_nRootDirPos = 0;
+  m_nRootDirSize = 0;
+  m_nRootDirTime = 0; // SHA1 identico: antes sin inicializar -> basura de stack en el header
   m_nNextWritePos = 0;
   m_bReadOnly = TRUE;
   m_pRootDir = NULL;
@@ -1456,7 +1460,7 @@ BOOL CRezMgr::ReadEmulationDirectory(CRezFileDirectoryEmulation* pRezFileEmulati
   strcat(sFindPath,"*.*");
 
   // being search for everything in this directory using findfirst and findnext
-  long nFindHandle = _findfirst( sFindPath, &fileinfo );
+  intptr_t nFindHandle = _findfirst( sFindPath, &fileinfo ); // CMake x64: _findfirst devuelve intptr_t (long lo trunca, AV)
   if (nFindHandle >= 0) {
 
     // loop through all entries in this directory
@@ -1759,8 +1763,12 @@ BOOL CRezMgr::Flush() {
     Header.LF3 = 0x0a;
     Header.EOF1 = 0x1a;
     memset(Header.FileType,' ',RezMgrUserTitleSize);
-    lith_safe_copy(Header.FileType, sizeof(Header.FileType), "RezMgr Version 1 Copyright (C) 1995 MONOLITH INC."); // overflow fix
-    Header.FileType[strlen(Header.FileType)] = ' ';
+    { // SHA1 identico: copiar solo strlen bytes sobre el relleno de espacios (lith_safe_copy rellenaba con ceros)
+      const char* sFT = "RezMgr Version 1 Copyright (C) 1995 MONOLITH INC.";
+      size_t nFTLen = strnlen(sFT, sizeof(Header.FileType));
+      lith_memcpy_checked(Header.FileType, sizeof(Header.FileType), sFT, nFTLen); // overflow fix
+      Header.FileType[nFTLen] = ' ';
+    }
     memset(Header.UserTitle,' ',RezMgrUserTitleSize);
 	if (m_sUserTitle[0] != '\0') lith_memcpy_checked(Header.UserTitle, sizeof(Header.UserTitle), m_sUserTitle, strnlen(m_sUserTitle, sizeof(Header.UserTitle))); // overflow fix
     
@@ -1862,7 +1870,7 @@ BOOL CRezDir::WriteDirBlock(CBaseRezFile* pRezFile, DWORD Pos, DWORD* Size) {
         Header.Rez.Pos = pRezItm->m_nFilePos;
         Header.Rez.Size = pRezItm->m_nSize;
         Header.Rez.Time = pRezItm->m_nTime;
-        Header.Rez.ID = 0;
+        Header.Rez.ID = pRezItm->m_nID; // SHA1 identico: antes hardcodeado a 0, se pierde el ID
         Header.Rez.Type = pTyp->GetRezTyp()->GetType();
         Header.Rez.NumKeys = 0;
 

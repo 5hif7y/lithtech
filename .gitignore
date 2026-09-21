@@ -42,3 +42,7 @@ graphify-out/
 __pycache__/
 # No ignorar third_party/vulkan vendoreado - necesario sin sudo
 !third_party/vulkan/
+
+
+REZ-tests/
+

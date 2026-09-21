@@ -4,6 +4,7 @@
 #include <conio.h>
 #include <io.h>
 #include <string.h>
+#include <ctype.h> /* CMake/MSVC moderno: toupper (antes via windows.h en MSVC6) */
 #include <direct.h>
 #include <time.h>
 #include <sys\stat.h>
@@ -29,6 +30,7 @@ unsigned long int GetFileSize(char* sFileName) {
    // get file information
    result = _fstat( fh, &buf );
 
+   // close the file
    _close( fh );
 
    // check if stat worked ok
@@ -36,9 +38,6 @@ unsigned long int GetFileSize(char* sFileName) {
       printf( "ERROR! Unable to get file size!\n" );
       return 0;
    }
-
-   // close the file
-   _close( fh );
 
    return buf.st_size;
 }

@@ -6,12 +6,20 @@
 #include <conio.h>
 #include <io.h>
 #include <direct.h>
+#include <sys/utime.h>
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
 #else // LINUX
 #include <sys/types.h>
 #include <unistd.h>
+#include <utime.h>
 #endif
+#include <sys/stat.h>
 
 #include <string.h>
+#include <ctype.h> // CMake/MSVC moderno: toupper en IsCommandSet (antes lo traia windows.h via MSVC6)
 #include "assert.h"
 #define REZMGRDONTUNDEF
 #include "rezmgr.h"
@@ -34,7 +42,59 @@ long g_nWarnCount = 0;
 BOOL g_bLowerCaseUsed = FALSE;
 BOOL g_bExitOnDiskError = FALSE;
 
+// SHA1 identico: mtime en disco del ultimo item procesado en 'c' (espeja la
+// semantica legacy de MarkCurTime, pero con tiempos de disco en vez de "ahora").
+REZTIME g_nLastDiskTime = 0;
+
 #define kMaxStr 2048
+
+// SHA1 identico: restaura el mtime guardado en el .rez (best effort, no fatal).
+// En 'x' se aplica a archivos y directorios; en 'c' se lee con _stat/stat.
+// Asi el roundtrip x -> c vuelve a estampar los mtimes originales.
+static void SetDiskTime(const char* sPath, REZTIME nTime) {
+  if (sPath == NULL || sPath[0] == '\0') return;
+#ifdef _WIN32
+  struct _utimbuf t;
+  t.actime = t.modtime = (time_t)nTime;
+  _utime(sPath, &t);
+#else
+  struct utimbuf t;
+  t.actime = t.modtime = (time_t)nTime;
+  utime(sPath, &t);
+#endif
+}
+
+// Quita '\'/'/' finales (conserva raiz tipo "C:\").
+static void StripTrailingSlash(char* sPath) {
+  size_t nLen = strlen(sPath);
+  while (nLen > 3 && (sPath[nLen-1] == '\\' || sPath[nLen-1] == '/')) {
+    sPath[--nLen] = '\0';
+  }
+}
+
+#ifdef _WIN32
+// _utime no abre directorios (falta FILE_FLAG_BACKUP_SEMANTICS): version Win32.
+static void SetDirTime(const char* sPath, REZTIME nTime) {
+  if (sPath == NULL || sPath[0] == '\0') return;
+  HANDLE hDir = CreateFileA(sPath, FILE_WRITE_ATTRIBUTES,
+    FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
+    OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+  if (hDir == INVALID_HANDLE_VALUE) return;
+  LONGLONG nWin = ((LONGLONG)(DWORD)nTime + 11644473600LL) * 10000000LL;
+  FILETIME ft;
+  ft.dwLowDateTime = (DWORD)nWin;
+  ft.dwHighDateTime = (DWORD)(nWin >> 32);
+  SetFileTime(hDir, NULL, NULL, &ft);
+  CloseHandle(hDir);
+}
+#else
+static void SetDirTime(const char* sPath, REZTIME nTime) {
+  if (sPath == NULL || sPath[0] == '\0') return;
+  struct utimbuf t;
+  t.actime = t.modtime = (time_t)nTime;
+  utime(sPath, &t); // en POSIX utime si funciona sobre directorios
+}
+#endif
 
 #ifndef _CONSOLE
 #define zprintf printf
@@ -169,6 +229,9 @@ void ExtractDir(CRezDir* pDir, const char* sParamPath) {
 
           // close the file
           fclose(pFile);
+
+          // restore original mtime so re-pack is byte-identical (ver SetDiskTime)
+          SetDiskTime(sFileName, pItm->GetTime());
         }
 
         // error if unable to create data file
@@ -212,6 +275,15 @@ void ExtractDir(CRezDir* pDir, const char* sParamPath) {
 
     // get next dir
     pLoopDir = pDir->GetNextSubDir(pLoopDir);
+  }
+
+  // restore this dir's mtime LAST (creating children touches it) for byte-identical re-pack.
+  // OJO: _utime no funciona sobre directorios en Windows -> SetDirTime (CreateFile + SetFileTime).
+  {
+    char sDirPath[kMaxStr];
+    strcpy(sDirPath,sPath);
+    StripTrailingSlash(sDirPath);
+    SetDirTime(sDirPath, pDir->GetTime());
   }
 #endif
 };
@@ -308,7 +380,7 @@ void TransferDir(CRezDir* pDir, const char* sParamPath, const char * sExts ) {
   strcat(sFindPath,"*.*" );
 
   // being search for everything in this directory using findfirst and findnext
-  long nFindHandle = _findfirst( sFindPath, &fileinfo );
+  intptr_t nFindHandle = _findfirst( sFindPath, &fileinfo ); // CMake x64: _findfirst devuelve intptr_t (long lo trunca, AV)
   if (nFindHandle >= 0) {
 
     // loop through all entries in this directory
@@ -352,6 +424,22 @@ void TransferDir(CRezDir* pDir, const char* sParamPath, const char * sExts ) {
 
         // call TransferDir on the new directory
         TransferDir(pNewDir,sPathName, sExts );
+
+        // stamp disk dir mtime POST-recursion (los items de adentro pisan el tiempo
+        // via MarkCurTime; el disco manda para SHA1 identico). Los hermanos
+        // posteriores no tocan este dir, queda estable.
+        {
+          char sDirDisk[kMaxStr];
+          strcpy(sDirDisk,sPathName);
+          StripTrailingSlash(sDirDisk);
+#ifdef _WIN32
+          struct _stat stDir;
+          if (_stat(sDirDisk, &stDir) == 0) pNewDir->SetTime((REZTIME)stDir.st_mtime);
+#else
+          struct stat stDir;
+          if (stat(sDirDisk, &stDir) == 0) pNewDir->SetTime((REZTIME)stDir.st_mtime);
+#endif
+        }
       }
 
       // if this is a file add it to the resource file
@@ -413,7 +501,8 @@ void TransferDir(CRezDir* pDir, const char* sParamPath, const char * sExts ) {
         REZID nID;
         {
           int nNameLen = strlen(sName);
-          for (int i = 0; i < nNameLen; i++) {
+          int i; // CMake/MSVC moderno: MSVC6 extendia el scope de 'i' fuera del for (C2065)
+          for (i = 0; i < nNameLen; i++) {
             if ((sName[i] < '0') || (sName[i] > '9')) break;
           }
           if (i < nNameLen) {
@@ -462,9 +551,6 @@ void TransferDir(CRezDir* pDir, const char* sParamPath, const char * sExts ) {
         // increment resource counter
 		g_nRezCount++;
 
-    	// store the file time in the resource
-		pItm->SetTime((REZTIME)fileinfo.time_write);
-
         // allocate memory for resource
         BYTE* pData = pItm->Create(fileinfo.size);
 
@@ -500,6 +586,11 @@ void TransferDir(CRezDir* pDir, const char* sParamPath, const char * sExts ) {
 			zprintf("ERROR! Unable to open file: %s\n",sFileName);
 		    g_nErrCount++;
 		}
+
+        // re-stamp disk mtime AFTER Create/Save (ambos llaman MarkCurTime="ahora").
+        // Espeja la semantica legacy (ultimo item manda) con tiempos de disco.
+        pItm->SetTime((REZTIME)fileinfo.time_write);
+        g_nLastDiskTime = (REZTIME)fileinfo.time_write;
 
         // free memory for resource
         pItm->UnLoad();
@@ -549,7 +640,7 @@ void FreshenDir(CRezDir* pDir, const char* sParamPath) {
   strcat(sFindPath,"*.*");
 
   // being search for everything in this directory using findfirst and findnext
-  long nFindHandle = _findfirst( sFindPath, &fileinfo );
+  intptr_t nFindHandle = _findfirst( sFindPath, &fileinfo ); // CMake x64: _findfirst devuelve intptr_t (long lo trunca, AV)
   if (nFindHandle >= 0) {
 
     // loop through all entries in this directory
@@ -864,6 +955,7 @@ int RezCompiler(const char* sCmd, const char* sRezFile, const char* sTargetDir, 
   g_nWarnCount		= 0;
   g_bLowerCaseUsed	= FALSE;
   g_bLithRez		= bLithRez;
+  g_nLastDiskTime	= 0;
 
  
   //why does it do this uppercasing? This has been removed - JohnO
@@ -1006,6 +1098,10 @@ int RezCompiler(const char* sCmd, const char* sRezFile, const char* sTargetDir, 
       
       // copy data from directory to resource file
       TransferDir(pDir,sTargetDir, sFilespec);
+
+      // SHA1 identico: el Time del header es el del ultimo item (mtime de disco),
+      // no el "ahora" que dejo MarkCurTime en cada Create/Save.
+      g_pMgr->SetLastTimeModified(g_nLastDiskTime);
 
 	  // output stats to user
       if (g_bVerbose) zprintf("\n");

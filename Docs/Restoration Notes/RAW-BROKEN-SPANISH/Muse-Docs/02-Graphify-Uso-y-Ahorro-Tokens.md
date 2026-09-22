@@ -1,4 +1,4 @@
-# Graphify — Uso y Ahorro de Tokens
+#Graphify 
 
 ## Por qué graphify
 
@@ -18,7 +18,7 @@ python3 -m venv .venv
 
 **Generado:** `graphify-output/nolf2-index.json` (2.1M, 95120 líneas)  
 **Stats:** `{'total_files': 7888, 'total_nodes': 7215, 'total_edges': 20657, 'by_category': {'Renderer/vulkan': 2, 'Tools': 12, 'Platform': 1, 'Libs': 145, 'Engine': 4357, 'Samples': 1266, 'Other': 97, 'Game': 2008}, 'by_ext': {'.h': 4491, '.cpp': 2599, '.lta': 210, '.sln': 67, '.vcproj': 220, '.c': 100, '.rc': 145, '.idl': 5, '.inl': 1, '.hpp': 24, '.lto': 26}}`  
-**Top hubs (por #includes):** [{'path': 'Game/Game/ObjectDLL/ObjectShared/GlobalServerMgr.cpp', 'outgoing': 125}, {'path': 'Engine/Engine/tools/Plugins/SDKFiles/PhotoshopSDK/samplecode/common/includes/PhotoshopSDK.h', 'outgoing': 68}, {'path': 'Game/Game/Libs/WONAPI/WONRouting/Routing.cpp', 'outgoing': 64}, {'path': 'Game/Game/Libs/WONAPI/WONRouting/AllRoutingOps.h', 'outgoing': 61}, {'path': 'Game/Game/ClientShellDLL/ClientShellShared/SFXMgr.cpp', 'outgoing': 61}]
+**Top hubs (por `includes`):** [{'path': 'Game/Game/ObjectDLL/ObjectShared/GlobalServerMgr.cpp', 'outgoing': 125}, {'path': 'Engine/Engine/tools/Plugins/SDKFiles/PhotoshopSDK/samplecode/common/includes/PhotoshopSDK.h', 'outgoing': 68}, {'path': 'Game/Game/Libs/WONAPI/WONRouting/Routing.cpp', 'outgoing': 64}, {'path': 'Game/Game/Libs/WONAPI/WONRouting/AllRoutingOps.h', 'outgoing': 61}, {'path': 'Game/Game/ClientShellDLL/ClientShellShared/SFXMgr.cpp', 'outgoing': 61}]
 
 ## Cómo se usó para ahorrar tokens en esta doc
 
